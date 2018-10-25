@@ -46,10 +46,10 @@ int main(void){
     tuple *s_tuple = malloc(YDIMEN * sizeof(tuple));
 
     for (int i = 0; i < XDIMEN; i++) {
-        r_tuple->key = i+1;
+        r_tuple->key = h1(r_array[i][COMPARE]);
         r_tuple->payload = r_array[i][COMPARE];
 
-        s_tuple->key = i+1;
+        s_tuple->key = h1(s_array[i][COMPARE]);
         s_tuple->payload = s_array[i][COMPARE];
     }
 
@@ -60,7 +60,7 @@ int main(void){
 
 
 int h1(int num){
-    return atoi(decimal_to_binary(num)) % 100;
+    return atoi(decimal_to_binary(num)) % 1000;
 }
 
 char *decimal_to_binary(int n){
