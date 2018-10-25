@@ -76,5 +76,8 @@ char *decimal_to_binary(int n){
 
    return  pointer;
 }
+<<<<<<< HEAD
 
 #include "hash_functions.h"[i][i][i][i][i][i][i][i]
+=======
+>>>>>>> fd9188ee48eb10b06a7e705d6ec0c31af228a417
