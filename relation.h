@@ -1,4 +1,4 @@
-
+#include <stdint.h>
 /** Type definition for a tuple */
 struct tuple;
 struct relation;
