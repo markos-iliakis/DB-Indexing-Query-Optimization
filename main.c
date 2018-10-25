@@ -1,8 +1,8 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <stdint.h>
 #include "relation.h"
+#include "hash_functions.h"
 
 #define YDIMEN 4
 #define XDIMEN 3
@@ -17,7 +17,7 @@ int main(void){
 
     int **s_array = malloc(XDIMEN * sizeof(int *));
     for (int i = 0; i < XDIMEN; i++)
-        s_array[j] = malloc(YDIMEN * sizeof(int));
+        s_array[i] = malloc(YDIMEN * sizeof(int));
 
     for (int i = 0; i < XDIMEN; i++) {
         for (int j = 0; j < YDIMEN; j++) {
@@ -35,49 +35,38 @@ int main(void){
     tuple *s_tuple = malloc(YDIMEN * sizeof(tuple));
 
     for (int i = 0; i < XDIMEN; i++) {
-        r_tuple->key = h1(r_array[i][COMPARE]);
-        r_tuple->payload = r_array[i][COMPARE];
+        r_tuple[i].key = h1(r_array[i][COMPARE]);
+        r_tuple[i].payload = i;
 
-        s_tuple->key = h1(s_array[i][COMPARE]);
-        s_tuple->payload = s_array[i][COMPARE];
+        s_tuple[i].key = h1(s_array[i][COMPARE]);
+        s_tuple[i].payload = i;
     }
 
+    for (size_t i = 0; i < XDIMEN; i++) {
+        for (size_t j = 0; j < YDIMEN; j++) {
+            printf("%d | ", r_array[i][j]);
+        }
+        printf("\n");
+    }
 
+    for (size_t i = 0; i < XDIMEN; i++) {
+        printf("%d | %d \n", r_tuple[i].key, r_tuple[i].payload);
+    }
+}
+/*
+//find different values for r_tuple and create hist
+    int diff;
+    for (int i = 0; i < XDIMEN; i++) {
+
+    }
+
+    int **r_hist = malloc(diff*sizeof(int*));
+    for (int i = 0; i < diff; i++)
+        r_hist = malloc(2*sizeof(int));
+
+    //find different values for s_tuple and create s_hist    int **s_hist = malloc(diff*sizeof(int*));
+    for (int i = 0; i < diff; i++)
+        s_hist = malloc(2*sizeof(int));
     return 0;
 }
-
-
-
-int h1(int num){
-    return atoi(decimal_to_binary(num)) % 1000;
-}
-
-char *decimal_to_binary(int n){
-   int c, d, count;
-   char *pointer;
-
-   count = 0;
-   pointer = (char*)malloc(32+1);
-
-   if (pointer == NULL)
-      exit(2);
-
-   for (c = 31 ; c >= 0 ; c--){
-      d = n >> c;
-
-      if (d & 1)
-         *(pointer+count) = 1 + '0';
-      else
-         *(pointer+count) = 0 + '0';
-
-      count++;
-   }
-   *(pointer+count) = '\0';
-
-   return  pointer;
-}
-<<<<<<< HEAD
-
-#include "hash_functions.h"[i][i][i][i][i][i][i][i]
-=======
->>>>>>> fd9188ee48eb10b06a7e705d6ec0c31af228a417
+*/

@@ -1,5 +1,5 @@
-OBJECTS		=main.o
-SOURCE		=main.c
+OBJECTS		=main.o hash_functions.o
+SOURCE		=main.c hash_functions.c
 OUTPUT		=main
 HEADER  	=relation.h hash_functions.h
 CC			=gcc
@@ -13,3 +13,6 @@ main.o: main.c
 
 hash_functions.o: hash_functions.c
 	$(CC) $(FLAGS) hash_functions.c
+
+clean:
+	rm $(OUTPUT) $(OBJECTS)
