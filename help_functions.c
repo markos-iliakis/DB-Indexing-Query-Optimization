@@ -4,13 +4,13 @@
 void printArrayTuple(int** x_array, tuple* x_tuple, int xdimen, int ydimen){
     for (size_t i = 0; i < xdimen; i++) {
         for (size_t j = 0; j < ydimen; j++) {
-            printf("%d | ", x_array[i][j]);
+            printf("%3d | ", x_array[i][j]);
         }
         printf("\n");
     }
     printf("---------------\n");
     for (size_t i = 0; i < xdimen; i++) {
-        printf("%d | %d \n", x_tuple[i].key, x_tuple[i].payload);
+        printf("%3d | %3d \n", x_tuple[i].key, x_tuple[i].payload);
     }
     printf("---------------\n");
 }
@@ -58,7 +58,7 @@ void addHistogram(histogram **r_hist, int32_t new_value) {
     histogram *temp = *r_hist;
 
     if ((*r_hist) == NULL) {
-        printf("Prwth eisagwgh\n");
+        // printf("Prwth eisagwgh\n");
         (*r_hist) = malloc(sizeof(histogram));
         (*r_hist)->value = new_value;
         (*r_hist)->freq = 1;
@@ -101,8 +101,55 @@ void printHistogram(histogram *r_hist){
 
     histogram *temp = r_hist;
     while (temp != NULL) {
-        printf("Value : %d Frequency %d\n", temp->value, temp->freq);
+        printf("Value : %3d Frequency : %3d\n", temp->value, temp->freq);
         temp = temp->next;
     }
+
+}
+
+int histogramSize(histogram *r_hist){
+
+    int length = 0;
+    histogram *temp = r_hist;
+    while(temp != NULL){
+        length++;
+        temp = temp->next;
+    }
+
+    return length;
+
+}
+
+void createPsum(histogram *psum, histogram *hist, int hist_length){
+
+    histogram *temp1 = hist, *temp2 = hist->next;
+    psum[0].freq = 0;
+    psum[0].value = hist->value;
+    int sum = 0;
+    for (int i = 1; i < hist_length; i++) {
+        psum[i].freq = sum + temp1->freq;
+        psum[i].value = temp2->value;
+        sum += temp1->freq;
+        temp1 = temp1->next;
+        temp2 = temp2->next;
+    }
+
+    return;
+}
+
+void createReorderedarray(relation *new_r, histogram *hist, histogram *psum, relation *r_relation){
+
+    new_r->tuples = malloc(XDIMEN * sizeof(tuple));
+    histogram *temp = hist;
+    int pos = psum[1].freq, psum_pos = 1;
+    for (int i = 0; i < XDIMEN; i++) {
+        if(i == pos)
+            psum_pos++;
+        else{
+            new_r->tuples[i].key = psum[psum_pos].value;
+
+        }
+    }
+
 
 }

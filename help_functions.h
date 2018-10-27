@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 #define YDIMEN 4
-#define XDIMEN 3
+#define XDIMEN 100
 #define COMPARE 2
 
 struct histogram;
@@ -24,3 +24,6 @@ void addHistogram(histogram **r_hist, int32_t new_value);
 void addFreq(histogram *node);
 void destroyHistogram(histogram *r_hist);
 void printHistogram(histogram *r_hist);
+int histogramSize(histogram *);
+void createPsum(histogram *, histogram *, int);
+void createReorderedarray(relation *, histogram *, histogram *, relation *);
