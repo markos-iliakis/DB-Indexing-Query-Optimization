@@ -42,6 +42,21 @@ tuple* makeHashIdArray(int** x_array, int xdimen){
     return x_tuple;
 }
 
+histogram* createHistogram(int xdimen, relation *rel){
+
+    histogram* hist = NULL;
+
+    for (int i = 0; i < xdimen; i++) {
+        histogram *temp = searchHistogram(hist, rel->tuples[i].key);
+        if (temp == NULL)
+            addHistogram(&hist, rel->tuples[i].key);
+        else
+            addFreq(temp);
+    }
+
+    return hist;
+}
+
 //function to serach a hash value in histogram
 histogram* searchHistogram(histogram *r_hist, int32_t check){
 
@@ -82,9 +97,7 @@ void addHistogram(histogram **r_hist, int32_t new_value) {
 }
 
 void addFreq(histogram *node) {
-
     node->freq++;
-    return;
 }
 
 void destroyHistogram(histogram *r_hist){
@@ -127,21 +140,22 @@ int histogramSize(histogram *r_hist){
 
 }
 
-void createHist(histogram *psum, histogram *hist, int hist_length){
+sum* createPsum(int hist_length, histogram* hist){
 
+    sum* psum = malloc(hist_length*sizeof(sum));
     histogram *temp1 = hist, *temp2 = hist->next;
-    psum[0].freq = 0;
-    psum[0].value = hist->value;
+    psum[0].index = 0;
+    psum[0].hashed_key = hist->value;
     int sum = 0;
     for (int i = 1; i < hist_length; i++) {
-        psum[i].freq = sum + temp1->freq;
-        psum[i].value = temp2->value;
+        psum[i].index = sum + temp1->freq;
+        psum[i].hashed_key = temp2->value;
         sum += temp1->freq;
         temp1 = temp1->next;
         temp2 = temp2->next;
     }
 
-    return;
+    return psum;
 }
 
 void printPsum(sum* psum, int hist_length){
@@ -153,20 +167,19 @@ void printPsum(sum* psum, int hist_length){
     printf("---------------\n");
 }
 
-ord_relation* createReorderedarray(sum *psum, int size, relation *r_relation, int xdimen, int ydimen){
+ord_relation* createReorderedarray(sum *psum, int size, relation *r_relation, int xdimen){
 
     ord_relation *new_array = malloc(xdimen * sizeof(ord_relation));
 
     // for each row of r
     for (int i = 0; i < xdimen; i++) {
         // for each element of psum
-        for(int j=0; j<size; j++){
+        for(int j = 0; j < size; j++){
             // if we have found the same hashed_key
-            if(r_relation[i].tuples->key == psum[j].hashed_key){
-                new_array[psum[j].index].row_id = r_relation[i].tuples->payload;
-                new_array[psum[j].index].value = r_relation[i].tuples->value;
+            if(r_relation->tuples[i].key == psum[j].hashed_key){
+                new_array[psum[j].index].row_id = r_relation->tuples[i].payload;
+                new_array[psum[j].index].value = r_relation->tuples[i].value;
                 psum[j].index++;
-                printf("%d done\n",i);
                 break;
             }
         }
