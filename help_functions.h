@@ -26,5 +26,5 @@ void destroyHistogram(histogram *r_hist);
 void printHistogram(histogram *r_hist);
 int histogramSize(histogram *);
 void createPsum(histogram *, histogram *, int);
-int** createReorderedarray(relation *, histogram *, int **);
+int** createReorderedarray(histogram *r_relation, relation *psum, int xdimen, int ydimen) ;
 void printPsum(histogram* psum, int hist_length);

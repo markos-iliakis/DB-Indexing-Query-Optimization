@@ -143,10 +143,12 @@ void printPsum(histogram* psum, int hist_length){
     }
 }
 
-int** createReorderedarray(relation *r_relation, histogram *psum, int **r_relation, int xdimen, int ydimen){
+int** createReorderedarray(histogram *psum, relation *r_relation, int xdimen, int ydimen){
 
     int **new_array = malloc(xdimen * sizeof(int *));
     for (int i = 0; i < xdimen; i++) {
         new_array[i] = malloc(2 * sizeof(int));
     }
+
+    return new_array;
 }
