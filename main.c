@@ -8,7 +8,7 @@ int main(void){
     int **r_array = makeRandArray(XDIMEN, YDIMEN);
     int **s_array = makeRandArray(XDIMEN, YDIMEN);
 
-    // make the id/hashed-value arrays MHPWS PREPEI NA BALOUME KAI TO ROWID MESA STO TUPLE
+    // make the id/hashed-value arrays
     relation *r_relation, *s_relation;
     r_relation = malloc(sizeof(relation));
     s_relation = malloc(sizeof(relation));
@@ -29,24 +29,23 @@ int main(void){
             addFreq(temp);
     }
 
+    //print histogram
     printHistogram(r_hist);
 
-    printf("Length is %d\n", histogramSize(r_hist));
+    //make psum table
     int hist_length = histogramSize(r_hist);
     histogram *psum = malloc(hist_length * sizeof(histogram));
 
     createPsum(psum, r_hist, hist_length);
 
-    for (int i = 0; i < hist_length; i++) {
-        printf("Value : %3d Frequency : %3d\n", psum[i].value, psum[i].freq);
-    }
-
+    // print psum table
+    printPsum(psum, hist_length);
 
     //edw thelei array R' pou tha ftiaxtei me to sum tou histogram
-    relation *r_ord = malloc(sizeof(relation));
-    createReorderedarray(r_ord, r_hist, psum, r_relation);
-    destroyHistogram(r_hist);
+    int **r_ord = createReorderedarray(r_relation, psum, r_relation);
 
+
+    destroyHistogram(r_hist);
 
     return 0;
 }

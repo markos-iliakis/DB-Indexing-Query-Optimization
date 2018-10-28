@@ -137,19 +137,16 @@ void createPsum(histogram *psum, histogram *hist, int hist_length){
     return;
 }
 
-void createReorderedarray(relation *new_r, histogram *hist, histogram *psum, relation *r_relation){
-
-    new_r->tuples = malloc(XDIMEN * sizeof(tuple));
-    histogram *temp = hist;
-    int pos = psum[1].freq, psum_pos = 1;
-    for (int i = 0; i < XDIMEN; i++) {
-        if(i == pos)
-            psum_pos++;
-        else{
-            new_r->tuples[i].key = psum[psum_pos].value;
-
-        }
+void printPsum(histogram* psum, int hist_length){
+    for (int i = 0; i < hist_length; i++) {
+        printf("Value : %3d Frequency : %3d\n", psum[i].value, psum[i].freq);
     }
+}
 
+int** createReorderedarray(relation *r_relation, histogram *psum, int **r_relation, int xdimen, int ydimen){
 
+    int **new_array = malloc(xdimen * sizeof(int *));
+    for (int i = 0; i < xdimen; i++) {
+        new_array[i] = malloc(2 * sizeof(int));
+    }
 }
