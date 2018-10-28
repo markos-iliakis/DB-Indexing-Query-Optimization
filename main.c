@@ -31,9 +31,6 @@ int main(void){
 
     printHistogram(r_hist);
 
-
-
-
     printf("Length is %d\n", histogramSize(r_hist));
     int hist_length = histogramSize(r_hist);
     histogram *psum = malloc(hist_length * sizeof(histogram));
