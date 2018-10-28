@@ -34,6 +34,7 @@ tuple* makeHashIdArray(int** x_array, int xdimen){
     for (int i = 0; i < xdimen; i++) {
         x_tuple[i].key = h1(x_array[i][COMPARE]);
         x_tuple[i].payload = i;
+        x_tuple[i].value = x_array[i][COMPARE];
     }
     return x_tuple;
 }
@@ -143,12 +144,10 @@ void printPsum(histogram* psum, int hist_length){
     }
 }
 
-int** createReorderedarray(histogram *psum, relation *r_relation, int xdimen, int ydimen){
+ord_relation* createReorderedarray(histogram *psum, relation *r_relation, int xdimen, int ydimen){
 
-    int **new_array = malloc(xdimen * sizeof(int *));
-    for (int i = 0; i < xdimen; i++) {
-        new_array[i] = malloc(2 * sizeof(int));
-    }
+    ord_relation *new_array = malloc(xdimen * sizeof(ord_relation));
+
 
     return new_array;
 }

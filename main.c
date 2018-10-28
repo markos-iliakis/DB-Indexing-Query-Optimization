@@ -42,7 +42,7 @@ int main(void){
     printPsum(psum, hist_length);
 
     //edw thelei array R' pou tha ftiaxtei me to sum tou histogram
-    int **r_ord = createReorderedarray(psum, r_relation, XDIMEN, YDIMEN);
+    ord_relation *r_ord = createReorderedarray(psum, r_relation, XDIMEN, YDIMEN);
 
 
     destroyHistogram(r_hist);
