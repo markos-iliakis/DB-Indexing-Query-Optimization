@@ -2,6 +2,8 @@
 
 // function to print the initial array and it's hash/id array
 void printArrayTuple(int** x_array, tuple* x_tuple, int xdimen, int ydimen){
+    printf("---------------\n");
+    printf("Starting Array\n");
     for (size_t i = 0; i < xdimen; i++) {
         for (size_t j = 0; j < ydimen; j++) {
             printf("%3d | ", x_array[i][j]);
@@ -9,6 +11,7 @@ void printArrayTuple(int** x_array, tuple* x_tuple, int xdimen, int ydimen){
         printf("\n");
     }
     printf("---------------\n");
+    printf("Hashed Array\n");
     for (size_t i = 0; i < xdimen; i++) {
         printf("%3d | %3d \n", x_tuple[i].key, x_tuple[i].payload);
     }
@@ -100,11 +103,14 @@ void destroyHistogram(histogram *r_hist){
 
 void printHistogram(histogram *r_hist){
 
+    printf("---------------\n");
+    printf("Histogram\n");
     histogram *temp = r_hist;
     while (temp != NULL) {
         printf("Value : %3d Frequency : %3d\n", temp->value, temp->freq);
         temp = temp->next;
     }
+    printf("---------------\n");
 
 }
 
@@ -121,7 +127,7 @@ int histogramSize(histogram *r_hist){
 
 }
 
-void createPsum(histogram *psum, histogram *hist, int hist_length){
+void createHist(histogram *psum, histogram *hist, int hist_length){
 
     histogram *temp1 = hist, *temp2 = hist->next;
     psum[0].freq = 0;
@@ -138,27 +144,31 @@ void createPsum(histogram *psum, histogram *hist, int hist_length){
     return;
 }
 
-void printPsum(histogram* psum, int hist_length){
+void printPsum(sum* psum, int hist_length){
+    printf("---------------\n");
+    printf("Psum\n");
     for (int i = 0; i < hist_length; i++) {
-        printf("Value : %3d Frequency : %3d\n", psum[i].value, psum[i].freq);
+        printf("Value : %3d Index : %3d\n", psum[i].hashed_key, psum[i].index);
     }
+    printf("---------------\n");
 }
 
-ord_relation* createReorderedarray(histogram *psum, relation *r_relation, int xdimen, int ydimen){
+ord_relation* createReorderedarray(sum *psum, int size, relation *r_relation, int xdimen, int ydimen){
 
     ord_relation *new_array = malloc(xdimen * sizeof(ord_relation));
 
     // for each row of r
     for (int i = 0; i < xdimen; i++) {
         // for each element of psum
-        while(psum != NULL){
+        for(int j=0; j<size; j++){
             // if we have found the same hashed_key
-            if(r_relation[i].tuples->key == psum->value){
-                new_array[psum->freq].row_id = r_relation[i].tuples->payload;
-                new_array[psum->freq].value = r_relation[i].tuples->value;
+            if(r_relation[i].tuples->key == psum[j].hashed_key){
+                new_array[psum[j].index].row_id = r_relation[i].tuples->payload;
+                new_array[psum[j].index].value = r_relation[i].tuples->value;
+                psum[j].index++;
+                printf("%d done\n",i);
                 break;
             }
-            psum = psum->next;
         }
     }
 
@@ -166,7 +176,10 @@ ord_relation* createReorderedarray(histogram *psum, relation *r_relation, int xd
 }
 
 void printOrderedarray(ord_relation *array){
+    printf("---------------\n");
+    printf("Reordered Array\n");
     for (int i = 0; i < XDIMEN; i++) {
         printf("RowId : %2d Value %2d\n", array[i].row_id, array[i].value);
     }
+    printf("---------------\n");
 }
