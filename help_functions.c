@@ -148,6 +148,25 @@ ord_relation* createReorderedarray(histogram *psum, relation *r_relation, int xd
 
     ord_relation *new_array = malloc(xdimen * sizeof(ord_relation));
 
+    // for each row of r
+    for (int i = 0; i < xdimen; i++) {
+        // for each element of psum
+        while(psum != NULL){
+            // if we have found the same hashed_key
+            if(r_relation[i].tuples->key == psum->value){
+                new_array[psum->freq].row_id = r_relation[i].tuples->payload;
+                new_array[psum->freq].value = r_relation[i].tuples->value;
+                break;
+            }
+            psum = psum->next;
+        }
+    }
 
     return new_array;
+}
+
+void printOrderedarray(ord_relation *array){
+    for (int i = 0; i < XDIMEN; i++) {
+        printf("RowId : %2d Value %2d\n", array[i].row_id, array[i].value);
+    }
 }

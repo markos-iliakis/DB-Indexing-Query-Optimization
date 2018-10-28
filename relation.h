@@ -5,7 +5,7 @@ struct relation;
 
 typedef struct tuple {
     int32_t key;
-    int32_t payload;
+    int32_t payload; //row_id
     int32_t value;
 } tuple;
 

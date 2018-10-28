@@ -44,6 +44,8 @@ int main(void){
     //edw thelei array R' pou tha ftiaxtei me to sum tou histogram
     ord_relation *r_ord = createReorderedarray(psum, r_relation, XDIMEN, YDIMEN);
 
+    // print r'
+    printOrderedarray(r_ord);
 
     destroyHistogram(r_hist);
 
