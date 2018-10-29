@@ -1,4 +1,5 @@
 #include "help_functions.h"
+#include "index_functions.h"
 
 int main(void){
 
@@ -40,7 +41,7 @@ int main(void){
     // print r'
     printOrderedarray(r_ord);
 
-    bucket_index *r_bucket_indexes = createBucketIndexes(psum, hist_length);
+    bucket_index *r_bucket_indexes = createBucketIndexes(r_psum, r_hist_length, r_ord);
 
     destroyHistogram(r_hist);
     destroyHistogram(s_hist);
