@@ -41,6 +41,7 @@ int main(void){
     // print r'
     printOrderedarray(r_ord);
 
+    // create indexes
     bucket_index *r_bucket_indexes = createBucketIndexes(r_psum, r_hist_length, r_ord);
 
     destroyHistogram(r_hist);
