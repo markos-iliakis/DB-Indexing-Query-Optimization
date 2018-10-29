@@ -28,3 +28,7 @@ char *decimal_to_binary(int n){
 
    return  pointer;
 }
+
+int h2(int value){
+    return value%101;
+}

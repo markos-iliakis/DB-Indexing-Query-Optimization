@@ -6,5 +6,6 @@
 
 int h1(int num);
 char* decimal_to_binary(int n);
+int h2(int value);
 
 #endif
