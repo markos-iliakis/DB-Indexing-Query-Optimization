@@ -2,6 +2,7 @@
 /** Type definition for a tuple */
 struct tuple;
 struct relation;
+struct result;
 
 typedef struct tuple {
     int32_t key;
@@ -21,4 +22,4 @@ typedef struct relation {
 typedef struct ord_relation {
     int32_t row_id;
     int32_t value;
-}ord_relation;
+} ord_relation;

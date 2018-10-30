@@ -28,7 +28,7 @@ bucket_index* createBucketIndexes(sum* psum, int hist_length, ord_relation* rel)
         // printf("In bucket %3d Bottom : %3d top : %3d Pos : %2d\n",  i, bottom, top, pos);
 
         // for each element in the bucket(last->first)
-        for(int j=bucket_size + pos; j>=pos; j--){
+        for(int j=bucket_size + pos - 1; j>=pos; j--){
 
             int element = h2(rel[j].value);
             // printf("j : %3d H2 : %3d\n", j-pos, element);
@@ -43,7 +43,7 @@ bucket_index* createBucketIndexes(sum* psum, int hist_length, ord_relation* rel)
                 int temp = indexes[i].bucket[element];
                 while(indexes[i].chain[temp-1] != 0){
                     // printf("chain[%d] -> %d\n", temp, indexes[i].chain[temp-1]);
-                    getchar();
+                    // getchar();
                     temp = indexes[i].chain[temp-1];
                 }
                 // printf("Insert in chain[%d] <- %d\n", temp, j+1-pos);

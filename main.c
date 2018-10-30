@@ -1,5 +1,6 @@
 
 #include "index_functions.h"
+#include "result.h"
 
 int main(void){
 
@@ -45,7 +46,9 @@ int main(void){
     bucket_index *r_bucket_indexes = createBucketIndexes(r_psum, r_hist_length, r_ord);
 
     // print the indexing chains
-    printChains(r_bucket_indexes, r_hist_length, r_psum);
+    // printChains(r_bucket_indexes, r_hist_length, r_psum);
+
+    result *join_result = RadixHashJoin(r_ord, s_ord, r_bucket_indexes, r_psum, s_psum);
 
     destroyHistogram(r_hist);
     destroyHistogram(s_hist);
