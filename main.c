@@ -44,7 +44,8 @@ int main(void){
     // create indexes
     bucket_index *r_bucket_indexes = createBucketIndexes(r_psum, r_hist_length, r_ord);
 
-    printBuckets(r_bucket_indexes, r_hist_length, r_psum);
+    // print the indexing chains
+    printChains(r_bucket_indexes, r_hist_length, r_psum);
 
     destroyHistogram(r_hist);
     destroyHistogram(s_hist);

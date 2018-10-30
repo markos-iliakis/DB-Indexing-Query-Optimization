@@ -7,7 +7,7 @@ bucket_index* createBucketIndexes(sum* psum, int hist_length, ord_relation* rel)
     int pos = 0;
 
     // for each bucket
-    for (size_t i = 0; i < hist_length; i++) {
+    for (int i = 0; i < hist_length; i++) {
 
 
         int top = (i==0) ? 0 : psum[i-1].index;
@@ -22,61 +22,59 @@ bucket_index* createBucketIndexes(sum* psum, int hist_length, ord_relation* rel)
         for(int y=0; y < 101; y++)
             indexes[i].bucket[y] = -1;
 
-        for(int y=0; y < bucket_size; y++)
-            indexes[i].chain[y] = -1;
+        for(int y=0; y <= bucket_size; y++)
+            indexes[i].chain[y] = 0;
 
-
-
-        printf("Ston bucket %3ld Bottom : %3d top : %3d Pos : %2d\n",  i, bottom, top, pos);
+        // printf("In bucket %3d Bottom : %3d top : %3d Pos : %2d\n",  i, bottom, top, pos);
 
         // for each element in the bucket(last->first)
         for(int j=bucket_size + pos; j>=pos; j--){
 
-            printf("j : %3d H2 : %3d\n", j, h2(rel[j].value));
+            int element = h2(rel[j].value);
+            // printf("j : %3d H2 : %3d\n", j-pos, element);
 
 
             // store the last value of bucket[i] in bucket array accordind to the hash value
-            if(indexes[i].bucket[h2(rel[j].value)] == -1){    /* first time case */
-                printf("Bazw ston bucket %d sth thesi %d\n", i, h2(rel[j].value));
-                indexes[i].bucket[h2(rel[j].value)] = j+1;
+            if(indexes[i].bucket[element] == -1){    /* first time case */
+                // printf("Insert in bucket[%d] <- %d\n", element, j+1-pos);
+                indexes[i].bucket[element] = j+1-pos;
             }
             else{   /* regular case */
-                // int temp = indexes[i].bucket[];
-                int old_chain_pos = h2(rel[j].value), new_chain_pos = h2(rel[j].value);
-                printf("Ston bucket exw balei sth thesi %d\n", old_chain_pos);
-                getchar();
-                while(indexes[i].chain[new_chain_pos] != -1){
-                    printf("Koitazw sth thesi %d\n", old_chain_pos);
+                int temp = indexes[i].bucket[element];
+                while(indexes[i].chain[temp-1] != 0){
+                    // printf("chain[%d] -> %d\n", temp, indexes[i].chain[temp-1]);
                     getchar();
-                    old_chain_pos = new_chain_pos;
-                    new_chain_pos = indexes[i].chain[old_chain_pos];
+                    temp = indexes[i].chain[temp-1];
                 }
-                indexes[i].chain[new_chain_pos] = j+1;
+                // printf("Insert in chain[%d] <- %d\n", temp, j+1-pos);
+                indexes[i].chain[temp-1] = j+1-pos;
             }
-
-
         }
         pos +=  psum[i].index;
         /* Bucket_tb and Chain hold the elements with the same hash(2) */
     }
-
     return indexes;
 }
 
 
-void printBuckets(bucket_index *buckets, int num_buckets, sum *psum){
+void printChains(bucket_index* buckets, int num_buckets, sum *psum){
 
-
+    printf("---------------\n");
+    printf("Chains\n");
     for(int i = 0; i < num_buckets; i++){
 
         int top = (i==0) ? 0 : psum[i-1].index;
         int bottom = psum[i].index-1;
         int bucket_size = bottom - top + 1;
-        printf("Chain : %d Mhkos : %d\n", i, bucket_size);
-        for(int j = 0; j < bucket_size; j++){
-            printf("%d\n", buckets[i].chain[j]);
-        }
-
+        printChain(buckets[i].chain, bucket_size);
     }
+    printf("---------------\n");
 
+}
+
+void printChain(int* chain, int size){
+    for(int j = 0; j < size; j++){
+        printf("%d\n", chain[j]);
+    }
+    printf("---------------\n");
 }
