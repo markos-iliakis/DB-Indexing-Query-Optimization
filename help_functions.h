@@ -32,6 +32,7 @@ void printHistogram(histogram* hist);
 void printPsum(sum* psum, int hist_length);
 int histogramSize(histogram *);
 sum* createPsum(int hist_length, histogram* hist);
+int searchPsum(int length, int value, sum *psum);
 ord_relation* createReorderedarray(sum *psum, int size, relation *r_relation, int xdimen);
 void printOrderedarray(ord_relation *array);
 histogram* createHistogram(int , relation *);

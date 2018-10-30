@@ -158,6 +158,15 @@ sum* createPsum(int hist_length, histogram* hist){
     return psum;
 }
 
+int searchPsum(int length, int value, sum *psum) {
+    for (int i = 0; i < length; i++) {
+        if (psum[i].hashed_key == value)
+            return i; 
+    }
+
+    return -1;
+}
+
 void printPsum(sum* psum, int hist_length){
     printf("---------------\n");
     printf("Psum\n");
