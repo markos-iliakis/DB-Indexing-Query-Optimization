@@ -1,5 +1,3 @@
-
-#include "index_functions.h"
 #include "result.h"
 
 int main(void){
