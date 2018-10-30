@@ -24,7 +24,7 @@ int** makeRandArray(int xdimen, int ydimen){
     for (int i = 0; i < xdimen; i++){
         rand_array[i] = malloc(ydimen * sizeof(int));
         for (size_t j = 0; j < ydimen; j++) {
-            rand_array[i][j] = rand() % 100;
+            rand_array[i][j] = rand() % 10;
         }
     }
     return rand_array;

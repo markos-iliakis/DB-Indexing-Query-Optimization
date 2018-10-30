@@ -8,3 +8,4 @@
 
 
  bucket_index* createBucketIndexes(sum* psum, int hist_length, ord_relation* rel);
+ void printBuckets(bucket_index *, int , sum *);
