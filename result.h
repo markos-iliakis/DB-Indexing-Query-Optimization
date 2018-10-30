@@ -1,4 +1,3 @@
-#include "relation.h"
 #include "index_functions.h"
 
 struct result;
