@@ -7,7 +7,7 @@ CC			=gcc
 FLAGS   	= -g -c -Wall
 
 utest: $(OBJECTS2)
-	$(CC) -g $(OBJECTS2) -o $@
+	$(CC) -g $(OBJECTS2) -o $@ -lcunit
 
 utest.o: unit_testing.c
 	$(CC) $(FLAGS) unit_testing.c
