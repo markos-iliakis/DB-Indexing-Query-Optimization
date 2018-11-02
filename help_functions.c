@@ -161,7 +161,7 @@ sum* createPsum(int hist_length, histogram* hist){
 int searchPsum(int length, int value, sum *psum) {
     for (int i = 0; i < length; i++) {
         if (psum[i].hashed_key == value)
-            return i; 
+            return i;
     }
 
     return -1;
