@@ -36,3 +36,7 @@ int searchPsum(int length, int value, sum *psum);
 ord_relation* createReorderedarray(sum *psum, int size, relation *r_relation, int xdimen);
 void printOrderedarray(ord_relation *array);
 histogram* createHistogram(int , relation *);
+void destroyOrdArray(ord_relation* ord);
+void destroySum(sum* psum);
+void destroyRelation(relation* rel);
+void destroyRandArray(int** xarray, int xdimen);

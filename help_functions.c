@@ -205,3 +205,23 @@ void printOrderedarray(ord_relation *array){
     }
     printf("---------------\n");
 }
+
+void destroyOrdArray(ord_relation* ord){
+    free(ord);
+}
+
+void destroySum(sum* psum){
+    free(psum);
+}
+
+void destroyRelation(relation* rel){
+    free(rel->tuples);
+    free(rel);
+}
+
+void destroyRandArray(int** xarray, int xdimen){
+    for(int i=0; i<xdimen; i++){
+        free(xarray[i]);
+    }
+    free(xarray);
+}

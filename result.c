@@ -93,3 +93,17 @@ void printResults(result *root) {
     }
     return; 
 }
+
+void destroyResult(result* r){
+    result *temp = r;
+   
+    while (temp != NULL) {
+        r = r->next;
+        for(int i = 0; i < 128; i++) {
+            free(temp->buffer[i]);
+        }
+        free(temp->buffer);
+        free(temp);
+        temp = r;                                                                   
+    }
+}
