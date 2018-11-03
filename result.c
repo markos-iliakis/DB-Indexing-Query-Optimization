@@ -30,7 +30,7 @@ result* RadixHashJoin(ord_relation *relR, ord_relation *relS, bucket_index *r_bu
         // The hash value we want to check from each bucket of S
         int hash_to_check = s_psum[i].hashed_key;
 
-        for (int j = 0; i < r_hist_length; j++) {
+        for (int j = 0; j < r_hist_length; j++) {
 
             if (r_psum[j].hashed_key == hash_to_check) {
 
@@ -83,7 +83,7 @@ void printResults(result *root) {
     while (temp != NULL) {
         i = 0;
         while (temp->buffer[i][0] != -1) {
-            printf("Join on rows: %d of R and %d of S", temp->buffer[i][0], temp->buffer[i][1]);
+            printf("Join on rows: %d of R and %d of S\n", temp->buffer[i][0], temp->buffer[i][1]);
             i++;
         }
         temp = temp->next;
