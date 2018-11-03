@@ -8,8 +8,8 @@ static int test_makeHashIdArray(int **input_array, tuple* out, int length){
 
     for(int i = 0; i < length; i++){
 
-        for (int j = 0; j < 2; j++) {
-            printf("\n%d\n", input_array[i][j]);
+        for (int j = 0; j < 3; j++) {
+            printf("\n%d", input_array[i][j]);
         }
     }
 
@@ -68,21 +68,23 @@ void h1_test(void) {
     // tuple *hashed_array = malloc(2 * sizeof(tuple);
 
     for (int i = 0; i < ROWS; i++)
-        testing_array[i] = malloc(2 * sizeof(int));
+        testing_array[i] = malloc(3 * sizeof(int));
 
     testing_array[0][0] = 1;
     testing_array[0][1] = 2;
-    testing_array[1][0] = 3;
-    testing_array[1][1] = 4;
+    testing_array[0][2] = 3;
+    testing_array[1][0] = 4;
+    testing_array[1][1] = 5;
+    testing_array[1][2] = 6;
 
     relation *hashed_check = malloc(sizeof(relation));
-    hashed_check->tuples = malloc(2 * sizeof(tuple));
-    hashed_check->tuples[0].key = 10;
+    hashed_check->tuples = malloc(ROWS * sizeof(tuple));
+    hashed_check->tuples[0].key = 11;
     hashed_check->tuples[0].payload = 1;
-    hashed_check->tuples[0].value = 2;
-    hashed_check->tuples[1].key = 100;
+    hashed_check->tuples[0].value = 3;
+    hashed_check->tuples[1].key = 110;
     hashed_check->tuples[1].payload = 2;
-    hashed_check->tuples[1].value = 4;
+    hashed_check->tuples[1].value = 6;
 
     CU_ASSERT_EQUAL( test_makeHashIdArray(testing_array, hashed_check->tuples, ROWS), 1);
 

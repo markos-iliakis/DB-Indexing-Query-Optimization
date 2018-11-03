@@ -35,10 +35,10 @@ int main(void){
     ord_relation *s_ord = createReorderedarray(s_psum, s_hist_length, s_relation, XDIMEN);
 
     // print psum table
-    printPsum(r_psum, r_hist_length);
+    printPsum(s_psum, s_hist_length);
 
     // print r'
-    printOrderedarray(r_ord);
+    printOrderedarray(s_ord);
 
     // create indexes
     bucket_index *r_bucket_indexes = createBucketIndexes(r_psum, r_hist_length, r_ord);
@@ -47,9 +47,12 @@ int main(void){
     // printChains(r_bucket_indexes, r_hist_length, r_psum);
 
     result *join_result = RadixHashJoin(r_ord, s_ord, r_bucket_indexes, r_psum, s_psum, r_hist_length, s_hist_length);
+    printResults(join_result);
 
     destroyHistogram(r_hist);
     destroyHistogram(s_hist);
+
+    //more destroys
 
     return 0;
 }
