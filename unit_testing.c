@@ -56,22 +56,31 @@ static int test_createPsum(int hist_length, histogram* hist_check, sum* psum_che
 static int test_createReorderedarray(sum *psum_check, int size, relation *hashed_check, int xdimen) {
     ord_relation*  ord_r = createReorderedarray(psum_check, size, hashed_check, xdimen);
 
+    for (int i = 0; i < ) {
 
-    
+    }
+
 }
 
 static int test_createBucketIndexes(sum* psum, int length, ord_relation* rel) {
+    bucket_index *bucket_test = createBucketIndexes(psum, length rel);
 
-}
+    for (int i = 0; i <) {
+
+    }
+}  
 
 static int test_createResults() {
 
 }
 
-int init_suite(void) { return 0; }
-int clean_suite(void) { return 0; }
+int init_suite(void) {
+    return 0; 
+}
 
-
+int clean_suite(void) { 
+    return 0; 
+}
 
 // static char* all_tests(){
 //     return 0;
@@ -168,15 +177,56 @@ void ord_test(sum *psum_check, int size, relation *hashed_check, int xdimen){
         .row_id = 2,
         .value = 4
     };
+
     CU_ASSERT_EQUAL(test_createReorderedarray(psum_check, size, hashed_check, xdimen), 1);
 }
 
 void index_test(sum* psum, int size, ord_relation* rel){
+    sum psum_check[2];
+    psum_check[0] = {
+        .hashed_key = 10,
+        .index = 0
+    };
+    psum_check[1] = {
+        .hashed_key = 100,
+        .index = 1
+    };
+
+    ord_relation ord_check[2];
+    ord_check[0] = {
+        .row_id = 1,
+        .value = 2
+    };
+    ord_check[1] = {
+        .row_id = 2,
+        .value = 4
+    };
+
     CU_ASSERT_EQUAL(test_createBucketIndexes(psum, size, rel), 1);
 }
 
 void results_test(void) {
-    CU_ASSERT_EQUAL(test_createResults(), 1);
+    sum psum_check[2];
+    psum_check[0] = {
+        .hashed_key = 10,
+        .index = 0
+    };
+    psum_check[1] = {
+        .hashed_key = 100,
+        .index = 1
+    };
+
+    ord_relation ord_check[2];
+    ord_check[0] = {
+        .row_id = 1,
+        .value = 2
+    };
+    ord_check[1] = {
+        .row_id = 2,
+        .value = 4
+    };
+
+    CU_ASSERT_EQUAL(test_createResults(psum, length, rel), 1);
 }
 
 //*****************************************************************************************************************************//
