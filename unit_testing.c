@@ -29,7 +29,14 @@ static int test_makeHistArray(relation *hashed_check, histogram *hist_check, int
     histogram* h = createHistogram(length, hashed_check);
 
     for(int i = 0; i < length; i++){
+        if (h->value != hist_check->value)
+            return 0;
+        
+        if (h->freq != hist_check->freq)
+            return 0;
 
+        h = h->next;
+        hist_check = hist_check->next;
     }
 
     return 1;
@@ -48,6 +55,9 @@ static int test_createPsum(int hist_length, histogram* hist_check, sum* psum_che
 
 static int test_createReorderedarray(sum *psum_check, int size, relation *hashed_check, int xdimen) {
     ord_relation*  ord_r = createReorderedarray(psum_check, size, hashed_check, xdimen);
+
+
+    
 }
 
 static int test_createBucketIndexes(sum* psum, int length, ord_relation* rel) {
