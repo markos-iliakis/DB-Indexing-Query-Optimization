@@ -237,15 +237,26 @@ void results_test(void) {
         .index = 1
     };
 
-    ord_relation ord_check[2];
-    ord_check[0] = {
+    ord_relation ord_check1[2];
+    ord_check1[0] = {
         .row_id = 1,
         .value = 2
     };
-    ord_check[1] = {
+    ord_check1[1] = {
         .row_id = 2,
         .value = 4
     };
+
+    ord_relation ord_check2[2];
+    ord_check2[0] = {
+        .row_id = 1,
+        .value = 2
+    };
+    ord_check2[1] = {
+        .row_id = 2,
+        .value = 4
+    };
+
 
     CU_ASSERT_EQUAL(test_createResults(psum, length, rel), 1);
 }
