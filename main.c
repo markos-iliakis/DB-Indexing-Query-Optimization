@@ -47,7 +47,9 @@ int main(void){
     // print the indexing chains
     // printChains(r_bucket_indexes, r_hist_length, r_psum);
 
-    // result *join_result = RadixHashJoin(r_ord, s_ord, r_bucket_indexes, r_psum, s_psum, r_hist_length, s_hist_length);
+    result *join_result = RadixHashJoin(r_ord, s_ord, r_bucket_indexes, r_psum, s_psum, r_hist_length, s_hist_length);
+    
+    // print the RadixHash results
     // printResults(join_result);
 
     destroyResult(join_result);

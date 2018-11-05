@@ -103,6 +103,7 @@ void addFreq(histogram *node) {
 
 void destroyHistogram(histogram *r_hist){
 
+    
     histogram *temp = r_hist->next;
     while (temp->next != NULL) {
         free(r_hist);

@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 #define YDIMEN 4
-#define XDIMEN 10
+#define XDIMEN 200
 #define COMPARE 2
 
 struct histogram;
