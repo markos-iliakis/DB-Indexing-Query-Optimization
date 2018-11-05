@@ -1,5 +1,5 @@
 OBJECTS		=main.o hash_functions.o help_functions.o index_functions.o result.o
-OBJECTS2    =unit_testing.o hash_functions.o help_functions.o
+OBJECTS2    =unit_testing.o hash_functions.o help_functions.o index_functions.o
 SOURCE		=main.c hash_functions.c help_functions.c index_functions.c result.c
 OUTPUT		=main
 OUTPUT2		=utest
