@@ -2,14 +2,16 @@
 
 #define ROWS 2
 
-static int test_makeHashIdArray(int **input_array, tuple* out, int length){
+static int test_makeHashIdArray(int **input_array, tuple** out, int length){
 
-    tuple *t = makeHashIdArray(input_array, length);
+    relation *t = malloc(sizeof(relation));
+    t->tuples = makeHashIdArray(input_array, length);
 
     for(int i = 0; i < length; i++){
-        if(t[i].key != out[i].key)
+        if(t->tuples[i].key != out[i].key)
             return 0;
     }
+    destroyRelation(t);
     return 1;
 }
 
@@ -27,7 +29,7 @@ static int test_makeHistArray(relation *hashed_check, histogram *hist_check, int
         h = h->next;
         hist_check = hist_check->next;
     }
-
+    // destroyHistogram(h);
     return 1;
 
 }
@@ -39,6 +41,7 @@ static int test_createPsum(int hist_length, histogram* hist_check, sum* psum_che
         if(psum[i].hashed_key != psum_check[i].hashed_key || psum[i].index != psum_check[i].index)
             return 0;
     }
+    destroySum(psum);
     return 1;
 }
 
@@ -52,7 +55,7 @@ static int test_createReorderedarray(sum *psum_check, int size, ord_relation *or
         if (ord_r[i].row_id != ord_check[i].row_id)
             return 0;
     }
-
+    destroyOrdArray(ord_r);
     return 1;
 }
 
@@ -67,22 +70,22 @@ static int test_createBucketIndexes(sum* psum, int length, ord_relation* rel) {
     //         return 0;
     // }
 
+
+        int top = (i==0) ? 0 : psum[i-1].index;
+        int bottom = psum[i].index-1;
+
+        int bucket_size = bottom - top + 1;
+
+        // check of chain
+        for (int j = 0; j < bucket_size; j++)
+            if(bucket_test[i].chain[j] != test_indexes[i].chain[j])
+                return 0;
+     }
+
+    // destroyIndexes(bucket_test, length);
     return 1;
 }
 
-// static int test_createResults() {
-//     result *result_test = RadixHashJoin(r_ord, s_ord, r_bucket_indexes, r_psum, s_psum, r_hist_length, s_hist_length);
-
-//     for (int i = 0; i < ; i++) {
-//         if ()
-//             return 0;
-
-//         if ()
-//             return 0;
-//     }
-
-//     return 1;
-// }
 
 int init_suite(void) {
     return 0;
@@ -141,7 +144,7 @@ void hist_test(void) {
     histogram* h = createHistogram(XDIMEN, hashed_check);
 
     histogram *node1 = malloc(sizeof(histogram));
-    histogram *node2 = malloc(sizeof(histogram));    
+    histogram *node2 = malloc(sizeof(histogram));
 
     node1->value = 11;
     node1->freq = 1;
@@ -153,11 +156,11 @@ void hist_test(void) {
 
     CU_ASSERT_EQUAL( test_makeHistArray(hashed_check, node1, 2), 1);
 
-    
+
     free(hashed_check->tuples);
     free(hashed_check);
     free(node1);
-    free(node2);        
+    free(node2);
 }
 
 void psum_test(void) {
@@ -169,7 +172,7 @@ void psum_test(void) {
     psum_check[1].index = 1;
 
     histogram *node1 = malloc(sizeof(histogram));
-    histogram *node2 = malloc(sizeof(histogram));    
+    histogram *node2 = malloc(sizeof(histogram));
 
     node1->value = 11;
     node1->freq = 1;
@@ -178,7 +181,7 @@ void psum_test(void) {
     node2->value = 110;
     node2->freq = 1;
     node2->next = NULL;
-    
+
     CU_ASSERT_EQUAL(test_createPsum(2, node1, psum_check), 1);
 
     free(node1);
@@ -187,6 +190,15 @@ void psum_test(void) {
 }
 
 void ord_test(void){
+
+    relation *hashed_check = malloc(sizeof(relation));
+    hashed_check->tuples = malloc(ROWS * sizeof(tuple));
+    hashed_check->tuples[0].key = 11;
+    hashed_check->tuples[0].payload = 1;
+    hashed_check->tuples[0].value = 3;
+    hashed_check->tuples[1].key = 110;
+    hashed_check->tuples[1].payload = 2;
+    hashed_check->tuples[1].value = 6;
 
     ord_relation *ord_check = malloc(2*sizeof(ord_relation));
     ord_check[0].row_id = 1;
@@ -200,69 +212,77 @@ void ord_test(void){
     psum_check[1].hashed_key = 110;
     psum_check[1].index = 1;
 
-    CU_ASSERT_EQUAL(test_createReorderedarray(psum_check, 2, ord_check, XDIMEN), 1);
+    CU_ASSERT_EQUAL(test_createReorderedarray(psum_check, 2, ord_check, hashed_check, 2), 1);
 
+    destroyOrdArray(ord_check);
+    free(hashed_check->tuples);
+    free(hashed_check);
     free(ord_check);
-    free(psum_check);   
+    destroySum(psum_check);
 }
 
 void index_test(void){
-    // sum psum_check[2];
-    // psum_check[0] = {
-    //     .hashed_key = 10,
-    //     .index = 0
-    // };
-    // psum_check[1] = {
-    //     .hashed_key = 100,
-    //     .index = 1
-    // };
 
-    // ord_relation ord_check[2];
-    // ord_check[0] = {
-    //     .row_id = 1,
-    //     .value = 2
-    // };
-    // ord_check[1] = {
-    //     .row_id = 2,
-    //     .value = 4
-    // };
+    ord_relation *ord_rel = malloc(6 * sizeof(ord_relation));
+    ord_rel[0].row_id = 1;
+    ord_rel[0].value = 3;
+    ord_rel[1].row_id = 2;
+    ord_rel[1].value = 3;
+    ord_rel[2].row_id = 3;
+    ord_rel[2].value = 3;
+    ord_rel[3].row_id = 4;
+    ord_rel[3].value = 6;
+    ord_rel[4].row_id = 5;
+    ord_rel[4].value = 6;
+    ord_rel[5].row_id = 6;
+    ord_rel[5].value = 6;
 
-    // CU_ASSERT_EQUAL(test_createBucketIndexes(psum, size, rel), 1);
-}
+    bucket_index *test_indexes = malloc(2 * sizeof(bucket_index));
 
-void results_test(void) {
-    // sum psum_check[2];
-    // psum_check[0] = {
-    //     .hashed_key = 10,
-    //     .index = 0
-    // };
-    // psum_check[1] = {
-    //     .hashed_key = 100,
-    //     .index = 1
-    // };
+    sum *psum_check = malloc(2 * sizeof(sum));
+    psum_check[0].hashed_key = 11;
+    psum_check[0].index = 3;
+    psum_check[1].hashed_key = 110;
+    psum_check[1].index = 6;
 
-    // ord_relation ord_check1[2];
-    // ord_check1[0] = {
-    //     .row_id = 1,
-    //     .value = 2
-    // };
-    // ord_check1[1] = {
-    //     .row_id = 2,
-    //     .value = 4
-    // };
+    for (int i = 0; i < 2; i++) {
 
-    // ord_relation ord_check2[2];
-    // ord_check2[0] = {
-    //     .row_id = 1,
-    //     .value = 2
-    // };
-    // ord_check2[1] = {
-    //     .row_id = 2,
-    //     .value = 4
-    // };
+        int top = (i==0) ? 0 : psum_check[i-1].index;
+        int bottom = psum_check[i].index-1;
+
+        int bucket_size = bottom - top + 1;
+
+        test_indexes[i].chain = malloc((bucket_size) * sizeof(int));
+        test_indexes[i].bucket = malloc(101 * sizeof(int));
+
+        for(int y=0; y < 101; y++)
+            test_indexes[i].bucket[y] = -1;
+
+        for(int y=0; y <= bucket_size; y++)
+            test_indexes[i].chain[y] = 0;
+    }
+
+    test_indexes[0].bucket[h2(ord_rel[2].value)] = 3;
+    test_indexes[1].bucket[h2(ord_rel[5].value)] = 3;
+
+    test_indexes[0].chain[2] = 2;
+    test_indexes[0].chain[1] = 1;
+
+    test_indexes[1].chain[2] = 2;
+    test_indexes[1].chain[1] = 1;
 
 
-    // CU_ASSERT_EQUAL(test_createResults(psum, length, rel), 1);
+
+
+    CU_ASSERT_EQUAL(test_createBucketIndexes(psum_check, 2, ord_rel, test_indexes), 1);
+
+    for (int i = 0; i < 2; i++) {
+        free(test_indexes->chain);
+        free(test_indexes->bucket);
+    }
+
+    // destroyOrdArray(ord_rel);
+    destroySum(psum_check);
 }
 
 //*****************************************************************************************************************************//
@@ -279,40 +299,33 @@ int main(){
         return CU_get_error();
 
    /* add a suite to the registry */
-   pSuite = CU_add_suite( "max_test_suite", init_suite, clean_suite );
+   pSuite = CU_add_suite( "part_1_suite", init_suite, clean_suite );
     if ( NULL == pSuite ) {
         CU_cleanup_registry();
         return CU_get_error();
     }
-
-    // char *result = all_tests();
-
+    
     if (NULL == CU_add_test(pSuite, "h1_test", h1_test)) {
       CU_cleanup_registry();
       return CU_get_error();
     }
-
+    
     if (NULL == CU_add_test(pSuite, "hist_test", hist_test)) {
       CU_cleanup_registry();
       return CU_get_error();
     }
-
+    
     if (NULL == CU_add_test(pSuite, "psum_test", psum_test)) {
       CU_cleanup_registry();
       return CU_get_error();
     }
-
+    
     if (NULL == CU_add_test(pSuite, "ord_test", ord_test)) {
       CU_cleanup_registry();
       return CU_get_error();
     }
-
+    
     if (NULL == CU_add_test(pSuite, "index_test", index_test)) {
-      CU_cleanup_registry();
-      return CU_get_error();
-    }
-
-    if (NULL == CU_add_test(pSuite, "results_test", results_test)) {
       CU_cleanup_registry();
       return CU_get_error();
     }
