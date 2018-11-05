@@ -47,14 +47,14 @@ result* RadixHashJoin(ord_relation **relR, ord_relation **relS, bucket_index **r
                     int test = r_bucket_indexes[j]->bucket[h2(to_check)];
 
                     while (test > 0) {
-                        printf("Test : %d to_check :  %d j: %d\n", test, to_check, j);
+                        // printf("Test : %d to_check :  %d j: %d\n", test, to_check, j);
                           //sth thesh 0 tou buffer row id apo ton R kai sth thesh 1 row id apo ton S
 
                         int pos = (j==0) ? 0 : r_psum[j-1]->index;
-                         printf("%d\n", relR[pos + test-1]->value);
+                        //  printf("%d\n", relR[pos + test-1]->value);
                         if (relR[pos + test-1]->value == to_check) {
 
-                            printf("einai idia\n");
+                            // printf("einai idia\n");
                             //If there is space in buffer
                             if(buffer_pos < 127){
                                 current_buffer->buffer[buffer_pos][0] = relR[pos + test-1]->row_id;
@@ -84,12 +84,12 @@ void printResults(result *root) {
 
     result *temp = root;
     int i;
-    FILE *f = fopen("res.txt", "w");
-    fprintf(f, "R       |       S\n----------------------------------\n");
+    // FILE *f = fopen("res.txt", "w");
+    printf("|R       |       S|\n-------------------\n");
     while (temp != NULL) {
         i = 0;
         while (temp->buffer[i][0] != -1) {
-            fprintf(f, "%d              %d\n-------------------------------\n", temp->buffer[i][0], temp->buffer[i][1]);
+            printf("|%d      |        %d|\n-------------------\n", temp->buffer[i][0], temp->buffer[i][1]);
             i++;
         }
         temp = temp->next;

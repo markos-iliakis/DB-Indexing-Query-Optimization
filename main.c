@@ -16,9 +16,10 @@ int main(void){
     r_relation->num_tuples = XDIMEN;
     s_relation->tuples = makeHashIdArray(s_array, XDIMEN);
     s_relation->num_tuples = XDIMEN;
+    
     //print arrays
-    printArrayTuple(r_array, r_relation->tuples, XDIMEN, YDIMEN);
-    printArrayTuple(s_array, s_relation->tuples, XDIMEN, YDIMEN);
+    // printArrayTuple(r_array, r_relation->tuples, XDIMEN, YDIMEN);
+    // printArrayTuple(s_array, s_relation->tuples, XDIMEN, YDIMEN);
 
     //find different values for x_tuple and create x_hist
     histogram* r_hist = createHistogram(XDIMEN ,r_relation);
@@ -40,7 +41,8 @@ int main(void){
     ord_relation** s_ord = createReorderedarray(s_psum, s_hist_length, s_relation, XDIMEN);
 
     // print r'
-    // printOrderedarray(s_ord);
+    printOrderedarray(r_ord);
+    printOrderedarray(s_ord);
 
     // create indexes
     bucket_index** r_bucket_indexes = createBucketIndexes(r_psum, r_hist_length, r_ord);

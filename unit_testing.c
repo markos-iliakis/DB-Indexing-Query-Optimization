@@ -85,10 +85,6 @@ static int test_createBucketIndexes(sum** psum, int length, ord_relation** rel, 
     return 1;
 }
 
-// static int test_createResults(result *result_test, ord_relation *r_ord, ord_relation *s_ord, bucket_index *r_bucket_indexes, sum *r_psum, sum *s_psum, int r_hist_length, int s_hist_length) {
-
-// }
-
 int init_suite(void) {
     return 0;
 }
@@ -290,9 +286,6 @@ void index_test(void){
     destroySum(psum_check, 2);
 }
 
-// void result_test(void) {
-
-// }
 
 int main(){
 
@@ -333,11 +326,6 @@ int main(){
       CU_cleanup_registry();
       return CU_get_error();
     }
-
-    // if (NULL == CU_add_test(pSuite, "result_test", result_test)) {
-    //   CU_cleanup_registry();
-    //   return CU_get_error();
-    // }
 
 
     // Run all tests using the basic interface
