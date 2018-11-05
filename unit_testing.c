@@ -43,8 +43,7 @@ static int test_createPsum(int hist_length, histogram* hist_check, sum* psum_che
 }
 
 static int test_createReorderedarray(sum *psum_check, int size, ord_relation *ord_check, int xdimen) {
-    ord_relation*  ord_r;
-    //ord_r = createReorderedarray(psum_check, size, hashed_check, xdimen);
+    ord_relation* ord_r = createReorderedarray(psum_check, size, hashed_check, xdimen);
 
     for (int i = 0; i < xdimen; i++) {
         if (ord_r[i].value != ord_check[i].value)
@@ -188,13 +187,23 @@ void psum_test(void) {
 }
 
 void ord_test(void){
-    // ord_relation *ord_check = malloc(2*sizeof(ord_relation));
-    // ord_check[0].row_id = 1;
-    // ord_check[0].value = 2;
-    // ord_check[1].row_id = 2;
-    // ord_check[1].value = 4;
 
-    // CU_ASSERT_EQUAL(test_createReorderedarray(psum_check, size, ord_check, xdimen), 1);
+    ord_relation *ord_check = malloc(2*sizeof(ord_relation));
+    ord_check[0].row_id = 1;
+    ord_check[0].value = 3;
+    ord_check[1].row_id = 2;
+    ord_check[1].value = 6;
+
+    sum *psum_check = malloc(2*sizeof(sum));
+    psum_check[0].hashed_key = 11;
+    psum_check[0].index = 0;
+    psum_check[1].hashed_key = 110;
+    psum_check[1].index = 1;
+
+    CU_ASSERT_EQUAL(test_createReorderedarray(psum_check, 2, ord_check, XDIMEN), 1);
+
+    free(ord_check);
+    free(psum_check);   
 }
 
 void index_test(void){
