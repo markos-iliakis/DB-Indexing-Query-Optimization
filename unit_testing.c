@@ -174,7 +174,7 @@ void hist_test(void) {
     free(hashed_check);
 }
 
-void psum_check(void) {
+void psum_test(void) {
     sum psum_check[2];
     psum_check[0] = {
         .hashed_key = 10,
@@ -188,7 +188,7 @@ void psum_check(void) {
     CU_ASSERT_EQUAL(test_createPsum(), 1);
 }
 
-void ord_test(sum *psum_check, int size, relation *hashed_check, int xdimen){
+void ord_test(void){
     ord_relation ord_check[2];
     ord_check[0] = {
         .row_id = 1,
