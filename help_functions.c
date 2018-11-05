@@ -107,11 +107,14 @@ void destroyHistogram(histogram *r_hist){
     while (temp->next != NULL) {
         free(r_hist);
         r_hist = temp;
-        temp = temp->next;
+        temp = r_hist->next;
     }
 
     free(temp);
     temp = NULL;
+
+    if(r_hist != NULL)
+        free(r_hist);
     return;
 }
 

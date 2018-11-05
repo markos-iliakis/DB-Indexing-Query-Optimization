@@ -11,7 +11,7 @@ static int test_makeHashIdArray(int **input_array, tuple** out, int length){
         if(t->tuples[i]->key != out[i]->key)
             return 0;
     }
-    //destroyRelation(t);
+    destroyRelation(t);
     return 1;
 }
 
@@ -29,7 +29,7 @@ static int test_makeHistArray(relation *hashed_check, histogram *hist_check, int
         h = h->next;
         hist_check = hist_check->next;
     }
-    // destroyHistogram(h);
+    destroyHistogram(h);
     return 1;
 
 }
@@ -41,7 +41,7 @@ static int test_createPsum(int hist_length, histogram* hist_check, sum** psum_ch
         if(psum[i]->hashed_key != psum_check[i]->hashed_key || psum[i]->index != psum_check[i]->index)
             return 0;
     }
-    //destroySum(psum);
+    destroySum(psum, hist_length);
     return 1;
 }
 
@@ -55,7 +55,7 @@ static int test_createReorderedarray(sum **psum_check, int size, ord_relation **
         if (ord_r[i]->row_id != ord_check[i]->row_id)
             return 0;
     }
-    //destroyOrdArray(ord_r);
+    destroyOrdArray(ord_r, xdimen);
     return 1;
 }
 
@@ -79,7 +79,7 @@ static int test_createBucketIndexes(sum** psum, int length, ord_relation** rel, 
                 return 0;
      }
 
-    // destroyIndexes(bucket_test, length);
+    destroyIndexes(bucket_test, length);
     return 1;
 }
 
@@ -160,8 +160,8 @@ void hist_test(void) {
 
     // free(hashed_check->tuples);
     // free(hashed_check);
-    // free(node1);
-    // free(node2);
+    destroyHistogram(node1);
+    destroyHistogram(node2);
 }
 
 void psum_test(void) {
@@ -186,9 +186,9 @@ void psum_test(void) {
     
     CU_ASSERT_EQUAL(test_createPsum(2, node1, psum_check), 1);
 
-    // free(node1);
-    // free(node2);
-    // free(psum_check);
+    destroyHistogram(node1);
+    destroyHistogram(node2);
+    destroySum(psum_check, 2);
 }
 
 void ord_test(void){
@@ -223,11 +223,10 @@ void ord_test(void){
 
     CU_ASSERT_EQUAL(test_createReorderedarray(psum_check, 2, ord_check, hashed_check, 2), 1);
 
-    // destroyOrdArray(ord_check);
+    destroyOrdArray(ord_check, 2);
     // free(hashed_check->tuples);
     // free(hashed_check);
-    // free(ord_check);
-    // destroySum(psum_check);
+    destroySum(psum_check, 2);
 }
 
 void index_test(void){
@@ -290,13 +289,10 @@ void index_test(void){
 
     CU_ASSERT_EQUAL(test_createBucketIndexes(psum_check, 2, ord_rel, test_indexes), 1);
 
-    // for (int i = 0; i < 2; i++) {
-    //     free(test_indexes[i]->chain);
-    //     free(test_indexes[i]->bucket);
-    // }
+    destroyIndexes(test_indexes, 2);
 
-    // // destroyOrdArray(ord_rel);
-    // destroySum(psum_check);
+    destroyOrdArray(ord_rel, 6);
+    destroySum(psum_check, 2);
 }
 
 //*****************************************************************************************************************************//

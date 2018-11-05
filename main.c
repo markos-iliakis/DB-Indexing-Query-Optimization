@@ -50,7 +50,7 @@ int main(void){
     // result *join_result = RadixHashJoin(r_ord, s_ord, r_bucket_indexes, r_psum, s_psum, r_hist_length, s_hist_length);
     // printResults(join_result);
 
-    // destroyResult(join_result);
+    destroyResult(join_result);
 
     destroyIndexes(r_bucket_indexes, r_hist_length);
     destroyOrdArray(r_ord, XDIMEN);
