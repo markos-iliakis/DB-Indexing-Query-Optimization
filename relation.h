@@ -15,7 +15,7 @@ typedef struct tuple {
 * It consists of an array of tuples and a size of the relation.
 */
 typedef struct relation {
-    tuple *tuples;
+    tuple** tuples;
     uint32_t num_tuples;
 } relation;
 

@@ -38,7 +38,7 @@ result* RadixHashJoin(ord_relation *relR, ord_relation *relS, bucket_index *r_bu
                 int start = (i==0) ? 0 : s_psum[i-1].index;
                 int end = s_psum[i].index;
 
-                printf("End : %d Start : %d\n", end, start);
+                // printf("End : %d Start : %d\n", end, start);
 
                 // for each row of bucket
                 for (int k = start; k < end; k++) {

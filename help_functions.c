@@ -31,13 +31,14 @@ int** makeRandArray(int xdimen, int ydimen){
 }
 
 // function to transform initial arrays to hash-value/row-id array
-tuple* makeHashIdArray(int** x_array, int xdimen){
-    tuple *x_tuple = malloc(xdimen * sizeof(tuple));
+tuple** makeHashIdArray(int** x_array, int xdimen){
+    tuple **x_tuple = malloc(xdimen * sizeof(tuple *));
 
     for (int i = 0; i < xdimen; i++) {
-        x_tuple[i].key = h1(x_array[i][COMPARE]);
-        x_tuple[i].payload = i;
-        x_tuple[i].value = x_array[i][COMPARE];
+        x_tuple[i] = malloc(sizeof(tuple));
+        x_tuple[i]->key = h1(x_array[i][COMPARE]);
+        x_tuple[i]->payload = i;
+        x_tuple[i]->value = x_array[i][COMPARE];
     }
     return x_tuple;
 }
@@ -47,9 +48,9 @@ histogram* createHistogram(int xdimen, relation *rel){
     histogram* hist = NULL;
 
     for (int i = 0; i < xdimen; i++) {
-        histogram *temp = searchHistogram(hist, rel->tuples[i].key);
+        histogram *temp = searchHistogram(hist, rel->tuples[i]->key);
         if (temp == NULL)
-            addHistogram(&hist, rel->tuples[i].key);
+            addHistogram(&hist, rel->tuples[i]->key);
         else
             addFreq(temp);
     }
@@ -140,55 +141,62 @@ int histogramSize(histogram *r_hist){
 
 }
 
-sum* createPsum(int hist_length, histogram* hist){
+sum** createPsum(int hist_length, histogram* hist){
 
-    sum* psum = malloc(hist_length*sizeof(sum));
+    sum** psum = malloc(hist_length*sizeof(sum *));
     histogram *temp1 = hist, *temp2 = hist->next;
-    psum[0].index = 0;
-    psum[0].hashed_key = hist->value;
+    
     int sum = 0;
-    for (int i = 1; i < hist_length; i++) {
-        psum[i].index = sum + temp1->freq;
-        psum[i].hashed_key = temp2->value;
-        sum += temp1->freq;
-        temp1 = temp1->next;
-        temp2 = temp2->next;
+    for (int i = 0; i < hist_length; i++) {
+        psum[i] = malloc(sizeof(sum));
+        if(i==0){
+            psum[0]->index = 0;
+            psum[0]->hashed_key = hist->value;
+        }
+        else{
+            psum[i]->index = sum + temp1->freq;
+            psum[i]->hashed_key = temp2->value;
+            sum += temp1->freq;
+            temp1 = temp1->next;
+            temp2 = temp2->next;
+        }
     }
 
     return psum;
 }
 
-int searchPsum(int length, int value, sum *psum) {
+int searchPsum(int length, int value, sum **psum) {
     for (int i = 0; i < length; i++) {
-        if (psum[i].hashed_key == value)
+        if (psum[i]->hashed_key == value)
             return i;
     }
 
     return -1;
 }
 
-void printPsum(sum* psum, int hist_length){
+void printPsum(sum** psum, int hist_length){
     printf("---------------\n");
     printf("Psum\n");
     for (int i = 0; i < hist_length; i++) {
-        printf("Value : %3d Index : %3d\n", psum[i].hashed_key, psum[i].index);
+        printf("Value : %3d Index : %3d\n", psum[i]->hashed_key, psum[i]->index);
     }
     printf("---------------\n");
 }
 
-ord_relation* createReorderedarray(sum *psum, int size, relation *r_relation, int xdimen){
+ord_relation** createReorderedarray(sum **psum, int size, relation *r_relation, int xdimen){
 
-    ord_relation *new_array = malloc(xdimen * sizeof(ord_relation));
+    ord_relation** new_array = malloc(xdimen * sizeof(ord_relation *));
 
     // for each row of r
     for (int i = 0; i < xdimen; i++) {
+        new_array[i] = malloc(sizeof(ord_relation));
         // for each element of psum
         for(int j = 0; j < size; j++){
             // if we have found the same hashed_key
-            if(r_relation->tuples[i].key == psum[j].hashed_key){
-                new_array[psum[j].index].row_id = r_relation->tuples[i].payload;
-                new_array[psum[j].index].value = r_relation->tuples[i].value;
-                psum[j].index++;
+            if(r_relation->tuples[i]->key == psum[j]->hashed_key){
+                new_array[psum[j]->index]->row_id = r_relation->tuples[i]->payload;
+                new_array[psum[j]->index]->value = r_relation->tuples[i]->value;
+                psum[j]->index++;
                 break;
             }
         }
@@ -197,11 +205,11 @@ ord_relation* createReorderedarray(sum *psum, int size, relation *r_relation, in
     return new_array;
 }
 
-void printOrderedarray(ord_relation *array){
+void printOrderedarray(ord_relation** array){
     printf("---------------\n");
     printf("Reordered Array\n");
     for (int i = 0; i < XDIMEN; i++) {
-        printf("RowId : %2d Value %2d\n", array[i].row_id, array[i].value);
+        printf("RowId : %2d Value %2d\n", array[i]->row_id, array[i]->value);
     }
     printf("---------------\n");
 }
