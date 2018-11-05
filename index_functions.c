@@ -80,11 +80,14 @@ void printChain(int* chain, int size){
 }
 
 void destroyIndexes(bucket_index* ind, int size){
+    printf("size: %d\n", size);
+    printf("last element: %d\n", ind[size-1].bucket[0]);
     for(int i=0; i<size; i++){
-        free(ind[i].bucket);
-        printf("1.1\n");
-        free(ind[i].chain);
-        printf("1.2\n");
+        printf("%d\n", i);
+        if(ind[i].bucket != NULL){
+            free(ind[i].bucket);
+            free(ind[i].chain);
+        }
     }
     free(ind);
 }
