@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 #define YDIMEN 4
-#define XDIMEN 200
+#define XDIMEN 10
 #define COMPARE 2
 
 struct histogram;
@@ -21,7 +21,7 @@ typedef struct sum {
     int index;
 }sum;
 
-void printArrayTuple(int** x_array, tuple* x_tuple, int xdimen, int ydimen);
+void printArrayTuple(int** x_array, tuple** x_tuple, int xdimen, int ydimen);
 int** makeRandArray(int xdimen, int ydimen);
 tuple** makeHashIdArray(int** x_array, int xdimen);
 histogram* searchHistogram(histogram *r_hist, int32_t check);

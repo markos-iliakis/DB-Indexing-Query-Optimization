@@ -1,7 +1,7 @@
 #include "help_functions.h"
 
 // function to print the initial array and it's hash/id array
-void printArrayTuple(int** x_array, tuple* x_tuple, int xdimen, int ydimen){
+void printArrayTuple(int** x_array, tuple** x_tuple, int xdimen, int ydimen){
     printf("---------------\n");
     printf("Starting Array\n");
     for (size_t i = 0; i < xdimen; i++) {
@@ -13,7 +13,7 @@ void printArrayTuple(int** x_array, tuple* x_tuple, int xdimen, int ydimen){
     printf("---------------\n");
     printf("Hashed Array\n");
     for (size_t i = 0; i < xdimen; i++) {
-        printf("%3d | %3d \n", x_tuple[i].key, x_tuple[i].payload);
+        printf("%3d | %3d \n", x_tuple[i]->key, x_tuple[i]->payload);
     }
     printf("---------------\n");
 }
@@ -102,7 +102,6 @@ void addFreq(histogram *node) {
 }
 
 void destroyHistogram(histogram *r_hist){
-
     
     histogram *temp = r_hist->next;
     while (temp->next != NULL) {

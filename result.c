@@ -8,14 +8,14 @@ result* createBuffer(result *prev) {
         new->buffer[i] = malloc(2 * sizeof(int32_t));
         new->buffer[i][0] = -1;
         new->buffer[i][1] = -1;
-    }            
+    }
 
     new->next = NULL;
 
-    if (prev != NULL)    
+    if (prev != NULL)
         prev->next  = new;
 
-    return new;                            
+    return new;
 }
 
 result* RadixHashJoin(ord_relation **relR, ord_relation **relS, bucket_index **r_bucket_indexes, sum **r_psum, sum **s_psum, int r_hist_length, int s_hist_length){
@@ -47,20 +47,24 @@ result* RadixHashJoin(ord_relation **relR, ord_relation **relS, bucket_index **r
                     int test = r_bucket_indexes[j]->bucket[h2(to_check)];
 
                     while (test > 0) {
-                        // printf("Test : %d\n", test);
+                        printf("Test : %d to_check :  %d j: %d\n", test, to_check, j);
                           //sth thesh 0 tou buffer row id apo ton R kai sth thesh 1 row id apo ton S
-                        if (relR[test-1]->value == to_check) {
 
+                        int pos = (j==0) ? 0 : r_psum[j-1]->index;
+                         printf("%d\n", relR[pos + test-1]->value);
+                        if (relR[pos + test-1]->value == to_check) {
+
+                            printf("einai idia\n");
                             //If there is space in buffer
                             if(buffer_pos < 127){
-                                current_buffer->buffer[buffer_pos][0] = relR[test-1]->row_id;
+                                current_buffer->buffer[buffer_pos][0] = relR[pos + test-1]->row_id;
                                 current_buffer->buffer[buffer_pos][1] = relS[k]->row_id;
                                 buffer_pos++;
                             }
                             //Not enough space in current buffer create new node
                             else{
                                 result *new_buffer = createBuffer(current_buffer);
-                                new_buffer->buffer[0][0] = relR[test-1]->row_id;
+                                new_buffer->buffer[0][0] = relR[pos + test-1]->row_id;
                                 new_buffer->buffer[0][1] = relS[k]->row_id;
                                 buffer_pos = 1;
                                 current_buffer = new_buffer;
@@ -72,14 +76,12 @@ result* RadixHashJoin(ord_relation **relR, ord_relation **relS, bucket_index **r
             }
         }
     }
-
     return root;
-
 }
 
 
 void printResults(result *root) {
-    
+
     result *temp = root;
     int i;
     FILE *f = fopen("res.txt", "w");
@@ -90,14 +92,14 @@ void printResults(result *root) {
             fprintf(f, "%d              %d\n-------------------------------\n", temp->buffer[i][0], temp->buffer[i][1]);
             i++;
         }
-        temp = temp->next;                                                                   
+        temp = temp->next;
     }
-    return; 
+    return;
 }
 
 void destroyResult(result* r){
     result *temp = r;
-   
+
     while (temp != NULL) {
         r = r->next;
         for(int i = 0; i < 128; i++) {
@@ -105,6 +107,6 @@ void destroyResult(result* r){
         }
         free(temp->buffer);
         free(temp);
-        temp = r;                                                                   
+        temp = r;
     }
 }

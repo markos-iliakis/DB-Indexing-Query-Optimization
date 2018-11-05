@@ -17,7 +17,8 @@ int main(void){
     s_relation->tuples = makeHashIdArray(s_array, XDIMEN);
     s_relation->num_tuples = XDIMEN;
     //print arrays
-    // printArrayTuple(r_array, r_relation->tuples, XDIMEN, YDIMEN);
+    printArrayTuple(r_array, r_relation->tuples, XDIMEN, YDIMEN);
+    printArrayTuple(s_array, s_relation->tuples, XDIMEN, YDIMEN);
 
     //find different values for x_tuple and create x_hist
     histogram* r_hist = createHistogram(XDIMEN ,r_relation);
@@ -50,7 +51,7 @@ int main(void){
     result *join_result = RadixHashJoin(r_ord, s_ord, r_bucket_indexes, r_psum, s_psum, r_hist_length, s_hist_length);
     
     // print the RadixHash results
-    // printResults(join_result);
+    printResults(join_result);
 
     destroyResult(join_result);
 

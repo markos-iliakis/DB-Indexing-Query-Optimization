@@ -31,7 +31,7 @@ static int test_makeHistArray(relation *hashed_check, histogram *hist_check, int
         temp2 = temp2->next;
     }
     
-    //destroyHistogram(h);
+    destroyHistogram(h);
     return 1;
 
 }
@@ -43,7 +43,7 @@ static int test_createPsum(int hist_length, histogram* hist_check, sum** psum_ch
         if(psum[i]->hashed_key != psum_check[i]->hashed_key || psum[i]->index != psum_check[i]->index)
             return 0;
     }
-    //destroySum(psum, hist_length);
+    destroySum(psum, hist_length);
     return 1;
 }
 
@@ -57,7 +57,7 @@ static int test_createReorderedarray(sum **psum_check, int size, ord_relation **
         if (ord_r[i]->row_id != ord_check[i]->row_id)
             return 0;
     }
-    //destroyOrdArray(ord_r, xdimen);
+    destroyOrdArray(ord_r, xdimen);
     return 1;
 }
 
@@ -81,10 +81,13 @@ static int test_createBucketIndexes(sum** psum, int length, ord_relation** rel, 
                 return 0;
      }
 
-    //destroyIndexes(bucket_test, length);
+    destroyIndexes(bucket_test, length);
     return 1;
 }
 
+// static int test_createResults(result *result_test, ord_relation *r_ord, ord_relation *s_ord, bucket_index *r_bucket_indexes, sum *r_psum, sum *s_psum, int r_hist_length, int s_hist_length) {
+
+// }
 
 int init_suite(void) {
     return 0;
@@ -94,11 +97,9 @@ int clean_suite(void) {
     return 0;
 }
 
-
 void h1_test(void) {
 
     int **testing_array = malloc(2 * sizeof(int *));
-    // tuple *hashed_array = malloc(2 * sizeof(tuple);
 
     for (int i = 0; i < ROWS; i++)
         testing_array[i] = malloc(3 * sizeof(int));
@@ -123,12 +124,11 @@ void h1_test(void) {
     
     CU_ASSERT_EQUAL( test_makeHashIdArray(testing_array, hashed_check->tuples, ROWS), 1);
 
-    // for (int i = 0; i < ROWS; i++){
-    //     free(testing_array[i]);
-    // }
-    // free(hashed_check->tuples);
-    // free(testing_array);
-    // free(hashed_check);
+    for (int i = 0; i < ROWS; i++){
+        free(testing_array[i]);
+    }
+    free(testing_array);
+    destroyRelation(hashed_check);
 }
 
 void hist_test(void) {
@@ -159,11 +159,9 @@ void hist_test(void) {
     
     CU_ASSERT_EQUAL( test_makeHistArray(hashed_check, node1, 2), 1);
 
-
-    // free(hashed_check->tuples);
-    // free(hashed_check);
-    //destroyHistogram(node1);
-    //destroyHistogram(node2);
+    destroyRelation(hashed_check);
+    free(node1);
+    free(node2);
 }
 
 void psum_test(void) {
@@ -188,9 +186,9 @@ void psum_test(void) {
     
     CU_ASSERT_EQUAL(test_createPsum(2, node1, psum_check), 1);
 
-    //destroyHistogram(node1);
-    //destroyHistogram(node2);
-    //destroySum(psum_check, 2);
+    free(node1);
+    free(node2);
+    destroySum(psum_check, 2);
 }
 
 void ord_test(void){
@@ -225,10 +223,9 @@ void ord_test(void){
 
     CU_ASSERT_EQUAL(test_createReorderedarray(psum_check, 2, ord_check, hashed_check, 2), 1);
 
-    //destroyOrdArray(ord_check, 2);
-    // free(hashed_check->tuples);
-    // free(hashed_check);
-    //destroySum(psum_check, 2);
+    destroyOrdArray(ord_check, 2);
+    destroyRelation(hashed_check);
+    destroySum(psum_check, 2);
 }
 
 void index_test(void){
@@ -286,21 +283,16 @@ void index_test(void){
     test_indexes[1]->chain[2] = 2;
     test_indexes[1]->chain[1] = 1;
 
-
-
-
     CU_ASSERT_EQUAL(test_createBucketIndexes(psum_check, 2, ord_rel, test_indexes), 1);
 
-    //destroyIndexes(test_indexes, 2);
-
-    //destroyOrdArray(ord_rel, 6);
-    //destroySum(psum_check, 2);
+    destroyIndexes(test_indexes, 2);
+    destroyOrdArray(ord_rel, 6);
+    destroySum(psum_check, 2);
 }
 
-//*****************************************************************************************************************************//
-//** TIS METABLHTES POU THELETE GIA TA TESTS THA TIS FTIAKSETE MESA STO TEST AKOLOUTHISTE TH MORFH TOU h1_test OXI STH MAIN **//
-//**************************************************************************************************************************//
+// void result_test(void) {
 
+// }
 
 int main(){
 
@@ -342,6 +334,11 @@ int main(){
       return CU_get_error();
     }
 
+    // if (NULL == CU_add_test(pSuite, "result_test", result_test)) {
+    //   CU_cleanup_registry();
+    //   return CU_get_error();
+    // }
+
 
     // Run all tests using the basic interface
    CU_basic_set_mode(CU_BRM_VERBOSE);
@@ -353,13 +350,4 @@ int main(){
 
     CU_cleanup_registry();
    return CU_get_error();
-
-
-    // if (result != 0) {
-    //     printf("%s\n", result);
-    // }
-    // else {
-    //     printf("ALL TESTS PASSED\n");
-    // }
-    // printf("Tests run: %d\n", tests_run);
 }
