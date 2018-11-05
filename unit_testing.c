@@ -164,9 +164,9 @@ void hist_test(void) {
 void psum_test(void) {
 
     sum *psum_check = malloc(2*sizeof(sum));
-    psum_check[0].hashed_key = 10;
+    psum_check[0].hashed_key = 11;
     psum_check[0].index = 0;
-    psum_check[1].hashed_key = 100;
+    psum_check[1].hashed_key = 110;
     psum_check[1].index = 1;
 
     histogram *node1 = malloc(sizeof(histogram));
@@ -189,14 +189,10 @@ void psum_test(void) {
 
 void ord_test(void){
     // ord_relation *ord_check = malloc(2*sizeof(ord_relation));
-    // ord_check[0] = {
-    //     .row_id = 1,
-    //     .value = 2
-    // };
-    // ord_check[1] = {
-    //     .row_id = 2,
-    //     .value = 4
-    // };
+    // ord_check[0].row_id = 1;
+    // ord_check[0].value = 2;
+    // ord_check[1].row_id = 2;
+    // ord_check[1].value = 4;
 
     // CU_ASSERT_EQUAL(test_createReorderedarray(psum_check, size, ord_check, xdimen), 1);
 }
