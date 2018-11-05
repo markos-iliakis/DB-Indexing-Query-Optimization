@@ -53,13 +53,18 @@ static int test_createPsum(int hist_length, histogram* hist_check, sum* psum_che
     return 1;
 }
 
-static int test_createReorderedarray(sum *psum_check, int size, relation *hashed_check, int xdimen) {
+static int test_createReorderedarray(sum *psum_check, int size, ord_relation *ord_check, int xdimen) {
     ord_relation*  ord_r = createReorderedarray(psum_check, size, hashed_check, xdimen);
 
-    for (int i = 0; i < ) {
+    for (int i = 0; i < xdimen; i++) {
+        if (ord_r[i].value != ord_check[i].value)
+            return 0;
 
+        if (ord_r[i].row_id != ord_check[i].row_id)
+            return 0;
     }
-
+    
+    return 1;
 }
 
 static int test_createBucketIndexes(sum* psum, int length, ord_relation* rel) {
@@ -178,7 +183,7 @@ void ord_test(sum *psum_check, int size, relation *hashed_check, int xdimen){
         .value = 4
     };
 
-    CU_ASSERT_EQUAL(test_createReorderedarray(psum_check, size, hashed_check, xdimen), 1);
+    CU_ASSERT_EQUAL(test_createReorderedarray(psum_check, size, ord_check, xdimen), 1);
 }
 
 void index_test(sum* psum, int size, ord_relation* rel){
@@ -255,6 +260,32 @@ int main(){
       CU_cleanup_registry();
       return CU_get_error();
     }
+
+    if (NULL == CU_add_test(pSuite, "hist_test", hist_test)) {
+      CU_cleanup_registry();
+      return CU_get_error();
+    }
+
+    if (NULL == CU_add_test(pSuite, "psum_test", psum_test)) {
+      CU_cleanup_registry();
+      return CU_get_error();
+    }
+
+    if (NULL == CU_add_test(pSuite, "ord_test", ord_test)) {
+      CU_cleanup_registry();
+      return CU_get_error();
+    }
+
+    if (NULL == CU_add_test(pSuite, "index_test", index_test)) {
+      CU_cleanup_registry();
+      return CU_get_error();
+    }
+
+    if (NULL == CU_add_test(pSuite, "results_test", results_test)) {
+      CU_cleanup_registry();
+      return CU_get_error();
+    }
+
 
     // Run all tests using the basic interface
    CU_basic_set_mode(CU_BRM_VERBOSE);
