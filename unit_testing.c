@@ -63,20 +63,36 @@ static int test_createReorderedarray(sum *psum_check, int size, ord_relation *or
         if (ord_r[i].row_id != ord_check[i].row_id)
             return 0;
     }
-    
+
     return 1;
 }
 
-static int test_createBucketIndexes(sum* psum, int length, ord_relation* rel) {
-    bucket_index *bucket_test = createBucketIndexes(psum, length rel);
+static int test_createBucketIndexes(sum* psum, int length, ord_relation* rel, ) {
+    bucket_index *bucket_test = createBucketIndexes(psum, length, rel)
 
-    for (int i = 0; i <) {
+    for (int i = 0; i < ; i++) {
+        if ()
+            return 0;
 
+        if ()
+            return 0;
     }
+
+    return 1;
 }  
 
 static int test_createResults() {
+    result *result_test = RadixHashJoin(r_ord, s_ord, r_bucket_indexes, r_psum, s_psum, r_hist_length, s_hist_length);
 
+    for (int i = 0; i < ; i++) {
+        if ()
+            return 0;
+
+        if ()
+            return 0;
+    }
+
+    return 1;
 }
 
 int init_suite(void) {
