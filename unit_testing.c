@@ -184,8 +184,7 @@ void psum_test(void) {
 
     free(node1);
     free(node2);
-    for (int i = 0; i < 2; i++)
-        free(psum_check[i]);
+    free(psum_check);
 }
 
 void ord_test(void){
