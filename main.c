@@ -13,8 +13,9 @@ int main(void){
     r_relation = malloc(sizeof(relation));
     s_relation = malloc(sizeof(relation));
     r_relation->tuples = makeHashIdArray(r_array, XDIMEN);
+    r_relation->num_tuples = XDIMEN;
     s_relation->tuples = makeHashIdArray(s_array, XDIMEN);
-
+    s_relation->num_tuples = XDIMEN;
     //print arrays
     // printArrayTuple(r_array, r_relation->tuples, XDIMEN, YDIMEN);
 
@@ -30,12 +31,12 @@ int main(void){
     sum** r_psum = createPsum(r_hist_length, r_hist);
     sum** s_psum = createPsum(s_hist_length, s_hist);
 
+    // print psum table
+    // printPsum(r_psum, r_hist_length);
+
     // create r'-s'
     ord_relation** r_ord = createReorderedarray(r_psum, r_hist_length, r_relation, XDIMEN);
     ord_relation** s_ord = createReorderedarray(s_psum, s_hist_length, s_relation, XDIMEN);
-
-    // print psum table
-    // printPsum(s_psum, s_hist_length);
 
     // print r'
     // printOrderedarray(s_ord);
@@ -51,18 +52,21 @@ int main(void){
 
     // destroyResult(join_result);
 
-    // destroyIndexes(r_bucket_indexes, r_hist_length);
-    // printf("1\n");
-    // destroyOrdArray(r_ord);
+    destroyIndexes(r_bucket_indexes, r_hist_length);
+    destroyOrdArray(r_ord, XDIMEN);
+    destroyOrdArray(s_ord, XDIMEN);
 
-    // destroySum(r_psum);
+    destroySum(r_psum, r_hist_length);
+    destroySum(s_psum, s_hist_length);
 
-    // destroyRelation(r_relation);
+    destroyRelation(r_relation);
+    destroyRelation(s_relation);
 
-    // destroyRandArray(r_array, XDIMEN);
+    destroyRandArray(r_array, XDIMEN);
+    destroyRandArray(s_array, XDIMEN);
 
-    // destroyHistogram(r_hist);
-    // destroyHistogram(s_hist);
+    destroyHistogram(r_hist);
+    destroyHistogram(s_hist);
 
     //more destroys
 

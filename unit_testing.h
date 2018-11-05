@@ -14,9 +14,9 @@ void h1_test();
 void hist_test();
 
 
-static int test_makeHashIdArray(int **input_array, tuple *out, int length);
+static int test_makeHashIdArray(int **input_array, tuple **out, int length);
 static int test_makeHistArray(relation *, histogram *, int );
-static int test_createPsum(int, histogram *, sum *);
-static int test_createReorderedarray(sum *, int, ord_relation *, int );
-// static int test_createBucketIndexes(sum *, int, ord_relation *);
+static int test_createPsum(int, histogram *, sum **);
+static int test_createReorderedarray(sum **, int, ord_relation **, relation *, int );
+static int test_createBucketIndexes(sum **, int, ord_relation **, bucket_index **);
 // static int test_createResults();

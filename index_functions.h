@@ -8,6 +8,6 @@
 
 
  bucket_index** createBucketIndexes(sum** psum, int hist_length, ord_relation** rel);
- void printChains(bucket_index* buckets, int num_buckets, sum *psum);
+ void printChains(bucket_index** buckets, int num_buckets, sum** psum);
  void printChain(int* chain, int size);
- void destroyIndexes(bucket_index* ind, int size);
+ void destroyIndexes(bucket_index** ind, int size);

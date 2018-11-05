@@ -143,15 +143,15 @@ int histogramSize(histogram *r_hist){
 
 sum** createPsum(int hist_length, histogram* hist){
 
-    sum** psum = malloc(hist_length*sizeof(sum *));
+    sum** psum = malloc(hist_length*sizeof(sum*));
     histogram *temp1 = hist, *temp2 = hist->next;
     
     int sum = 0;
     for (int i = 0; i < hist_length; i++) {
-        psum[i] = malloc(sizeof(sum));
+        psum[i] = malloc(sizeof(**psum));    
         if(i==0){
-            psum[0]->index = 0;
-            psum[0]->hashed_key = hist->value;
+            psum[i]->index = 0;
+            psum[i]->hashed_key = hist->value;
         }
         else{
             psum[i]->index = sum + temp1->freq;
@@ -190,7 +190,8 @@ ord_relation** createReorderedarray(sum **psum, int size, relation *r_relation, 
     // for each row of r
     for (int i = 0; i < xdimen; i++) {
         new_array[i] = malloc(sizeof(ord_relation));
-        // for each element of psum
+    }
+    for (int i = 0; i < xdimen; i++) {
         for(int j = 0; j < size; j++){
             // if we have found the same hashed_key
             if(r_relation->tuples[i]->key == psum[j]->hashed_key){
@@ -214,16 +215,26 @@ void printOrderedarray(ord_relation** array){
     printf("---------------\n");
 }
 
-void destroyOrdArray(ord_relation* ord){
+void destroyOrdArray(ord_relation** ord, int size){
+    for(int i=0; i < size; i++){
+        free(ord[i]);
+    }
     free(ord);
 }
 
-void destroySum(sum* psum){
+void destroySum(sum** psum, int size){
+    for (int i = 0; i < size; i++)
+        free(psum[i]);
     free(psum);
 }
 
 void destroyRelation(relation* rel){
+
+    for(int i=0; i < rel->num_tuples; i++){
+        free(rel->tuples[i]);
+    }
     free(rel->tuples);
+    
     free(rel);
 }
 

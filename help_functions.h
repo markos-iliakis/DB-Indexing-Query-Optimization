@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 #define YDIMEN 4
-#define XDIMEN 20
+#define XDIMEN 10
 #define COMPARE 2
 
 struct histogram;
@@ -36,7 +36,7 @@ int searchPsum(int length, int value, sum **psum);
 ord_relation** createReorderedarray(sum **psum, int size, relation *r_relation, int xdimen);
 void printOrderedarray(ord_relation **array);
 histogram* createHistogram(int , relation *);
-void destroyOrdArray(ord_relation* ord);
-void destroySum(sum* psum);
+void destroyOrdArray(ord_relation** ord, int size);
+void destroySum(sum** psum, int size);
 void destroyRelation(relation* rel);
 void destroyRandArray(int** xarray, int xdimen);

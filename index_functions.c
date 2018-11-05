@@ -43,7 +43,7 @@ bucket_index** createBucketIndexes(sum** psum, int hist_length, ord_relation** r
             else{   /* regular case */
                 int temp = indexes[i]->bucket[element];
                 while(indexes[i]->chain[temp-1] != 0){
-                    // printf("chain[%d] -> %d\n", temp, indexes[i].chain[temp-1]);
+                    // printf("chain[%d] -> %d\n", temp, indexes[i]->chain[temp-1]);
                     // getchar();
                     temp = indexes[i]->chain[temp-1];
                 }
@@ -51,23 +51,23 @@ bucket_index** createBucketIndexes(sum** psum, int hist_length, ord_relation** r
                 indexes[i]->chain[temp-1] = j+1-pos;
             }
         }
-        pos +=  psum[i]->index;
+        pos =  psum[i]->index;
         /* Bucket_tb and Chain hold the elements with the same hash(2) */
     }
     return indexes;
 }
 
 
-void printChains(bucket_index* buckets, int num_buckets, sum *psum){
+void printChains(bucket_index** buckets, int num_buckets, sum** psum){
 
     printf("---------------\n");
     printf("Chains\n");
     for(int i = 0; i < num_buckets; i++){
 
-        int top = (i==0) ? 0 : psum[i-1].index;
-        int bottom = psum[i].index-1;
+        int top = (i==0) ? 0 : psum[i-1]->index;
+        int bottom = psum[i]->index-1;
         int bucket_size = bottom - top + 1;
-        printChain(buckets[i].chain, bucket_size);
+        printChain(buckets[i]->chain, bucket_size);
     }
     printf("---------------\n");
 
@@ -80,15 +80,11 @@ void printChain(int* chain, int size){
     printf("---------------\n");
 }
 
-void destroyIndexes(bucket_index* ind, int size){
-    printf("size: %d\n", size);
-    printf("last element: %d\n", ind[size-1].bucket[0]);
+void destroyIndexes(bucket_index** ind, int size){
     for(int i=0; i<size; i++){
-        printf("%d\n", i);
-        if(ind[i].bucket != NULL){
-            free(ind[i].bucket);
-            free(ind[i].chain);
-        }
+        free(ind[i]->bucket);
+        free(ind[i]->chain);
+        free(ind[i]);
     }
     free(ind);
 }

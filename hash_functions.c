@@ -1,7 +1,10 @@
 #include "hash_functions.h"
 
 int h1(int num){
-    return atoi(decimal_to_binary(num)) % 100000000;
+    char* str = decimal_to_binary(num);
+    int ret = atoi(str) % 100000000;
+    free(str);
+    return ret;
 }
 
 char *decimal_to_binary(int n){
