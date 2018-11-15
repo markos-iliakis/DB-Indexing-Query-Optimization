@@ -1,17 +1,28 @@
 #include "result.h"
 
-int main(void){
+int main(int argc, char** argv){
 
     srand(time(NULL));
+
+    // check input
+    if(argv[1] == NULL){
+        perror("wrong arguments\n");
+        exit(-1);
+    }
 
     // make the random arrays
     int** r_array = makeRandArray(XDIMEN, YDIMEN);
     int** s_array = makeRandArray(XDIMEN, YDIMEN);
 
     // make the id/hashed-value arrays
-    relation *r_relation, *s_relation;
-    r_relation = malloc(sizeof(relation));
-    s_relation = malloc(sizeof(relation));
+    relation* r_relation = malloc(sizeof(relation));
+    relation* s_relation = malloc(sizeof(relation));
+
+    /* get relations from the paths written in the file
+    on the path described from the first argument */
+    // relation** rels = loadRelations(argv[1]);
+
+    // make the hashings from the starting relations
     r_relation->tuples = makeHashIdArray(r_array, XDIMEN);
     r_relation->num_tuples = XDIMEN;
     s_relation->tuples = makeHashIdArray(s_array, XDIMEN);

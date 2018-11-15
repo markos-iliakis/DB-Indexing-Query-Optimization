@@ -1,6 +1,6 @@
-OBJECTS		=main.o hash_functions.o help_functions.o index_functions.o result.o
-OBJECTS2    =unit_testing.o hash_functions.o help_functions.o index_functions.o
-SOURCE		=main.c hash_functions.c help_functions.c index_functions.c result.c
+OBJECTS		=main.o hash_functions.o help_functions.o index_functions.o result.o relation.o
+OBJECTS2    =unit_testing.o hash_functions.o help_functions.o index_functions.o result.o relation.o
+SOURCE		=main.c hash_functions.c help_functions.c index_functions.c result.c relation.c
 OUTPUT		=main
 OUTPUT2		=utest
 HEADER  	=relation.h hash_functions.h help_functions.h result.h
@@ -26,6 +26,9 @@ index_functions.o: index_functions.c
 
 result.o: result.c
 	$(CC) $(FLAGS) result.c
+
+relation.o: relation.c
+	$(CC) $(FLAGS) relation.c
 
 utest: $(OBJECTS2)
 	$(CC) -g $(OBJECTS2) -o $@ -lcunit

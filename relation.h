@@ -1,4 +1,13 @@
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/mman.h>
+#include <string.h>
+
 /** Type definition for a tuple */
 struct tuple;
 struct relation;
@@ -23,3 +32,5 @@ typedef struct ord_relation {
     int32_t row_id;
     int32_t value;
 } ord_relation;
+
+relation** loadRelations(char* path);
