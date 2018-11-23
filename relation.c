@@ -9,12 +9,13 @@ relation** loadRelations(char* path){
     printf("Going to open : %s\n", path);
     FILE* init = fopen(path, "r");
     if(init == NULL) perror("init file error");
+                                                    //MUST READ ONE TIME THE FILE TO DETERMINE SIZE
 
-    relation** rel = malloc(14*sizeof(relation*));   //MUST DO IT DYNAMICALLY WITH ANOTHERSTRUCT OR REALLOCS
+    relation** rel = malloc(14*sizeof(relation*));   //MUST CREATE STRUCT WITH SIZE AND ARRAY
     int i = 0;
 
     // for each relation file in the initial
-    while((read = getline(&line, &len, init)) != -1){
+    while((read = getline(&line, &len, init)) != -1){ // must use another function
         
         // make the path
         char* temp = malloc(sizeof(path)+sizeof(line));
