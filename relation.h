@@ -33,4 +33,15 @@ typedef struct ord_relation {
     int32_t value;
 } ord_relation;
 
-relation** loadRelations(char* path);
+typedef struct st_table{
+    int rows;
+    int64_t** col;
+}st_table;
+
+typedef struct tb_array{
+    st_table** tb;
+    int size;
+}tb_array;
+
+tb_array* loadTables(char* path, tb_array** t_a);
+void destroyTables(tb_array* tb);
