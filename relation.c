@@ -1,44 +1,50 @@
 #include "relation.h"
 
-tb_array* loadTables(char* path, tb_array** t_a){
+tb_array* loadTables(tb_array** t_a){
 
     // get the initil file and start reading it
     char* line = NULL;
     char buf[1024];
 
-    printf("Going to open : %s\n", path);
-    FILE* init = fopen(path, "r");
-    if(init == NULL) perror("init file error");
+    // printf("Going to open : %s\n", path);
+    // FILE* init = fopen(path, "r");
+    // if(init == NULL) perror("init file error");
     
-    char c;
+    // char c;
     int lines=0;
-    while((c = getc(init)) != EOF) 
-        if(c == '\n') lines++;
+    // while((c = getc(init)) != EOF) 
+        // if(c == '\n') lines++;
 
-    fclose(init);
-    init = NULL;
-    init = fopen(path, "r");
-    if(init == NULL) perror("init file error");
+    // fclose(init);
+    // init = NULL;
+    // init = fopen(path, "r");
+    // if(init == NULL) perror("init file error");
+
+    char lines_str[10];
+    scanf("%s\n", lines_str);
+    lines = atoi(lines_str);
+    printf("lines: %d\n", lines);
 
     (*t_a) = malloc(sizeof(tb_array));
     (*t_a)->tb = malloc(lines*sizeof(st_table*));
     (*t_a)->size = lines;
 
-    int i = 0;
     // for each relation file in the initial
-    while(fgets(buf, sizeof(buf), init) != NULL){
-        printf("starting\n");
-        buf[strlen(buf) - 1] = '\0';
+    for(int i=0; i<14; i++){
+        // printf("starting\n");
+        // buf[strlen(buf) - 1] = '\0';
 
-        // make the path
-        char* temp = malloc(strlen(path)+strlen(buf));
-        strcpy(temp, path);
-        while(temp[strlen(temp)-1] != '/') temp[strlen(temp)-1] = '\0'; 
-        strcat(temp, buf);
+        // // make the path
+        // char* temp = malloc(strlen(path)+strlen(buf));
+        // strcpy(temp, path);
+        // while(temp[strlen(temp)-1] != '/') temp[strlen(temp)-1] = '\0'; 
+        // strcat(temp, buf);
+
+        scanf("%s\n", buf);
 
         // open the binary
-        printf("Going to open : %s\n", temp);
-        int fd = open(temp, O_RDONLY);
+        printf("Going to open : %s\n", buf);
+        int fd = open(buf, O_RDONLY);
         if(fd == -1) {
             perror("File not Found!");
             exit(-1);
@@ -78,12 +84,11 @@ tb_array* loadTables(char* path, tb_array** t_a){
             addr+=size*sizeof(uint64_t);
         }
 
-        free(temp);
-        i++;
+        // free(temp);
         printf("ending\n");
     }
 
-    fclose(init);
+    // fclose(init);
     if(line) free(line);
 
     return (*t_a);
