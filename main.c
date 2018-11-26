@@ -4,12 +4,6 @@ int main(int argc, char** argv){
 
     srand(time(NULL));
 
-    // check input
-    // if(argv[1] == NULL){
-    //     perror("wrong arguments\n");
-    //     exit(-1);
-    // }
-
     // make the random arrays
     int** r_array = makeRandArray(XDIMEN, YDIMEN);
     int** s_array = makeRandArray(XDIMEN, YDIMEN);

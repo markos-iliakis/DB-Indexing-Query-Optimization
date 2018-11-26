@@ -43,5 +43,5 @@ typedef struct tb_array{
     int size;
 }tb_array;
 
-tb_array* loadTables(tb_array** t_a);
+void loadTables(tb_array** t_a);
 void destroyTables(tb_array* tb);
