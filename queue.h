@@ -17,3 +17,6 @@ void enqueue(Queue* queue, pred_list* item);
 pred_list* dequeue(Queue* queue);
 pred_list* front(Queue* queue);
 pred_list* rear(Queue* queue);
+
+int check_Eq(data* d1, data* d2);
+Queue* makeInstructionQueue(pred_list* ls, int tot_j, int tot_f);
