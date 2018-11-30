@@ -53,8 +53,7 @@ pred_list* rear(Queue* queue)
 	return queue->array[queue->rear]; 
 } 
  
-Queue* makeInstructionQueue(pred_list* ls, int tot_j, int tot_f){ 
-    // we must check for table AND COLUMN!!!
+Queue* makeInstructionQueue(pred_list* ls, int tot_j, int tot_f){
     pred_list* marked_j[tot_j];
     pred_list* marked_f[tot_f];
     pred_list* temp = ls;
@@ -88,7 +87,7 @@ Queue* makeInstructionQueue(pred_list* ls, int tot_j, int tot_f){
             if(marked_j[i] == NULL) continue;
 
             // if found
-            if(marked_f[j]->t1->table == marked_j[i]->t1->table){
+            if(check_Eq(marked_f[j]->t1, marked_j[i]->t1)){
                 enqueue(q, marked_f[j]);
                 marked_f[j] = NULL;
 
@@ -96,7 +95,7 @@ Queue* makeInstructionQueue(pred_list* ls, int tot_j, int tot_f){
                 for(int y=j+1; y<tot_f; y++){
                     if(marked_f[y] == NULL) continue;
 
-                    if(marked_j[i]->t2->table == marked_f[y]->t1->table){
+                    if(check_Eq(marked_j[i]->t2, marked_f[y]->t1)){
                         enqueue(q, marked_f[y]);
                         marked_f[y] = NULL;
                         break;
@@ -106,7 +105,7 @@ Queue* makeInstructionQueue(pred_list* ls, int tot_j, int tot_f){
                 marked_j[i] = NULL;
                 break;
             }
-            else if(marked_f[j]->t1->table == marked_j[i]->t2->table){
+            else if(check_Eq(marked_f[j]->t1, marked_j[i]->t2)){
                 enqueue(q, marked_f[j]);
                 marked_f[j] = NULL;
 
@@ -114,7 +113,7 @@ Queue* makeInstructionQueue(pred_list* ls, int tot_j, int tot_f){
                 for(int y=j+1; y<tot_f; y++){
                     if(marked_f[y] == NULL) continue;
 
-                    if(marked_j[i]->t1->table == marked_f[y]->t1->table){
+                    if(checkEq(marked_j[i]->t1, marked_f[y]->t1)){
                         enqueue(q, marked_f[y]);
                         marked_f[y] = NULL;
                         break;
@@ -127,9 +126,22 @@ Queue* makeInstructionQueue(pred_list* ls, int tot_j, int tot_f){
         }
         marked_f[j] = NULL;
     }
+
+	// insert the remaining joins and filters in queue
+	for(int i=0; i<tot_j; i++){
+		if(marked_j[i] == NULL) continue;
+		enqueue(q, marked_j[i]);
+	}
+
+	for(int j=0; j<tot_f; j++){
+		if(marked_f[j] == NULL) continue;
+		enqueue(q, marked_f[j]);
+	}
+
     return q;
 }
 
 int check_Eq(data* d1, data* d2){
-
+	if(d1->table == d2->table && d1->column == d2->column) return 1;
+	else return 0;
 }
