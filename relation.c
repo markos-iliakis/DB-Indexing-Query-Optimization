@@ -15,11 +15,11 @@ relation** loadRelations(char* path){
 
     // for each relation file in the initial
     while((read = getline(&line, &len, init)) != -1){
-        
+        printf("i : %d\n", i);
         // make the path
         char* temp = malloc(sizeof(path)+sizeof(line));
         strcpy(temp, path);
-        while(temp[strlen(temp)-1] != '/') temp[strlen(temp)-1] = '\0'; 
+        while(temp[strlen(temp)-1] != '/') temp[strlen(temp)-1] = '\0';
         strcat(temp, line);
         temp[strlen(temp)-1] = '\0';
 
@@ -61,6 +61,7 @@ relation** loadRelations(char* path){
 
         free(temp);
         i++;
+        printf("telos epanalhpsh\n");
     }
 
     fclose(init);

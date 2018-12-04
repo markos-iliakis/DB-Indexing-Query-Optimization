@@ -20,14 +20,14 @@ int main(int argc, char** argv){
 
     /* get relations from the paths written in the file
     on the path described from the first argument */
-    // relation** rels = loadRelations(argv[1]);
+    relation** rels = loadRelations(argv[1]);
 
     // make the hashings from the starting relations
     r_relation->tuples = makeHashIdArray(r_array, XDIMEN);
     r_relation->num_tuples = XDIMEN;
     s_relation->tuples = makeHashIdArray(s_array, XDIMEN);
     s_relation->num_tuples = XDIMEN;
-    
+
     //print arrays
     // printArrayTuple(r_array, r_relation->tuples, XDIMEN, YDIMEN);
     // printArrayTuple(s_array, s_relation->tuples, XDIMEN, YDIMEN);
@@ -62,7 +62,7 @@ int main(int argc, char** argv){
     // printChains(r_bucket_indexes, r_hist_length, r_psum);
 
     result *join_result = RadixHashJoin(r_ord, s_ord, r_bucket_indexes, r_psum, s_psum, r_hist_length, s_hist_length);
-    
+
     // print the RadixHash results
     printResults(join_result);
 
