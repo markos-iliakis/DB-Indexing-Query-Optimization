@@ -4,12 +4,6 @@ int main(int argc, char** argv){
 
     srand(time(NULL));
 
-    // check input
-    if(argv[1] == NULL){
-        perror("wrong arguments\n");
-        exit(-1);
-    }
-
     // make the random arrays
     int** r_array = makeRandArray(XDIMEN, YDIMEN);
     int** s_array = makeRandArray(XDIMEN, YDIMEN);
@@ -20,7 +14,8 @@ int main(int argc, char** argv){
 
     /* get relations from the paths written in the file
     on the path described from the first argument */
-    relation** rels = loadRelations(argv[1]);
+    tb_array* tb = NULL;
+    loadTables(&tb);
 
     // make the hashings from the starting relations
     r_relation->tuples = makeHashIdArray(r_array, XDIMEN);
@@ -83,6 +78,8 @@ int main(int argc, char** argv){
 
     destroyHistogram(r_hist);
     destroyHistogram(s_hist);
+
+    destroyTables(tb);
 
     //more destroys
 

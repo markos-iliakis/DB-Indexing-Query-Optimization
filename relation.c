@@ -1,31 +1,30 @@
 #include "relation.h"
 
-relation** loadRelations(char* path){
+void loadTables(tb_array** t_a){
 
-    // get the initil file and start reading it
     char* line = NULL;
-    size_t len = 0;
-    ssize_t read;
-    printf("Going to open : %s\n", path);
-    FILE* init = fopen(path, "r");
-    if(init == NULL) perror("init file error");
+    char buf[1024];
+    int lines=0;
 
-    relation** rel = malloc(14*sizeof(relation*));   //MUST DO IT DYNAMICALLY WITH ANOTHERSTRUCT OR REALLOCS
-    int i = 0;
+    // read the number of tables to be read
+    char lines_str[10];
+    scanf("%s\n", lines_str);
+    lines = atoi(lines_str);
+    // printf("tables: %d\n", lines);
 
-    // for each relation file in the initial
-    while((read = getline(&line, &len, init)) != -1){
-        printf("i : %d\n", i);
-        // make the path
-        char* temp = malloc(sizeof(path)+sizeof(line));
-        strcpy(temp, path);
-        while(temp[strlen(temp)-1] != '/') temp[strlen(temp)-1] = '\0';
-        strcat(temp, line);
-        temp[strlen(temp)-1] = '\0';
+    (*t_a) = malloc(sizeof(tb_array));
+    (*t_a)->tb = malloc(lines*sizeof(st_table*));
+    (*t_a)->size = lines;
+
+    // for each table file in the initial
+    for(int i=0; i<14; i++){
+
+        // read the table from the script
+        scanf("%s\n", buf);
 
         // open the binary
-        printf("Going to open : %s\n", temp);
-        int fd = open(temp, O_RDONLY);
+        // printf("Going to open : %s\n", buf);
+        int fd = open(buf, O_RDONLY);
         if(fd == -1) {
             perror("File not Found!");
             exit(-1);
@@ -39,33 +38,37 @@ relation** loadRelations(char* path){
         }
 
         // add to memmory
-        int* addr = NULL;
-        addr=mmap(0, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0u);
+        int64_t* addr = NULL;
+        if((addr=mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0u)) == MAP_FAILED){
+            perror("cannot map file\n");
+            exit(-1);
+        }
 
         if(sb.st_size < 16) perror("relation file does not contain a valid header");
         uint64_t size = *addr;
         addr+=sizeof(size);
-        printf("%ld\n", size);
 
-        rel[i] = malloc(sizeof(relation));
-        rel[i]->num_tuples = size;
-        rel[i]->tuples = malloc(size*sizeof(tuple));
+        (*t_a)->tb[i] = malloc(sizeof(st_table));
+        (*t_a)->tb[i]->rows = size;
+        (*t_a)->tb[i]->col = malloc(size*sizeof(int64_t*));
 
         size_t numColumns = *addr;
-        addr+=sizeof(size_t);
+        addr+=sizeof(numColumns);
 
-        for (unsigned i=0;i<numColumns;++i) {
-
+        for (unsigned j=0;j<numColumns;++j) {
+            (*t_a)->tb[i]->col[j] = addr;
             addr+=size*sizeof(uint64_t);
         }
-
-        free(temp);
-        i++;
-        printf("telos epanalhpsh\n");
     }
 
-    fclose(init);
     if(line) free(line);
+}
 
-    return 0;
+void destroyTables(tb_array* tb){
+    for(int i=0; i < tb->size; i++){
+        free(tb->tb[i]->col);
+        free(tb->tb[i]);
+    }
+    free(tb->tb);
+    free(tb);
 }
