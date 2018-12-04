@@ -48,12 +48,13 @@ void loadTables(tb_array** t_a){
         uint64_t size = *addr;
         addr+=sizeof(size);
 
-        (*t_a)->tb[i] = malloc(sizeof(st_table));
-        (*t_a)->tb[i]->rows = size;
-        (*t_a)->tb[i]->col = malloc(size*sizeof(int64_t*));
-
         size_t numColumns = *addr;
         addr+=sizeof(numColumns);
+
+        (*t_a)->tb[i] = malloc(sizeof(st_table));
+        (*t_a)->tb[i]->rowNum = size;
+        (*t_a)->tb[i]->colNum = numColumns;
+        (*t_a)->tb[i]->col = malloc(size*sizeof(int64_t*));
 
         for (unsigned j=0;j<numColumns;++j) {
             (*t_a)->tb[i]->col[j] = addr;

@@ -80,11 +80,87 @@ void printChain(int* chain, int size){
     printf("---------------\n");
 }
 
-void destroyIndexes(bucket_index** ind, int size){
+void destroyBucketIndexes(bucket_index** ind, int size){
     for(int i=0; i<size; i++){
         free(ind[i]->bucket);
         free(ind[i]->chain);
         free(ind[i]);
     }
     free(ind);
+}
+
+indexes_array* createIndexes(tb_array* tb){
+
+    indexes_array* i_a = malloc(sizeof(indexes_array));
+    i_a->ind = malloc(tb->size*sizeof(indexes*));
+    
+    // for every table
+    for(int i=0; i<tb->size; i++){
+        
+        i_a->ind[i]->array_relations = malloc(tb->tb[i]->colNum);
+        i_a->ind[i]->array_histograms = malloc(tb->tb[i]->colNum);
+        i_a->ind[i]->ord_relations = malloc(tb->tb[i]->colNum);
+        i_a->ind[i]->array_psums = malloc(tb->tb[i]->colNum);
+        i_a->ind[i]->array_bucket_indexes = malloc(tb->tb[i]->colNum);
+        i_a->ind[i]->colNum = tb->tb[i]->colNum;
+
+        // for every column
+        for(int j=0; j<tb->tb[j]->colNum; j++){
+
+            // make the hashings from the starting relations
+            i_a->ind[i]->array_relations[j]->tuples = makeHashIdArray(tb->tb[i]->col, tb->tb[j]->rowNum,j);
+            i_a->ind[i]->array_relations[j]->num_tuples = tb->tb[j]->rowNum;
+
+            //find different values for x_tuple and create x_hist                            
+            i_a->ind[i]->array_histograms[j] = createHistogram(tb->tb[j]->rowNum, i_a->ind[i]->array_relations[j]);
+        
+            //make psum tables
+            int hist_length = histogramSize(i_a->ind[i]->array_histograms[j]);
+            i_a->ind[i]->array_psums[j] = createPsum(hist_length, i_a->ind[i]->array_histograms[j]);
+
+            // create x'
+            i_a->ind[i]->ord_relations[j] = createReorderedarray(i_a->ind[i]->array_psums[j], hist_length, i_a->ind[i]->array_relations[j], tb->tb[j]->rowNum);
+
+            // create indexes
+            i_a->ind[i]->array_bucket_indexes[j] = createBucketIndexes(i_a->ind[i]->array_psums[j], hist_length, i_a->ind[i]->ord_relations[j]);               
+        }
+    }
+    return i_a;
+}
+
+void destroyIndexes(indexes_array* indexes){
+    
+    for(int i = 0; i < indexes->size; i++){
+        for(int j = 0; j < indexes->ind[i]->colNum; j++){
+
+            destroyOrdArray(indexes->ind[i]->ord_relations[j], indexes->ind[i]->array_relations[j]->num_tuples);
+            int hist_length = histogramSize(indexes->ind[i]->array_histograms[j]);
+
+            destroyBucketIndexes(indexes->ind[i]->array_bucket_indexes[j], hist_length);  
+           
+            destroySum(indexes->ind[i]->array_psums[j], hist_length);
+
+            destroyRelation(indexes->ind[i]->array_relations[j]);
+
+            destroyHistogram(indexes->ind[i]->array_histograms[j]);                                     
+        }
+
+        free(indexes->ind[i]->array_bucket_indexes);
+        free(indexes->ind[i]->ord_relations);
+        free(indexes->ind[i]->array_psums);
+        free(indexes->ind[i]->array_relations);
+        free(indexes->ind[i]->array_histograms); 
+        indexes->ind[i]->array_bucket_indexes = NULL;
+        indexes->ind[i]->ord_relations = NULL; 
+        indexes->ind[i]->array_psums = NULL; 
+        indexes->ind[i]->array_relations = NULL; 
+        indexes->ind[i]->array_histograms = NULL;    
+
+    }
+
+    free(indexes->ind);
+    indexes->ind = NULL;
+
+    free(indexes);
+    indexes = NULL;
 }

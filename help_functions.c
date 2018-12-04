@@ -31,14 +31,14 @@ int** makeRandArray(int xdimen, int ydimen){
 }
 
 // function to transform initial arrays to hash-value/row-id array
-tuple** makeHashIdArray(int** x_array, int xdimen){
+tuple** makeHashIdArray(int64_t** x_array, int xdimen, int colNo){
     tuple **x_tuple = malloc(xdimen * sizeof(tuple *));
 
     for (int i = 0; i < xdimen; i++) {
         x_tuple[i] = malloc(sizeof(tuple));
-        x_tuple[i]->key = h1(x_array[i][COMPARE]);
+        x_tuple[i]->key = h1(x_array[i][colNo]);
         x_tuple[i]->payload = i;
-        x_tuple[i]->value = x_array[i][COMPARE];
+        x_tuple[i]->value = x_array[i][colNo];
     }
     return x_tuple;
 }

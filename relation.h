@@ -34,7 +34,8 @@ typedef struct ord_relation {
 } ord_relation;
 
 typedef struct st_table{
-    int rows;
+    int colNum;
+    int rowNum;
     int64_t** col;
 }st_table;
 

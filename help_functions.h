@@ -23,7 +23,7 @@ typedef struct sum {
 
 void printArrayTuple(int** x_array, tuple** x_tuple, int xdimen, int ydimen);
 int** makeRandArray(int xdimen, int ydimen);
-tuple** makeHashIdArray(int** x_array, int xdimen);
+tuple** makeHashIdArray(int64_t** x_array, int xdimen, int col_no);
 histogram* searchHistogram(histogram *r_hist, int32_t check);
 void addHistogram(histogram **r_hist, int32_t new_value);
 void addFreq(histogram *node);
