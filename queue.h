@@ -3,11 +3,10 @@
 #include <limits.h> 
 #include <parsing_unit.h>
 
-typedef struct Queue 
-{ 
+typedef struct Queue { 
 	int front, rear, size; 
 	unsigned capacity; 
-	int* array; 
+	pred_list** array; 
 }Queue; 
 
 Queue* createQueue(unsigned capacity);

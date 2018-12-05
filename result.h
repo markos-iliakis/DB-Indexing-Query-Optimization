@@ -1,4 +1,5 @@
 #include "index_functions.h"
+#include "queue.h"
 
 struct result;
 struct query_metadata;
@@ -24,5 +25,8 @@ void printList(query_metadata *);
 
 result* createBuffer(result *prev, int);
 result* RadixHashJoin(query_metadata **, result *res, ord_relation **relR, ord_relation **relS, bucket_index **r_bucket_indexes, sum **r_psum, sum **s_psum, int r_hist_length, int s_hist_length, relation *);
+result *filterApplication();
+
 void destroyResult(result* r);
 void destroyResult(result* r);
+void executeQuery();

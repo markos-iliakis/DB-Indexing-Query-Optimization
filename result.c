@@ -20,6 +20,27 @@ result* createBuffer(result *prev, int buffer_size) {
     return new;
 }
 
+void executeQuery(Queue* q){
+    //estw edw oti exome to priority queue
+    //ekteloume bhma bhma ta nodes pou einai mesa sthn priority queue
+    query_metadata *metadata = NULL;
+
+    for(int i=q->front; i< q->rear; i++){
+
+        //exw filtro 
+        if(q->array[i]->){
+            //na ftiaksoume sunarthsh na efarmozei filtro kai na epostrefei result *            
+        }
+
+        //exw join        
+        if(){
+            
+            //edw h radix
+        }                    
+    }
+    //to teliko reuslt pou exei bgei bgazoume cheksum
+}
+
 // na balw orisma result* pou tha einai ta endiamesa apotelesmeta kai an den einai NULL kai pinakas pou thelw na kanw join exei ksanaginei join na xrhsimopoiw ta endiamea
 result* RadixHashJoin(query_metadata **metadata, result *res, ord_relation **relR, ord_relation **relS, bucket_index **r_bucket_indexes, sum **r_psum, sum **s_psum, int r_hist_length, int s_hist_length, relation *relA){
 
@@ -274,4 +295,8 @@ void destroyResult(result* r){
         free(temp);
         temp = r;
     }
+}
+
+result *filterApplication(result *res, int buff_size){
+
 }
