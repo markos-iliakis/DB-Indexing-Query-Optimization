@@ -39,27 +39,42 @@ void loadTables(tb_array** t_a){
 
         // add to memmory
         int64_t* addr = NULL;
-        if((addr=mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0u)) == MAP_FAILED){
+        int offset = 0;
+        if((addr=mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0)) == MAP_FAILED){
             perror("cannot map file\n");
             exit(-1);
         }
 
         if(sb.st_size < 16) perror("relation file does not contain a valid header");
         uint64_t size = *addr;
-        addr+=sizeof(size);
+        // printf("Size : %ld\n", size);
+        offset++;
 
-        size_t numColumns = *addr;
-        addr+=sizeof(numColumns);
+        uint64_t numColumns = *(addr+offset);
+        // printf("numColumns : %ld\n", numColumns);
+        offset++;
 
         (*t_a)->tb[i] = malloc(sizeof(st_table));
         (*t_a)->tb[i]->rowNum = size;
         (*t_a)->tb[i]->colNum = numColumns;
         (*t_a)->tb[i]->col = malloc(size*sizeof(int64_t*));
 
-        for (unsigned j=0;j<numColumns;++j) {
-            (*t_a)->tb[i]->col[j] = addr;
-            addr+=size*sizeof(uint64_t);
+
+        // for (int j=0;j<3*size;++j) {
+        //     printf("%ld\n", addr[j]);
+        // }
+
+        for (int j=0;j<size;++j) {
+            int pos = 0;
+            (*t_a)->tb[i]->col[j] = malloc(numColumns * sizeof(int64_t));
+            for (int k = 0; k < numColumns; k++) {
+                (*t_a)->tb[i]->col[j][k] =  addr[(pos * size) + k];
+                pos++;
+            }
+            // printf("%ld\n", addr[j]);
+
         }
+        // getchar();
     }
 
     if(line) free(line);
