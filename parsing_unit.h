@@ -42,15 +42,15 @@ typedef struct pred_list {
     struct pred_list *next;
 } pred_list;
 
-typedef struct proj_list {
-    data t;
-    struct proj_list *next;
-} proj_list;
-
 typedef struct data {
     int table;
     int column; // -1 if op is > or <
 } data;
+
+typedef struct proj_list {
+    data t;
+    struct proj_list *next;
+} proj_list;
 
 // void parse_rel();
 // void parse_pred();

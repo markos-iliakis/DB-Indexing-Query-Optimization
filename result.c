@@ -20,25 +20,169 @@ result* createBuffer(result *prev, int buffer_size) {
     return new;
 }
 
-void executeQuery(Queue* q){
+void executeQuery(Queue* q, indexes **index){
     //estw edw oti exome to priority queue
     //ekteloume bhma bhma ta nodes pou einai mesa sthn priority queue
     query_metadata *metadata = NULL;
-
+    result *prev = NULL, *res = NULL;
+    
     for(int i=q->front; i< q->rear; i++){
 
         //exw filtro 
-        if(q->array[i]->){
-            //na ftiaksoume sunarthsh na efarmozei filtro kai na epostrefei result *            
-        }
+        if(q->array[i]->op != 0){
+            //na ftiaksoume sunarthsh na efarmozei filtro kai na epostrefei result *
+            if(prev == NULL){
+                
+                int rel_num = q->array[i]->t1->table;
+                int col_num = q->array[i]->t1->column;
+                int op = q->array[i]->op;
+                int tot_rows = index[rel_num]->array_relations[col_num]->num_tuples;
+                int c_value = q->array[i]->t2->table;
+                prev = filterApplication(NULL, NULL, 1, index[rel_num]->array_relations[col_num], op, tot_rows, c_value, col_num, rel_num);
+                //edw tha prepei na bazoume sta metadata ton pinaka pou xrhsimopoihsame
+                addArray(&metadata, q->array[i]->t1->table);
 
+            }
+            else{
+
+                int rel_num = q->array[i]->t1->table;
+                int col_num = q-q->array[i]->t1->column;
+                int op = q->array[i]->op;
+                int tot_rows = index[rel_num]->array_relations[col_num]->num_tuples;
+                int c_value = q->array[i]->t2->table;                                                 
+                res = filterApplication(metadata, prev, prev->buffer_size, index[rel_num]->array_relations[col_num], op, tot_rows, c_value, col_num, rel_num);
+                if(searchArray(&metadata, q->array[i]->t1->table) >= 0)
+                    addArray(&metadata, q->array[i]->t1->table);
+            }    
+        }
         //exw join        
-        if(){
+        // else{
             
-            //edw h radix
-        }                    
+        //     //edw h radix
+        // }
+        
+        // if(i != q->front){
+        // //kathe fora to prev na katastrefetai
+        // //na deixnei to prev sto res
+        // //kai to res na deixnei null 
+        // }                   
     }
     //to teliko reuslt pou exei bgei bgazoume cheksum
+}
+
+result* filterApplication(query_metadata *metadata, result *res, int buff_size, relation *relA, int op, int tot_rows, int c_value, int col_num, int rel_num){
+
+    int buffer_pos = 0;
+    result* root = NULL;
+    result* current_buffer;
+    result* check_buffer = res;
+
+    // if there is not previus result start making this one from scratch
+    if(res == NULL){ 
+        root = createBuffer(NULL, buff_size);
+        current_buffer = root;
+
+        for(int i=0; i < tot_rows; i++){
+
+            //greater operation
+            if(op == 1){
+
+                if(relA->tuples[i]->value < c_value){
+
+                    //there is space in buffer                
+                    if(buffer_pos < current_buffer->buffer_size * sizeof(int32_t)){
+                        current_buffer->buffer[buffer_pos][0] = i;
+                        buffer_pos++;
+                    }
+                    else{
+                        result *new_buffer = createBuffer(current_buffer, buff_size);
+                        new_buffer->buffer[0][0] = i;
+                        buffer_pos = 1;
+                        current_buffer = new_buffer;
+                    }                                                                                                                
+                } 
+            }
+            //lesser operation
+            else{
+
+                if(relA->tuples[i]->value > c_value){
+
+                    //there is space in buffer                
+                    if(buffer_pos < current_buffer->buffer_size * sizeof(int32_t)){
+                        current_buffer->buffer[buffer_pos][0] = i;
+                        buffer_pos++;
+                    }
+                    else{
+                        result *new_buffer = createBuffer(current_buffer, buff_size);
+                        new_buffer->buffer[0][0] = i;
+                        buffer_pos = 1;
+                        current_buffer = new_buffer;
+                    }                                                                                                                
+                } 
+            }        
+        }
+    }     
+    else {
+        root = createBuffer(NULL, check_buffer->buffer_size);
+        current_buffer = root;
+        int array_pos = searchArray(metadata, rel_num);
+        while(check_buffer != NULL){
+
+            for(int i = 0; i < 1024 / (check_buffer->buffer_size * sizeof(int32_t)); i++){
+
+                if(op == 1){
+
+                    if(relA->tuples[check_buffer->buffer[i][array_pos]]->value > c_value){
+
+                        if(buffer_pos < current_buffer->buffer_size * sizeof(int32_t)){
+
+                            for (int p = 0; p < check_buffer->buffer_size; p++)
+                                current_buffer->buffer[buffer_pos][p] = check_buffer->buffer[i][p];
+
+                            buffer_pos++;
+
+                        }
+                        else{
+                           
+                            result *new_buffer = createBuffer(current_buffer, check_buffer->buffer_size + 1);
+
+                            for (int p = 0; p < check_buffer->buffer_size; p++)
+                                new_buffer->buffer[0][p] = check_buffer->buffer[i][p];
+
+                            buffer_pos = 1;
+                            current_buffer = new_buffer;
+                        }                                                                                 
+                    }
+                }
+                else{
+                     if(relA->tuples[check_buffer->buffer[i][array_pos]]->value < c_value){
+
+                        if(buffer_pos < current_buffer->buffer_size * sizeof(int32_t)){
+
+                            for (int p = 0; p < check_buffer->buffer_size; p++)
+                                current_buffer->buffer[buffer_pos][p] = check_buffer->buffer[i][p];
+
+                            buffer_pos++;
+
+                        }
+                        else{
+                            
+                            result *new_buffer = createBuffer(current_buffer, check_buffer->buffer_size + 1);
+
+                            for (int p = 0; p < check_buffer->buffer_size; p++)
+                                new_buffer->buffer[0][p] = check_buffer->buffer[i][p];
+
+                            buffer_pos = 1;
+                            current_buffer = new_buffer;
+                        }                                                                                 
+                    }
+                }
+            } 
+            check_buffer = check_buffer->next;           
+        }
+    }
+
+    return root;
 }
 
 // na balw orisma result* pou tha einai ta endiamesa apotelesmeta kai an den einai NULL kai pinakas pou thelw na kanw join exei ksanaginei join na xrhsimopoiw ta endiamea
@@ -104,8 +248,8 @@ result* RadixHashJoin(query_metadata **metadata, result *res, ord_relation **rel
             }
         }
 
-        addArray(metadata, 1);
-        addArray(metadata, 2);
+        // addArray(metadata, 1);
+        // addArray(metadata, 2);
 
         return root;
     }
@@ -142,9 +286,6 @@ result* RadixHashJoin(query_metadata **metadata, result *res, ord_relation **rel
                         int32_t to_check = relA->tuples[check_buffer->buffer[i][1]]->value;
                         int test = r_bucket_indexes[j]->bucket[h2(to_check)];
 
-
-                        printf("%d %d\nThesi X : %d\nS : %d\nX : %d\n", check_buffer->buffer[i][0], check_buffer->buffer[i][1], pos + test-1, relA->tuples[check_buffer->buffer[i][1]]->value, relR[pos + test-1]->value);
-                        getchar();
                         while (test > 0) {
 
                             if (relR[pos + test-1]->value == to_check) {
@@ -295,8 +436,4 @@ void destroyResult(result* r){
         free(temp);
         temp = r;
     }
-}
-
-result *filterApplication(result *res, int buff_size){
-
 }
