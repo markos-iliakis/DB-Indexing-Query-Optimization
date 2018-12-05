@@ -46,35 +46,24 @@ void loadTables(tb_array** t_a){
         }
 
         if(sb.st_size < 16) perror("relation file does not contain a valid header");
+
+        // first element of header
         uint64_t size = *addr;
-        // printf("Size : %ld\n", size);
         offset++;
 
+        // second element of header
         uint64_t numColumns = *(addr+offset);
-        // printf("numColumns : %ld\n", numColumns);
         offset++;
 
         (*t_a)->tb[i] = malloc(sizeof(st_table));
         (*t_a)->tb[i]->rowNum = size;
         (*t_a)->tb[i]->colNum = numColumns;
-        (*t_a)->tb[i]->col = malloc(size*sizeof(int64_t*));
+        (*t_a)->tb[i]->col = malloc(numColumns*sizeof(int64_t*));
 
-
-        // for (int j=0;j<3*size;++j) {
-        //     printf("%ld\n", addr[j]);
-        // }
-
-        for (int j=0;j<size;++j) {
-            int pos = 0;
-            (*t_a)->tb[i]->col[j] = malloc(numColumns * sizeof(int64_t));
-            for (int k = 0; k < numColumns; k++) {
-                (*t_a)->tb[i]->col[j][k] =  addr[(pos * size) + k];
-                pos++;
-            }
-            // printf("%ld\n", addr[j]);
-
+        for(int j=0; j < numColumns; j++){
+            (*t_a)-> tb[i]->col[j] = addr+offset;
+            offset += size;
         }
-        // getchar();
     }
 
     if(line) free(line);

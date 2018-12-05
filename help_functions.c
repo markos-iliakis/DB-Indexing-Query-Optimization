@@ -36,9 +36,9 @@ tuple** makeHashIdArray(int64_t** x_array, int xdimen, int colNo){
 
     for (int i = 0; i < xdimen; i++) {
         x_tuple[i] = malloc(sizeof(tuple));
-        x_tuple[i]->key = h1(x_array[i][colNo]);
+        x_tuple[i]->key = h1(x_array[colNo][i]);
         x_tuple[i]->payload = i;
-        x_tuple[i]->value = x_array[i][colNo];
+        x_tuple[i]->value = x_array[colNo][i];
     }
     return x_tuple;
 }
