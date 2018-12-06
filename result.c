@@ -20,7 +20,7 @@ result* createBuffer(result *prev, int buffer_size) {
     return new;
 }
 
-void executeQuery(Queue* q, indexes **index){
+void executeQuery(Queue* q, indexes **index, proj_list* pl){
     //estw edw oti exome to priority queue
     //ekteloume bhma bhma ta nodes pou einai mesa sthn priority queue
     query_metadata *metadata = NULL;
@@ -94,6 +94,29 @@ void executeQuery(Queue* q, indexes **index){
         }                   
     }
     //to teliko reuslt pou exei bgei bgazoume cheksum
+    checkSum(prev, pl, index, metadata);
+}
+
+void checkSum(result* res, proj_list* pl, indexes** index, query_metadata *metadata){
+
+    proj_list* temp = pl;
+    result *tmp = res;
+    
+    while(temp != NULL){
+        int sum = 0;
+        while(tmp != NULL){
+            int array_pos = searchArray(metadata, pl->t->column);
+            for(int i = 0; i< 1024 / tmp->buffer_size * sizeof(int32_t); i++){
+                if(tmp->buffer[i][0] == -1)
+                    break;
+                sum += index[pl->t->table]->array_relations[pl->t->column]->tuples[tmp->buffer[i][array_pos]]->value;
+            }
+            tmp = tmp->next;
+        }
+        printf("Cheksum : %d\n", sum);
+        temp = temp->next;
+    }
+    
 }
 
 result* filterApplication(query_metadata *metadata, result *res, int buff_size, relation *relA, int op, int tot_rows, int c_value, int col_num, int rel_num){

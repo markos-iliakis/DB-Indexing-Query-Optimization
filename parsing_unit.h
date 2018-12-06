@@ -48,7 +48,7 @@ typedef struct data {
 } data;
 
 typedef struct proj_list {
-    data t;
+    data* t;
     struct proj_list *next;
 } proj_list;
 
