@@ -46,20 +46,25 @@ void executeQuery(Queue* q, indexes **index){
             else{
 
                 int rel_num = q->array[i]->t1->table;
-                int col_num = q-q->array[i]->t1->column;
+                int col_num = q->array[i]->t1->column;
                 int op = q->array[i]->op;
                 int tot_rows = index[rel_num]->array_relations[col_num]->num_tuples;
                 int c_value = q->array[i]->t2->table;                                                 
                 res = filterApplication(metadata, prev, prev->buffer_size, index[rel_num]->array_relations[col_num], op, tot_rows, c_value, col_num, rel_num);
-                if(searchArray(&metadata, q->array[i]->t1->table) >= 0)
+                if(searchArray(metadata, q->array[i]->t1->table) >= 0)
                     addArray(&metadata, q->array[i]->t1->table);
             }    
         }
         //exw join        
-        // else{
-            
-        //     //edw h radix
-        // }
+        else{
+            if(prev == NULL){
+                
+            }
+            else{
+
+            }
+            //edw h radix
+        }
         
         // if(i != q->front){
         // //kathe fora to prev na katastrefetai

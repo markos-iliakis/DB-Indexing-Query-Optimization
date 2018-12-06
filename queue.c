@@ -6,7 +6,7 @@ Queue* createQueue(unsigned capacity)
 	queue->capacity = capacity; 
 	queue->front = queue->size = 0; 
 	queue->rear = capacity - 1; // This is important, see the enqueue 
-	queue->array = (int*) malloc(queue->capacity * sizeof(int)); 
+	queue->array = malloc(queue->capacity * sizeof(pred_list*)); 
 	return queue; 
 } 
 
@@ -24,14 +24,14 @@ void enqueue(Queue* queue, pred_list* item)
 	queue->rear = (queue->rear + 1)%queue->capacity; 
 	queue->array[queue->rear] = item; 
 	queue->size = queue->size + 1; 
-	printf("%d enqueued to queue\n", item); 
+	// printf("%d enqueued to queue\n", item); 
 } 
 
 pred_list* dequeue(Queue* queue) 
 { 
 	if (isEmpty(queue)) 
-		return INT_MIN; 
-	int item = queue->array[queue->front]; 
+		return NULL; 
+	pred_list* item = queue->array[queue->front]; 
 	queue->front = (queue->front + 1)%queue->capacity; 
 	queue->size = queue->size - 1; 
 	return item; 
@@ -41,7 +41,7 @@ pred_list* dequeue(Queue* queue)
 pred_list* front(Queue* queue) 
 { 
 	if (isEmpty(queue)) 
-		return INT_MIN; 
+		return NULL; 
 	return queue->array[queue->front]; 
 } 
 
@@ -49,7 +49,7 @@ pred_list* front(Queue* queue)
 pred_list* rear(Queue* queue) 
 { 
 	if (isEmpty(queue)) 
-		return INT_MIN; 
+		return NULL; 
 	return queue->array[queue->rear]; 
 } 
  
@@ -113,7 +113,7 @@ Queue* makeInstructionQueue(pred_list* ls, int tot_j, int tot_f){
                 for(int y=j+1; y<tot_f; y++){
                     if(marked_f[y] == NULL) continue;
 
-                    if(checkEq(marked_j[i]->t1, marked_f[y]->t1)){
+                    if(check_Eq(marked_j[i]->t1, marked_f[y]->t1)){
                         enqueue(q, marked_f[y]);
                         marked_f[y] = NULL;
                         break;
