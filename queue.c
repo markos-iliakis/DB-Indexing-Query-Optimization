@@ -1,7 +1,6 @@
 #include "queue.h"
 
-Queue* createQueue(unsigned capacity) 
-{ 
+Queue* createQueue(unsigned capacity){ 
 	Queue* queue = malloc(sizeof(Queue)); 
 	queue->capacity = capacity; 
 	queue->front = queue->size = 0; 
