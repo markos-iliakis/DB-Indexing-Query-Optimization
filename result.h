@@ -10,7 +10,6 @@ typedef struct result {
     struct result *next;
 } result;
 
-
 typedef struct query_metadata{
     int array_num;
     struct query_metadata *next;

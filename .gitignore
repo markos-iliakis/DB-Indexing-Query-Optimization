@@ -73,6 +73,9 @@ submission/workloads/small/small.work.sql
 index_functions.o
 hash_functions.o
 help_functions.o
+parsing_unit.o
+queue.o
+relation.o
 main
 main.o
 result.o

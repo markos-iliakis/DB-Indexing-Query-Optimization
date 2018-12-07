@@ -5,16 +5,19 @@ int main(int argc, char** argv){
     srand(time(NULL));
 
     // get table paths from stdin and store them
-    tb_array* tb = NULL;
-    loadTables(&tb);
+    // tb_array* tb = NULL;
+    // loadTables(&tb);
     printf("loadTables ok\n");
 
-    //create indexes for every table and column
-    indexes_array* indexes = createIndexes(tb);
+    // create indexes for every table and column
+    // indexes_array* indexes = createIndexes(tb);
     printf("createIndexes ok\n");
 
-    destroyTables(tb);
-    destroyIndexes(indexes);
+    // get and serve the queries
+    parseInstuctions();
+
+    // destroyTables(tb);
+    // destroyIndexes(indexes);
 
     return 0;
 }

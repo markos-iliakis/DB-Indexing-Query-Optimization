@@ -36,7 +36,7 @@ typedef struct parsed_instruction {
 } parsed_instruction;
 
 typedef struct pred_list {
-    char *op; // 0 if =, 1 if < and 2 if >
+    int op; // 0 if = for join, 1 if < ,2 if > and 3 if = for number filter
     struct data *t1;
     struct data *t2; // for other table or to hold number
     struct pred_list *next;
@@ -48,11 +48,9 @@ typedef struct data {
 } data;
 
 typedef struct proj_list {
-    data* t;
+    struct data *t;
     struct proj_list *next;
 } proj_list;
 
-// void parse_rel();
-// void parse_pred();
-// void parse_proj();
-// void print(queries root);
+void print(queries *root);
+int parseInstuctions();
