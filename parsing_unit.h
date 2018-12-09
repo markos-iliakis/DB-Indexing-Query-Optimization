@@ -44,6 +44,7 @@ typedef struct pred_list {
 
 typedef struct data {
     int table;
+    int a_table; // real number of table
     int column; // -1 if op is > or <
 } data;
 
