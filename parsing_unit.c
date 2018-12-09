@@ -161,14 +161,14 @@ int parseInstuctions(indexes_array* indexes) {
                     save3 = NULL;
                     pl_temp->t1 = malloc(sizeof(data));
                     token4 = strtok_r(token2, ".", &save3);
-                    pl_temp->t1->table = atoi(token4);
+                    pl_temp->t1->table = new->arrays[atoi(token4)];
                     token4 = strtok_r(NULL, ".", &save3);
                     pl_temp->t1->column = atoi(token4);
 
                     save3 = NULL;
                     pl_temp->t2 = malloc(sizeof(data));
                     token4 = strtok_r(token3, ".", &save3);
-                    pl_temp->t2->table = atoi(token4);
+                    pl_temp->t2->table = new->arrays[atoi(token4)];
                     token4 = strtok_r(NULL, ".", &save3);
                     pl_temp->t2->column = atoi(token4);
                 }
@@ -180,7 +180,7 @@ int parseInstuctions(indexes_array* indexes) {
                     save3 = NULL;
                     pl_temp->t1 = malloc(sizeof(data));
                     token4 = strtok_r(token2, ".", &save3);
-                    pl_temp->t1->table = atoi(token4);
+                    pl_temp->t1->table = new->arrays[atoi(token4)];
                     token4 = strtok_r(NULL, ".", &save3);
                     pl_temp->t1->column = atoi(token4);
 
@@ -197,7 +197,7 @@ int parseInstuctions(indexes_array* indexes) {
                     save3 = NULL;
                     pl_temp->t1 = malloc(sizeof(data));
                     token4 = strtok_r(token2, ".", &save3);
-                    pl_temp->t1->table = atoi(token4);
+                    pl_temp->t1->table = new->arrays[atoi(token4)];
                     token4 = strtok_r(NULL, ".", &save3);
                     pl_temp->t1->column = atoi(token4);
 
@@ -214,7 +214,7 @@ int parseInstuctions(indexes_array* indexes) {
                     save3 = NULL;
                     pl_temp->t1 = malloc(sizeof(data));
                     token4 = strtok_r(token2, ".", &save3);
-                    pl_temp->t1->table = atoi(token4);
+                    pl_temp->t1->table = new->arrays[atoi(token4)];
                     token4 = strtok_r(NULL, ".", &save3);
                     pl_temp->t1->column = atoi(token4);
 
@@ -253,7 +253,7 @@ int parseInstuctions(indexes_array* indexes) {
                 save2 = NULL;
                 pr_temp->t = malloc(sizeof(data));
                 token2 = strtok_r(token, ".", &save2);
-                pr_temp->t->table = atoi(token2);
+                pr_temp->t->table = new->arrays[atoi(token2)];
                 token2 = strtok_r(NULL, ".", &save2);
                 pr_temp->t->column = atoi(token2);
 
