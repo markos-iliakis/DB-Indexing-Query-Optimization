@@ -1,4 +1,4 @@
-#include "queue.h"
+#include "result.h"
 
 int parseInstuctions(indexes_array* indexes) {
 
@@ -67,7 +67,7 @@ int parseInstuctions(indexes_array* indexes) {
         }
     }
 
-    print(root);
+    // print(root);
 
     parsed_instruction *pi = NULL;
     parsed_instruction *pi_tmp = pi;
@@ -299,22 +299,49 @@ int parseInstuctions(indexes_array* indexes) {
             pl_temp = pl_temp->next;
         }
 
-        printf("\n\n-------------------------\n\n");//added
+        printf("\n-------------------------\n");//added
+
+        printQuery(pi_tmp);
 
         Queue *q = makeInstructionQueue(pi_tmp->pl, total_j, total_f);
-
-        printf("%d %d %d %u\n", q->front, q->rear, q->size, q->capacity);
-        getchar();
+        printQueue(q);
+        printf("\nPriority Queue Created\n\n");
 
         //run query
         executeQuery(q, indexes, pi_tmp->prl);
 
         pi_tmp = pi_tmp->next;
+        break;
     }
     return 1;
 }
 
+void printQuery(parsed_instruction* p_i){
+    proj_list* prl = p_i->prl;
+    pred_list* pl = p_i->pl;
 
+    printf("\nSelect ");
+    while(prl != NULL){
+        printf("sum(%d.%d) ", prl->t->table, prl->t->column);
+        prl = prl->next;
+    }
+    printf("Where ");
+    while(pl != NULL){
+        if(pl->op == 0) printf("%d.%d = %d.%d", pl->t1->table, pl->t1->column, pl->t2->table, pl->t2->column);
+        else {
+            printf("%d.%d", pl->t1->table, pl->t1->column);
+            
+            if(pl->op == 1) printf(" < ");
+            else if(pl->op == 2) printf(" > ");
+            else printf(" = ");
+
+            printf("%d", pl->t2->table);
+        }
+        pl = pl->next;
+        if(pl != NULL) printf(" and ");
+    }
+    printf("\n\n");
+}
 
 void print(queries *root) {
     batch *curr = root->head;

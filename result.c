@@ -26,8 +26,8 @@ void executeQuery(Queue* q, indexes_array* index, proj_list* pl){
     query_metadata *metadata = NULL;
     result *prev = NULL, *res = NULL;
 
-    for(int i=q->front; i< q->rear; i++){
-
+    for(int i=q->front; i< q->size; i++){
+       
         // table 1
         int rel_num = q->array[i]->t1->table;
         int col_num = q->array[i]->t1->column;
@@ -37,6 +37,7 @@ void executeQuery(Queue* q, indexes_array* index, proj_list* pl){
 
         //exw filtro
         if(q->array[i]->op != 0){
+            printf("applying filter %d.%d-%d\n", rel_num, col_num, c_value);
             //na ftiaksoume sunarthsh na efarmozei filtro kai na epostrefei result *
             if(prev == NULL){
                 prev = filterApplication(NULL, NULL, 1, index->ind[rel_num]->array_relations[col_num], op, tot_rows, c_value, col_num, rel_num);
@@ -51,9 +52,10 @@ void executeQuery(Queue* q, indexes_array* index, proj_list* pl){
         }
         //exw join
         else{
-
+            
             int rel_num2 = q->array[i]->t2->table;
             int col_num2 = q->array[i]->t2->column;
+            printf("applying join %d.%d = %d.%d\n", rel_num, col_num, rel_num2, col_num2);
             int tot_rows2 = index->ind[rel_num]->array_relations[col_num]->num_tuples;
             int hist_length1 = histogramSize(index->ind[rel_num]->array_histograms[col_num]);
             int hist_length2 = histogramSize(index->ind[rel_num2]->array_histograms[col_num2]);
@@ -113,7 +115,7 @@ void checkSum(result* res, proj_list* pl, indexes_array* index, query_metadata *
             }
             tmp = tmp->next;
         }
-        printf("Cheksum : %d\n", sum);
+        printf("\nCheksum of %d.%d : %d\n", temp->t->table, temp->t->column, sum);
         temp = temp->next;
     }
 
@@ -498,7 +500,7 @@ void addArray(query_metadata **ref_arrays, int new_array){
 
 
     if ((*ref_arrays) == NULL) {
-        printf("edw bazw %d\n", new_array);
+        // printf("edw bazw %d\n", new_array);
         (*ref_arrays) = malloc(sizeof(query_metadata));
         (*ref_arrays)->array_num = new_array;
         (*ref_arrays)->next = NULL;
@@ -511,7 +513,7 @@ void addArray(query_metadata **ref_arrays, int new_array){
         while(temp->next != NULL)
             temp = temp->next;
 
-        printf("edw2 bazw %d %d\n", new_array, temp->array_num);
+        // printf("edw2 bazw %d %d\n", new_array, temp->array_num);
         query_metadata *new_node = malloc(sizeof(query_metadata));
         temp->next = new_node;
         new_node->array_num = new_array;

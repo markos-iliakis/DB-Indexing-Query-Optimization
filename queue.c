@@ -57,7 +57,7 @@ Queue* makeInstructionQueue(pred_list* ls, int tot_j, int tot_f){
     pred_list* marked_f[tot_f];
     pred_list* temp = ls;
     Queue* q = createQueue(tot_f+tot_j);
-    printf("totj %d totf %d\n", tot_j, tot_f);
+    // printf("totj %d totf %d\n", tot_j, tot_f);
 
     // run list of instruction and mark joins and filters
     int i=0, j=0;
@@ -66,33 +66,33 @@ Queue* makeInstructionQueue(pred_list* ls, int tot_j, int tot_f){
         // if its a join
         if(temp->op == 0){
             marked_j[i] = temp;
-            printf("marked join %d-%d\n", marked_j[i]->t1->table, marked_j[i]->t2->table);
+            // printf("marked join %d.%d-%d.%d\n", marked_j[i]->t1->table, marked_j[i]->t1->column, marked_j[i]->t2->table, marked_j[i]->t2->column);
             i++;
         }
         // if its a filter
         else{
             marked_f[j] = temp;
-            printf("marked filter %d-%d\n", marked_f[j]->t1->table, marked_f[j]->t2->table);
+            // printf("marked filter %d-%d\n", marked_f[j]->t1->table, marked_f[j]->t2->table);
             j++;
         }
         temp = temp->next;
     }
-    printf("joins and filters marked\n\n");
+    // printf("joins and filters marked\n\n");
 
     // search for tables that take part in both join and filter
     // for every filter
     for(int j=0; j < tot_f; j++){
 
         if(marked_f[j] == NULL) continue;
-        printf("checking (table)%d (symbol)%d (num)%d\n", marked_f[j]->t1->table, marked_f[j]->op, marked_f[j]->t2->table);
+        // printf("checking (table)%d (symbol)%d (num)%d\n", marked_f[j]->t1->table, marked_f[j]->op, marked_f[j]->t2->table);
         // search if it exists on joins
         for(int i=0; i<tot_j; i++){
 
             if(marked_j[i] == NULL) continue;
-            printf("checking join: %d-%d\n", marked_j[i]->t1->table, marked_j[i]->t2->table);
+            // printf("checking join: %d-%d\n", marked_j[i]->t1->table, marked_j[i]->t2->table);
             // if found on the table 1 of join
             if(check_Eq(marked_f[j]->t1, marked_j[i]->t1)){
-                printf("f-1 match found\n");
+                // printf("f-1 match found\n");
                 enqueue(q, marked_f[j]);
                 marked_f[j] = NULL;
 
@@ -112,7 +112,7 @@ Queue* makeInstructionQueue(pred_list* ls, int tot_j, int tot_f){
             }
             // if found on the table 2 of join
             else if(check_Eq(marked_f[j]->t1, marked_j[i]->t2)){
-                printf("f-2 match found\n");
+                // printf("f-2 match found\n");
                 enqueue(q, marked_f[j]);
                 marked_f[j] = NULL;
 
@@ -133,7 +133,7 @@ Queue* makeInstructionQueue(pred_list* ls, int tot_j, int tot_f){
         }
         marked_f[j] = NULL;
     }
-    printf("connected joins and filters added to queue\n");
+    // printf("connected joins and filters added to queue\n");
 
 	// insert the remaining joins and filters in queue
 	for(int i=0; i<tot_j; i++){
@@ -145,7 +145,7 @@ Queue* makeInstructionQueue(pred_list* ls, int tot_j, int tot_f){
 		if(marked_f[j] == NULL) continue;
 		enqueue(q, marked_f[j]);
 	}
-    printf("remaining joins and filters added to queue\n");
+    // printf("remaining joins and filters added to queue\n");
 
     return q;
 }
@@ -154,4 +154,14 @@ int check_Eq(data* d1, data* d2){
 	// if(d1->table == d2->table && d1->column == d2->column) return 1;
     if(d1->table == d2->table) return 1;
 	else return 0;
+}
+
+void printQueue(Queue* q){
+    printf("Queue: \n");
+    for(int i=q->front; i < q->size; i++){
+        if(q->array[i]->op == 0) printf("%d.%d = %d.%d\n", q->array[i]->t1->table, q->array[i]->t1->column, q->array[i]->t2->table, q->array[i]->t2->column);
+        else if(q->array[i]->op == 1) printf("%d.%d < %d\n", q->array[i]->t1->table, q->array[i]->t1->column, q->array[i]->t2->table);
+        else if(q->array[i]->op == 2) printf("%d.%d > %d\n", q->array[i]->t1->table, q->array[i]->t1->column, q->array[i]->t2->table);
+        else if(q->array[i]->op == 3) printf("%d.%d = %d\n", q->array[i]->t1->table, q->array[i]->t1->column, q->array[i]->t2->table);
+    }
 }

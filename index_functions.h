@@ -1,5 +1,4 @@
 #include "help_functions.h"
-#include "hash_functions.h"
 
  typedef struct bucket_index {
      int *chain;

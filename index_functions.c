@@ -110,7 +110,7 @@ indexes_array* createIndexes(tb_array* tb){
 
         for(int j=0; j<tb->tb[i]->colNum; j++){
 
-            printf("i : %d j: %d\n", i, j);
+            // printf("i : %d j: %d\n", i, j);
             i_a->ind[i]->array_relations[j] = malloc(tb->tb[i]->rowNum * sizeof(relation));
 
             // make the hashings from the starting relations

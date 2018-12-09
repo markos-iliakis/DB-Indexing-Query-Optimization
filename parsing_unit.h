@@ -54,4 +54,4 @@ typedef struct proj_list {
 } proj_list;
 
 void print(queries *root);
-int parseInstuctions(indexes_array* indexes);
+void printQuery(parsed_instruction* pi);

@@ -19,3 +19,4 @@ pred_list* rear(Queue* queue);
 
 int check_Eq(data* d1, data* d2);
 Queue* makeInstructionQueue(pred_list* ls, int tot_j, int tot_f);
+void printQueue(Queue* q);

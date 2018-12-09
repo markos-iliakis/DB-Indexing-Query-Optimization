@@ -31,3 +31,6 @@ void destroyResult(result* r);
 void destroyResult(result* r);
 void executeQuery(Queue* q, indexes_array* index, proj_list* pl);
 void checkSum(result* res, proj_list* pl, indexes_array* index, query_metadata* metadata);
+
+
+int parseInstuctions(indexes_array* indexes);
