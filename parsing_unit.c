@@ -150,7 +150,7 @@ int parseInstuctions(indexes_array* indexes) {
 
                 save2 = NULL;
 
-                
+
                 //printf("Op : %d\n", op);
                 //getchar();
                 if (op == 0) {
@@ -249,7 +249,7 @@ int parseInstuctions(indexes_array* indexes) {
                 //printf("%s\n", storage);
 
                 //printf("edw2");
-                //getchar();                
+                //getchar();
                 save2 = NULL;
                 pr_temp->t = malloc(sizeof(data));
                 token2 = strtok_r(token, ".", &save2);
@@ -259,7 +259,7 @@ int parseInstuctions(indexes_array* indexes) {
 
                 token = strtok_r(NULL, " \n", &save1);
                 //printf("token : %s\n", token);
-               
+
             }
 
             //printf("teleiwsa to parsing\n");
@@ -272,12 +272,12 @@ int parseInstuctions(indexes_array* indexes) {
                 pi_tmp->next = new;
                 pi_tmp = new;
             }
-            
+
             i = i->next;
             //printf("teleiwsa to parsing 2!!!!\n");
             //getchar();
         }
-        
+
         //printf("teleiwsa to parsing 3!!!!\n");
         //getchar();
 
@@ -311,7 +311,8 @@ int parseInstuctions(indexes_array* indexes) {
         executeQuery(q, indexes, pi_tmp->prl);
 
         pi_tmp = pi_tmp->next;
-        break;
+        sleep(4);
+        // break;
     }
     return 1;
 }
@@ -330,7 +331,7 @@ void printQuery(parsed_instruction* p_i){
         if(pl->op == 0) printf("%d.%d = %d.%d", pl->t1->table, pl->t1->column, pl->t2->table, pl->t2->column);
         else {
             printf("%d.%d", pl->t1->table, pl->t1->column);
-            
+
             if(pl->op == 1) printf(" < ");
             else if(pl->op == 2) printf(" > ");
             else printf(" = ");
@@ -346,7 +347,7 @@ void printQuery(parsed_instruction* p_i){
 void print(queries *root) {
     batch *curr = root->head;
     while (curr != NULL) {
-       
+
         instruction *temp = curr->head;
 
         while (temp != NULL) {
@@ -362,5 +363,3 @@ void print(queries *root) {
             curr = curr->next;
     }
 }
-
-
