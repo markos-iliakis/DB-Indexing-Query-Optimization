@@ -29,5 +29,5 @@ result* filterApplication(query_metadata *, result *res, int buff_size, relation
 
 void destroyResult(result* r);
 void destroyResult(result* r);
-void executeQuery(Queue* q, indexes **index, proj_list* pl);
-void checkSum(result* res, proj_list* pl, indexes** index, query_metadata* metadata);
+void executeQuery(Queue* q, indexes_array* index, proj_list* pl);
+void checkSum(result* res, proj_list* pl, indexes_array* index, query_metadata* metadata);

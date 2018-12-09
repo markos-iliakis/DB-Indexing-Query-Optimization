@@ -1,6 +1,6 @@
 #include "queue.h"
 
-int parseInstuctions() {
+int parseInstuctions(indexes_array* indexes) {
 
     FILE * fp;
     char * line = NULL;
@@ -307,6 +307,7 @@ int parseInstuctions() {
         getchar();
 
         //run query
+        executeQuery(q, indexes, pi_tmp->prl);
 
         pi_tmp = pi_tmp->next;
     }

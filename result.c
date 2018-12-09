@@ -20,7 +20,7 @@ result* createBuffer(result *prev, int buffer_size) {
     return new;
 }
 
-void executeQuery(Queue* q, indexes **index, proj_list* pl){
+void executeQuery(Queue* q, indexes_array* index, proj_list* pl){
     //estw edw oti exome to priority queue
     //ekteloume bhma bhma ta nodes pou einai mesa sthn priority queue
     query_metadata *metadata = NULL;
@@ -32,19 +32,19 @@ void executeQuery(Queue* q, indexes **index, proj_list* pl){
         int rel_num = q->array[i]->t1->table;
         int col_num = q->array[i]->t1->column;
         int op = q->array[i]->op;
-        int tot_rows = index[rel_num]->array_relations[col_num]->num_tuples;
+        int tot_rows = index->ind[rel_num]->array_relations[col_num]->num_tuples;
         int c_value = q->array[i]->t2->table;
 
         //exw filtro
         if(q->array[i]->op != 0){
             //na ftiaksoume sunarthsh na efarmozei filtro kai na epostrefei result *
             if(prev == NULL){
-                prev = filterApplication(NULL, NULL, 1, index[rel_num]->array_relations[col_num], op, tot_rows, c_value, col_num, rel_num);
+                prev = filterApplication(NULL, NULL, 1, index->ind[rel_num]->array_relations[col_num], op, tot_rows, c_value, col_num, rel_num);
                 //edw tha prepei na bazoume sta metadata ton pinaka pou xrhsimopoihsame
                 addArray(&metadata, q->array[i]->t1->table);
             }
             else{
-                res = filterApplication(metadata, prev, prev->buffer_size, index[rel_num]->array_relations[col_num], op, tot_rows, c_value, col_num, rel_num);
+                res = filterApplication(metadata, prev, prev->buffer_size, index->ind[rel_num]->array_relations[col_num], op, tot_rows, c_value, col_num, rel_num);
                 if(searchArray(metadata, q->array[i]->t1->table) >= 0)
                     addArray(&metadata, q->array[i]->t1->table);
             }
@@ -54,19 +54,19 @@ void executeQuery(Queue* q, indexes **index, proj_list* pl){
 
             int rel_num2 = q->array[i]->t2->table;
             int col_num2 = q->array[i]->t2->column;
-            int tot_rows2 = index[rel_num]->array_relations[col_num]->num_tuples;
-            int hist_length1 = histogramSize(index[rel_num]->array_histograms[col_num]);
-            int hist_length2 = histogramSize(index[rel_num2]->array_histograms[col_num2]);
+            int tot_rows2 = index->ind[rel_num]->array_relations[col_num]->num_tuples;
+            int hist_length1 = histogramSize(index->ind[rel_num]->array_histograms[col_num]);
+            int hist_length2 = histogramSize(index->ind[rel_num2]->array_histograms[col_num2]);
 
             if(prev == NULL){
                 //size of rel_num > size of rel_num2
                 if(tot_rows > tot_rows2){
-                    prev = RadixHashJoin(NULL, index[rel_num]->ord_relations[col_num], index[rel_num2]->ord_relations[col_num2], index[rel_num]->array_bucket_indexes[col_num], index[rel_num]->array_psums[col_num], index[rel_num]->array_psums[col_num2], hist_length1, hist_length2, NULL, -1);
+                    prev = RadixHashJoin(NULL, index->ind[rel_num]->ord_relations[col_num], index->ind[rel_num2]->ord_relations[col_num2], index->ind[rel_num]->array_bucket_indexes[col_num], index->ind[rel_num]->array_psums[col_num], index->ind[rel_num]->array_psums[col_num2], hist_length1, hist_length2, NULL, -1);
                     addArray(&metadata, rel_num);
                     addArray(&metadata, rel_num2);
                 }
                 else{
-                    prev = RadixHashJoin(NULL, index[rel_num2]->ord_relations[col_num2], index[rel_num]->ord_relations[col_num], index[rel_num2]->array_bucket_indexes[col_num2], index[rel_num2]->array_psums[col_num2], index[rel_num]->array_psums[col_num], hist_length2, hist_length1, NULL, -1);
+                    prev = RadixHashJoin(NULL, index->ind[rel_num2]->ord_relations[col_num2], index->ind[rel_num]->ord_relations[col_num], index->ind[rel_num2]->array_bucket_indexes[col_num2], index->ind[rel_num2]->array_psums[col_num2], index->ind[rel_num]->array_psums[col_num], hist_length2, hist_length1, NULL, -1);
                 }
             }
             else{
@@ -75,14 +75,14 @@ void executeQuery(Queue* q, indexes **index, proj_list* pl){
                 if((pos = searchArray(metadata, rel_num)) > 0){
                     addArray(&metadata, rel_num2);
 
-                    res = RadixHashJoin(prev, index[rel_num2]->ord_relations[col_num2], NULL, index[rel_num2]->array_bucket_indexes[col_num2], index[rel_num2]->array_psums[col_num2], NULL, hist_length2, -1, index[rel_num]->array_relations[col_num], pos);
+                    res = RadixHashJoin(prev, index->ind[rel_num2]->ord_relations[col_num2], NULL, index->ind[rel_num2]->array_bucket_indexes[col_num2], index->ind[rel_num2]->array_psums[col_num2], NULL, hist_length2, -1, index->ind[rel_num]->array_relations[col_num], pos);
                 }
                 else if((pos = searchArray(metadata, rel_num2)) > 0){
                     addArray(&metadata, rel_num);
-                    res = RadixHashJoin(prev, index[rel_num]->ord_relations[col_num], NULL, index[rel_num]->array_bucket_indexes[col_num], index[rel_num]->array_psums[col_num], NULL, hist_length1, -1, index[rel_num]->array_relations[col_num2], pos);
+                    res = RadixHashJoin(prev, index->ind[rel_num]->ord_relations[col_num], NULL, index->ind[rel_num]->array_bucket_indexes[col_num], index->ind[rel_num]->array_psums[col_num], NULL, hist_length1, -1, index->ind[rel_num]->array_relations[col_num2], pos);
                 }
                 // else{
-                //     res = RadixHashJoin(prev, index[rel_num2]->ord_relations[col_num2], index[rel_num]->ord_relations[col_num], index[rel_num2]->array_bucket_indexes[col_num2], index[rel_num2]->array_psums[col_num2], index[rel_num]->array_psums[col_num], hist_length2, hist_length1, NULL);
+                //     res = RadixHashJoin(prev, index->ind[rel_num2]->ord_relations[col_num2], index->ind[rel_num]->ord_relations[col_num], index->ind[rel_num2]->array_bucket_indexes[col_num2], index->ind[rel_num2]->array_psums[col_num2], index->ind[rel_num]->array_psums[col_num], hist_length2, hist_length1, NULL);
                 // }
             }
         }
@@ -97,7 +97,7 @@ void executeQuery(Queue* q, indexes **index, proj_list* pl){
     checkSum(prev, pl, index, metadata);
 }
 
-void checkSum(result* res, proj_list* pl, indexes** index, query_metadata *metadata){
+void checkSum(result* res, proj_list* pl, indexes_array* index, query_metadata *metadata){
 
     proj_list* temp = pl;
     result *tmp = res;
@@ -109,7 +109,7 @@ void checkSum(result* res, proj_list* pl, indexes** index, query_metadata *metad
             for(int i = 0; i< 1024 / tmp->buffer_size * sizeof(int32_t); i++){
                 if(tmp->buffer[i][0] == -1)
                     break;
-                sum += index[pl->t->table]->array_relations[pl->t->column]->tuples[tmp->buffer[i][array_pos]]->value;
+                sum += index->ind[pl->t->table]->array_relations[pl->t->column]->tuples[tmp->buffer[i][array_pos]]->value;
             }
             tmp = tmp->next;
         }

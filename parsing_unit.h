@@ -44,7 +44,7 @@ typedef struct pred_list {
 
 typedef struct data {
     int table;
-    int a_table; // real number of table
+    // int a_table; // real number of table
     int column; // -1 if op is > or <
 } data;
 
@@ -54,4 +54,4 @@ typedef struct proj_list {
 } proj_list;
 
 void print(queries *root);
-int parseInstuctions();
+int parseInstuctions(indexes_array* indexes);
