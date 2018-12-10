@@ -93,7 +93,7 @@ int clean_suite(void) {
     return 0;
 }
 
-void h1_test(void) {
+void h1_test1(void) {
 
     // ----------- FIRST TEST -----------------------
 
@@ -189,6 +189,10 @@ void h1_test(void) {
     // }
     // free(testing_array);
     // destroyRelation(hashed_check);
+}
+
+void h1_test2(void) {
+    
 }
 
 void hist_test(void) {
