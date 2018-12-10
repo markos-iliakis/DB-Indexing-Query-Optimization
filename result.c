@@ -163,6 +163,7 @@ void checkSum(result* res, proj_list* pl, indexes_array* index, query_metadata *
         uint64_t sum = 0;
 
         int array_pos = searchArray(metadata, temp->t->table, temp->t->appearance);
+        printf("\npos %d\n\n", array_pos);
         result *tmp = res;
         while(tmp != NULL){
 

@@ -319,7 +319,7 @@ int parseInstuctions(indexes_array* indexes) {
         executeQuery(q, indexes, pi_tmp->prl);
 
         pi_tmp = pi_tmp->next;
-        sleep(4);
+        // sleep(4);
         // break;
     }
     return 1;
