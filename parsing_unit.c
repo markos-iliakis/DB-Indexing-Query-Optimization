@@ -151,8 +151,6 @@ int parseInstuctions(indexes_array* indexes) {
                 save2 = NULL;
 
 
-                //printf("Op : %d\n", op);
-                //getchar();
                 if (op == 0) {
                     pl_temp->op = 0;
                     token2 = strtok_r(token, "=", &save2);
@@ -161,6 +159,8 @@ int parseInstuctions(indexes_array* indexes) {
                     save3 = NULL;
                     pl_temp->t1 = malloc(sizeof(data));
                     token4 = strtok_r(token2, ".", &save3);
+                    //an mpei sunarthsh pou diatrexei to pl kai tha koitaei poses fores einai to token4 sth lista
+                    pl_temp->t1->appearance = findAppearances(new->arrays, atoi(token4));
                     pl_temp->t1->table = new->arrays[atoi(token4)];
                     token4 = strtok_r(NULL, ".", &save3);
                     pl_temp->t1->column = atoi(token4);
@@ -168,6 +168,7 @@ int parseInstuctions(indexes_array* indexes) {
                     save3 = NULL;
                     pl_temp->t2 = malloc(sizeof(data));
                     token4 = strtok_r(token3, ".", &save3);
+                    pl_temp->t1->appearance = findAppearances(new->arrays, atoi(token4));
                     pl_temp->t2->table = new->arrays[atoi(token4)];
                     token4 = strtok_r(NULL, ".", &save3);
                     pl_temp->t2->column = atoi(token4);
@@ -180,12 +181,14 @@ int parseInstuctions(indexes_array* indexes) {
                     save3 = NULL;
                     pl_temp->t1 = malloc(sizeof(data));
                     token4 = strtok_r(token2, ".", &save3);
+                    pl_temp->t1->appearance = findAppearances(new->arrays, atoi(token4));
                     pl_temp->t1->table = new->arrays[atoi(token4)];
                     token4 = strtok_r(NULL, ".", &save3);
                     pl_temp->t1->column = atoi(token4);
 
                     save3 = NULL;
                     pl_temp->t2 = malloc(sizeof(data));
+                    pl_temp->t1->appearance = findAppearances(new->arrays, atoi(token4));
                     pl_temp->t2->table = atoi(token3);
                     pl_temp->t2->column = -1;
                 }
@@ -197,12 +200,14 @@ int parseInstuctions(indexes_array* indexes) {
                     save3 = NULL;
                     pl_temp->t1 = malloc(sizeof(data));
                     token4 = strtok_r(token2, ".", &save3);
+                    pl_temp->t1->appearance = findAppearances(new->arrays, atoi(token4));
                     pl_temp->t1->table = new->arrays[atoi(token4)];
                     token4 = strtok_r(NULL, ".", &save3);
                     pl_temp->t1->column = atoi(token4);
 
                     save3 = NULL;
                     pl_temp->t2 = malloc(sizeof(data));
+                    pl_temp->t1->appearance = findAppearances(new->arrays, atoi(token4));
                     pl_temp->t2->table = atoi(token3);
                     pl_temp->t2->column = -1;
                 }
@@ -214,12 +219,14 @@ int parseInstuctions(indexes_array* indexes) {
                     save3 = NULL;
                     pl_temp->t1 = malloc(sizeof(data));
                     token4 = strtok_r(token2, ".", &save3);
+                    pl_temp->t1->appearance = findAppearances(new->arrays, atoi(token4));
                     pl_temp->t1->table = new->arrays[atoi(token4)];
                     token4 = strtok_r(NULL, ".", &save3);
                     pl_temp->t1->column = atoi(token4);
 
                     save3 = NULL;
                     pl_temp->t2 = malloc(sizeof(data));
+                    pl_temp->t1->appearance = findAppearances(new->arrays, atoi(token4));
                     pl_temp->t2->table = atoi(token3);
                     pl_temp->t2->column = -1;
                 }
@@ -253,6 +260,7 @@ int parseInstuctions(indexes_array* indexes) {
                 save2 = NULL;
                 pr_temp->t = malloc(sizeof(data));
                 token2 = strtok_r(token, ".", &save2);
+                pr_temp->t->appearance = findAppearances(new->arrays, atoi(token2));
                 pr_temp->t->table = new->arrays[atoi(token2)];
                 token2 = strtok_r(NULL, ".", &save2);
                 pr_temp->t->column = atoi(token2);
@@ -362,4 +370,13 @@ void print(queries *root) {
         else
             curr = curr->next;
     }
+}
+
+int findAppearances(int *arrays, int array_num){
+    int appearances = 0;
+    for(int i = 0; i<= array_num; i++){
+        if(arrays[i] == array_num)
+            appearances++;                
+    }
+    return appearances;
 }
