@@ -374,8 +374,10 @@ void print(queries *root) {
 
 int findAppearances(int *arrays, int array_num){
     int appearances = 0;
+    printf("array[num]-->%d\n", arrays[array_num]);
     for(int i = 0; i<= array_num; i++){
-        if(arrays[i] == array_num)
+        printf("arr[%d]-->%d\n", i, arrays[i]);
+        if(arrays[i] == arrays[array_num])
             appearances++;                
     }
     return appearances;
