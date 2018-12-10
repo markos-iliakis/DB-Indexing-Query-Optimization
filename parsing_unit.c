@@ -168,7 +168,7 @@ int parseInstuctions(indexes_array* indexes) {
                     save3 = NULL;
                     pl_temp->t2 = malloc(sizeof(data));
                     token4 = strtok_r(token3, ".", &save3);
-                    pl_temp->t1->appearance = findAppearances(new->arrays, atoi(token4));
+                    pl_temp->t2->appearance = findAppearances(new->arrays, atoi(token4));
                     pl_temp->t2->table = new->arrays[atoi(token4)];
                     token4 = strtok_r(NULL, ".", &save3);
                     pl_temp->t2->column = atoi(token4);
@@ -188,7 +188,7 @@ int parseInstuctions(indexes_array* indexes) {
 
                     save3 = NULL;
                     pl_temp->t2 = malloc(sizeof(data));
-                    pl_temp->t1->appearance = findAppearances(new->arrays, atoi(token4));
+                    pl_temp->t2->appearance = findAppearances(new->arrays, atoi(token4));
                     pl_temp->t2->table = atoi(token3);
                     pl_temp->t2->column = -1;
                 }
@@ -207,7 +207,7 @@ int parseInstuctions(indexes_array* indexes) {
 
                     save3 = NULL;
                     pl_temp->t2 = malloc(sizeof(data));
-                    pl_temp->t1->appearance = findAppearances(new->arrays, atoi(token4));
+                    pl_temp->t2->appearance = findAppearances(new->arrays, atoi(token4));
                     pl_temp->t2->table = atoi(token3);
                     pl_temp->t2->column = -1;
                 }
@@ -226,7 +226,7 @@ int parseInstuctions(indexes_array* indexes) {
 
                     save3 = NULL;
                     pl_temp->t2 = malloc(sizeof(data));
-                    pl_temp->t1->appearance = findAppearances(new->arrays, atoi(token4));
+                    pl_temp->t2->appearance = findAppearances(new->arrays, atoi(token4));
                     pl_temp->t2->table = atoi(token3);
                     pl_temp->t2->column = -1;
                 }
@@ -319,7 +319,7 @@ int parseInstuctions(indexes_array* indexes) {
         executeQuery(q, indexes, pi_tmp->prl);
 
         pi_tmp = pi_tmp->next;
-        // sleep(4);
+        sleep(4);
         // break;
     }
     return 1;
@@ -372,11 +372,15 @@ void print(queries *root) {
     }
 }
 
+
 int findAppearances(int *arrays, int array_num){
     int appearances = 0;
+    // printf("array[num]-->%d \n", arrays[array_num]);
     for(int i = 0; i<= array_num; i++){
-        if(arrays[i] == array_num)
-            appearances++;                
+        // printf("arr[%d]-->%d\n", i, arrays[i]);
+        if(arrays[i] == arrays[array_num])
+            appearances++;
     }
+    // printf("appearances : %d\n", appearances);
     return appearances;
 }

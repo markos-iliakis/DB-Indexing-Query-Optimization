@@ -33,7 +33,8 @@ void executeQuery(Queue* q, indexes_array* index, proj_list* pl){
         int col_num = q->array[i]->t1->column;
         int op = q->array[i]->op;
         int appearance_rel1 = q->array[i]->t1->appearance;
-        int appearance_rel2 = q->array[i]->t2->appearance;   
+        int appearance_rel2 = q->array[i]->t2->appearance;
+
         int tot_rows = index->ind[rel_num]->array_relations[col_num]->num_tuples;
         int c_value = q->array[i]->t2->table;
 
@@ -60,7 +61,7 @@ void executeQuery(Queue* q, indexes_array* index, proj_list* pl){
 
             int rel_num2 = q->array[i]->t2->table;
             int col_num2 = q->array[i]->t2->column;
-
+            printf("rel %d App1 : %d rel %d App2 : %d\n", rel_num, appearance_rel1, rel_num2, appearance_rel2);
             int tot_rows2 = index->ind[rel_num]->array_relations[col_num]->num_tuples;
             int hist_length1 = histogramSize(index->ind[rel_num]->array_histograms[col_num]);
             int hist_length2 = histogramSize(index->ind[rel_num2]->array_histograms[col_num2]);
@@ -78,6 +79,8 @@ void executeQuery(Queue* q, indexes_array* index, proj_list* pl){
                     }
                     else{
                         prev = RadixHashJoin(NULL, index->ind[rel_num2]->ord_relations[col_num2], index->ind[rel_num]->ord_relations[col_num], index->ind[rel_num2]->array_bucket_indexes[col_num2], index->ind[rel_num2]->array_psums[col_num2], index->ind[rel_num]->array_psums[col_num], hist_length2, hist_length1, NULL, -1);
+                        addArray(&metadata, rel_num);
+                        addArray(&metadata, rel_num2);
                     }
                 }
                 //self join
@@ -93,13 +96,13 @@ void executeQuery(Queue* q, indexes_array* index, proj_list* pl){
                 //size of rel_num > size of rel_num2
                 if((pos = searchArray(metadata, rel_num, appearance_rel1)) >= 0 && (pos2 = searchArray(metadata, rel_num2, appearance_rel2)) == -1){
                     addArray(&metadata, rel_num2);
-                    // printf("applying join %d.%d = %d.%d\n", rel_num, col_num, rel_num2, col_num2);
+                    printf("applying join %d.%d = %d.%d\n", rel_num, col_num, rel_num2, col_num2);
                     res = RadixHashJoin(prev, index->ind[rel_num2]->ord_relations[col_num2], NULL, index->ind[rel_num2]->array_bucket_indexes[col_num2], index->ind[rel_num2]->array_psums[col_num2], NULL, hist_length2, -1, index->ind[rel_num]->array_relations[col_num], pos);
-                    printResults2(res);
+                    // printResults2(res);
                 }
 
                 else if((pos = searchArray(metadata, rel_num2, appearance_rel2)) >= 0 && (pos2 = searchArray(metadata, rel_num, appearance_rel1)) == -1){
-                    // printf("2 -- applying join %d.%d = %d.%d\n", rel_num, col_num, rel_num2, col_num2);
+                    printf("2 -- applying join %d.%d = %d.%d rel2 : %d rel1 : %d\n", rel_num, col_num, rel_num2, col_num2, appearance_rel2, appearance_rel1);
                     addArray(&metadata, rel_num);
                     res = RadixHashJoin(prev, index->ind[rel_num]->ord_relations[col_num], NULL, index->ind[rel_num]->array_bucket_indexes[col_num], index->ind[rel_num]->array_psums[col_num], NULL, hist_length1, -1, index->ind[rel_num2]->array_relations[col_num2], pos);
                 }
@@ -696,12 +699,14 @@ int searchArray(query_metadata *ref_arrays, int array_num, int appearence){
 
     query_metadata *temp = ref_arrays;
     int pos = 0;
-    int appearance_num = 0;
+    int appearance_num = 1;
     while(temp != NULL){
-        if (temp->array_num == array_num && appearance_num == appearence)
-            return pos;
-        else if(temp->array_num == array_num)
-            appearance_num++;
+        if (temp->array_num == array_num){
+            if(appearance_num == appearence)
+                return pos;
+            else
+                appearance_num++;
+        }
         temp = temp->next;
         pos++;
     }
