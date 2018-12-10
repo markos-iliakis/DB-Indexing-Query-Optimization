@@ -312,15 +312,13 @@ int parseInstuctions(indexes_array* indexes) {
         printQuery(pi_tmp);
 
         Queue *q = makeInstructionQueue(pi_tmp->pl, total_j, total_f);
-        printQueue(q);
+        // printQueue(q);
         printf("\nPriority Queue Created\n\n");
 
         //run query
         executeQuery(q, indexes, pi_tmp->prl);
 
         pi_tmp = pi_tmp->next;
-        sleep(4);
-        // break;
     }
     return 1;
 }
