@@ -32,6 +32,8 @@ void executeQuery(Queue* q, indexes_array* index, proj_list* pl){
         int rel_num = q->array[i]->t1->table;
         int col_num = q->array[i]->t1->column;
         int op = q->array[i]->op;
+        int appearance_rel1 = q->array[i]->t1->appearance;
+        int appearance_rel2 = q->array[i]->t2->appearance;   
         int tot_rows = index->ind[rel_num]->array_relations[col_num]->num_tuples;
         int c_value = q->array[i]->t2->table;
 
@@ -41,15 +43,15 @@ void executeQuery(Queue* q, indexes_array* index, proj_list* pl){
             //na ftiaksoume sunarthsh na efarmozei filtro kai na epostrefei result *
             if(prev == NULL){
                 // printf("applying filter %d.%d-%d\n", rel_num, col_num, c_value);
-                prev = filterApplication(NULL, NULL, 1, index->ind[rel_num]->array_relations[col_num], op, tot_rows, c_value, col_num, rel_num);
+                prev = filterApplication(NULL, NULL, 1, index->ind[rel_num]->array_relations[col_num], op, tot_rows, c_value, col_num, rel_num, appearance_rel1);
                 //edw tha prepei na bazoume sta metadata ton pinaka pou xrhsimopoihsame
                 // printf("Bazw sthn oura ton pinaka %d\n", q->array[i]->t1->table);
                 printResults2(prev);
                 addArray(&metadata, q->array[i]->t1->table);
             }
             else{
-                res = filterApplication(metadata, prev, prev->buffer_size, index->ind[rel_num]->array_relations[col_num], op, tot_rows, c_value, col_num, rel_num);
-                if(searchArray(metadata, q->array[i]->t1->table) >= 0)
+                res = filterApplication(metadata, prev, prev->buffer_size, index->ind[rel_num]->array_relations[col_num], op, tot_rows, c_value, col_num, rel_num, appearance_rel1);
+                if(searchArray(metadata, q->array[i]->t1->table, appearance_rel1) >= 0)
                     addArray(&metadata, q->array[i]->t1->table);
             }
         }
@@ -89,20 +91,20 @@ void executeQuery(Queue* q, indexes_array* index, proj_list* pl){
                 int pos = -1;
                 int pos2 = -1;
                 //size of rel_num > size of rel_num2
-                if((pos = searchArray(metadata, rel_num)) >= 0 && (pos2 = searchArray(metadata, rel_num2)) == -1){
+                if((pos = searchArray(metadata, rel_num, appearance_rel1)) >= 0 && (pos2 = searchArray(metadata, rel_num2, appearance_rel2)) == -1){
                     addArray(&metadata, rel_num2);
                     // printf("applying join %d.%d = %d.%d\n", rel_num, col_num, rel_num2, col_num2);
                     res = RadixHashJoin(prev, index->ind[rel_num2]->ord_relations[col_num2], NULL, index->ind[rel_num2]->array_bucket_indexes[col_num2], index->ind[rel_num2]->array_psums[col_num2], NULL, hist_length2, -1, index->ind[rel_num]->array_relations[col_num], pos);
                     printResults2(res);
                 }
 
-                else if((pos = searchArray(metadata, rel_num2)) >= 0 && (pos2 = searchArray(metadata, rel_num)) == -1){
+                else if((pos = searchArray(metadata, rel_num2, appearance_rel2)) >= 0 && (pos2 = searchArray(metadata, rel_num, appearance_rel1)) == -1){
                     // printf("2 -- applying join %d.%d = %d.%d\n", rel_num, col_num, rel_num2, col_num2);
                     addArray(&metadata, rel_num);
                     res = RadixHashJoin(prev, index->ind[rel_num]->ord_relations[col_num], NULL, index->ind[rel_num]->array_bucket_indexes[col_num], index->ind[rel_num]->array_psums[col_num], NULL, hist_length1, -1, index->ind[rel_num2]->array_relations[col_num2], pos);
                 }
                 //self join
-                else if((pos = searchArray(metadata, rel_num2)) >= 0 && (pos2 = searchArray(metadata, rel_num)) >= 0 && pos == pos2){
+                else if((pos = searchArray(metadata, rel_num2, appearance_rel2)) >= 0 && (pos2 = searchArray(metadata, rel_num, appearance_rel1)) >= 0 && pos == pos2){
                     // printf("applying Self join %d.%d = %d.%d pos : %d\n", rel_num, col_num, rel_num2, col_num2, pos);
 
                     //logika tha thelei orisma na an exw self join pinaka o opoiow brisketai 2 fores sta endiamesa apotelesmata
@@ -111,7 +113,7 @@ void executeQuery(Queue* q, indexes_array* index, proj_list* pl){
 
                 }
                 // periptwsh pou oi 2 pinakes einai sta endiamesa apotelesmata kai einai diaforetikoi
-                else if((pos = searchArray(metadata, rel_num)) >= 0 && (pos2 = searchArray(metadata, rel_num2)) >= 0 && pos != pos2){
+                else if((pos = searchArray(metadata, rel_num, appearance_rel1)) >= 0 && (pos2 = searchArray(metadata, rel_num2, appearance_rel2)) >= 0 && pos != pos2){
                     // printf("applying MIDDLE join %d.%d = %d.%d pos : %d\n", rel_num, col_num, rel_num2, col_num2, pos);
                     res = joinArrays(prev, index->ind[rel_num]->array_relations[col_num], index->ind[rel_num2]->array_relations[col_num2], pos, pos2);
                 }
@@ -135,7 +137,7 @@ void executeQuery(Queue* q, indexes_array* index, proj_list* pl){
             }
             else{
                 // printf("applying join filter %d.%d-%d\n", rel_num, col_num, c_value);
-                int array_pos = searchArray(metadata, rel_num);
+                int array_pos = searchArray(metadata, rel_num, appearance_rel1);
                 prev = joinValue(NULL, NULL, NULL, NULL, -1, index->ind[rel_num]->array_relations[col_num], c_value, array_pos);
             }
         }
@@ -160,7 +162,7 @@ void checkSum(result* res, proj_list* pl, indexes_array* index, query_metadata *
     while(temp != NULL){
         uint64_t sum = 0;
 
-        int array_pos = searchArray(metadata, temp->t->table);
+        int array_pos = searchArray(metadata, temp->t->table, temp->t->appearance);
         result *tmp = res;
         while(tmp != NULL){
 
@@ -178,7 +180,7 @@ void checkSum(result* res, proj_list* pl, indexes_array* index, query_metadata *
 
 }
 
-result* filterApplication(query_metadata *metadata, result *res, int buff_size, relation *relA, int op, int tot_rows, int c_value, int col_num, int rel_num){
+result* filterApplication(query_metadata *metadata, result *res, int buff_size, relation *relA, int op, int tot_rows, int c_value, int col_num, int rel_num, int appearance_rel1){
 
     int buffer_pos = 0;
     result* root = NULL;
@@ -233,7 +235,7 @@ result* filterApplication(query_metadata *metadata, result *res, int buff_size, 
     else {
         root = createBuffer(NULL, check_buffer->buffer_size);
         current_buffer = root;
-        int array_pos = searchArray(metadata, rel_num);
+        int array_pos = searchArray(metadata, rel_num, appearance_rel1);
         while(check_buffer != NULL){
 
             for(int i = 0; i < 1024 / (check_buffer->buffer_size * sizeof(int32_t)); i++){
@@ -689,14 +691,16 @@ void addArray(query_metadata **ref_arrays, int new_array){
     return;
 }
 
-int searchArray(query_metadata *ref_arrays, int array_num){
+int searchArray(query_metadata *ref_arrays, int array_num, int appearence){
 
     query_metadata *temp = ref_arrays;
     int pos = 0;
-
+    int appearance_num = 0;
     while(temp != NULL){
-        if (temp->array_num == array_num)
+        if (temp->array_num == array_num && appearance_num == appearence)
             return pos;
+        else if(temp->array_num == array_num)
+            appearance_num++;
         temp = temp->next;
         pos++;
     }

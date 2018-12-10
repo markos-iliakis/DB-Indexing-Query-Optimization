@@ -44,6 +44,7 @@ typedef struct pred_list {
 
 typedef struct data {
     int table;
+    int appearance;
     // int a_table; // real number of table
     int column; // -1 if op is > or <
 } data;
@@ -55,3 +56,4 @@ typedef struct proj_list {
 
 void print(queries *root);
 void printQuery(parsed_instruction* pi);
+int findAppearances(int *arrays, int array_num);
