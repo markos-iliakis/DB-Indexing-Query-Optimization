@@ -2,10 +2,10 @@
 
 #define ROWS 2
 
-static int test_makeHashIdArray(int **input_array, tuple** out, int length){
+static int test_makeHashIdArray(int64_t **input_array, tuple** out, int length){
 
     relation *t = malloc(sizeof(relation));
-    t->tuples = makeHashIdArray(input_array, length);
+    t->tuples = makeHashIdArray(input_array, length, 1);
 
     for(int i = 0; i < length; i++){
         if(t->tuples[i]->key != out[i]->key)
@@ -19,7 +19,7 @@ static int test_makeHistArray(relation *hashed_check, histogram *hist_check, int
 
     histogram* h = createHistogram(length, hashed_check);
     histogram* temp1 = h;
-    histogram* temp2 = hist_check; 
+    histogram* temp2 = hist_check;
     for(int i = 0; i < length; i++){
         if (temp1->value != temp2->value)
             return 0;
@@ -30,7 +30,7 @@ static int test_makeHistArray(relation *hashed_check, histogram *hist_check, int
         temp1 = temp1->next;
         temp2 = temp2->next;
     }
-    
+
     destroyHistogram(h);
     return 1;
 
@@ -81,7 +81,7 @@ static int test_createBucketIndexes(sum** psum, int length, ord_relation** rel, 
                 return 0;
      }
 
-    destroyIndexes(bucket_test, length);
+    destroyBucketIndexes(bucket_test, length);
     return 1;
 }
 
@@ -97,7 +97,7 @@ void h1_test(void) {
 
     // ----------- FIRST TEST -----------------------
 
-    int **testing_array = malloc(2 * sizeof(int *));
+    int64_t **testing_array = malloc(2 * sizeof(int *));
 
     for (int i = 0; i < ROWS; i++)
         testing_array[i] = malloc(3 * sizeof(int));
@@ -108,7 +108,7 @@ void h1_test(void) {
     testing_array[1][0] = 4;
     testing_array[1][1] = 5;
     testing_array[1][2] = 6;
-    
+
     relation *hashed_check = malloc(sizeof(relation));
     hashed_check->tuples = malloc(ROWS * sizeof(tuple));
     for (int i = 0; i < ROWS; i++)
@@ -119,7 +119,7 @@ void h1_test(void) {
     hashed_check->tuples[1]->key = 110;
     hashed_check->tuples[1]->payload = 2;
     hashed_check->tuples[1]->value = 6;
-    
+
     CU_ASSERT_EQUAL( test_makeHashIdArray(testing_array, hashed_check->tuples, ROWS), 1);
 
     for (int i = 0; i < ROWS; i++){
@@ -142,7 +142,7 @@ void h1_test(void) {
     testing_array[1][0] = 4;
     testing_array[1][1] = 4;
     testing_array[1][2] = 0;
-    
+
     hashed_check = malloc(sizeof(relation));
     hashed_check->tuples = malloc(ROWS * sizeof(tuple));
     for (int i = 0; i < ROWS; i++)
@@ -153,7 +153,7 @@ void h1_test(void) {
     hashed_check->tuples[1]->key = 110;
     hashed_check->tuples[1]->payload = 2;
     hashed_check->tuples[1]->value = 6;
-    
+
     CU_ASSERT_EQUAL( test_makeHashIdArray(testing_array, hashed_check->tuples, ROWS), 1);
 
     for (int i = 0; i < ROWS; i++){
@@ -164,19 +164,14 @@ void h1_test(void) {
 
     // ----------- THIRD TEST ------------------
 
-    **testing_array = malloc(2 * sizeof(int *));
-
-    for (int i = 0; i < ROWS; i++)
-        testing_array[i] = malloc(3 * sizeof(int));
-
     testing_array[0][0] = 1;
     testing_array[0][1] = 1;
     testing_array[0][2] = -3;
     testing_array[1][0] = 0;
     testing_array[1][1] = -5;
     testing_array[1][2] = 6;
-    
-    *hashed_check = malloc(sizeof(relation));
+
+    hashed_check = malloc(sizeof(relation));
     hashed_check->tuples = malloc(ROWS * sizeof(tuple));
     for (int i = 0; i < ROWS; i++)
         hashed_check->tuples[i] = malloc(sizeof(tuple));
@@ -186,7 +181,7 @@ void h1_test(void) {
     hashed_check->tuples[1]->key = 110;
     hashed_check->tuples[1]->payload = 2;
     hashed_check->tuples[1]->value = 6;
-    
+
     CU_ASSERT_EQUAL( test_makeHashIdArray(testing_array, hashed_check->tuples, ROWS), 1);
 
     for (int i = 0; i < ROWS; i++){
@@ -210,12 +205,12 @@ void hist_test(void) {
     hashed_check->tuples[1]->key = 110;
     hashed_check->tuples[1]->payload = 2;
     hashed_check->tuples[1]->value = 6;
-    
+
     histogram* h = createHistogram(2, hashed_check);
-    
+
     histogram *node1 = malloc(sizeof(histogram));
     histogram *node2 = malloc(sizeof(histogram));
-    
+
     node1->value = 11;
     node1->freq = 1;
     node1->next = node2;
@@ -223,7 +218,7 @@ void hist_test(void) {
     node2->value = 110;
     node2->freq = 1;
     node2->next = NULL;
-    
+
     CU_ASSERT_EQUAL( test_makeHistArray(hashed_check, node1, 2), 1);
 
     destroyRelation(hashed_check);
@@ -242,12 +237,12 @@ void hist_test(void) {
     hashed_check->tuples[1]->key = 110;
     hashed_check->tuples[1]->payload = 2;
     hashed_check->tuples[1]->value = 6;
-    
+
     h = createHistogram(2, hashed_check);
-    
+
     node1 = malloc(sizeof(histogram));
     node2 = malloc(sizeof(histogram));
-    
+
     node1->value = 11;
     node1->freq = 1;
     node1->next = node2;
@@ -255,7 +250,7 @@ void hist_test(void) {
     node2->value = 110;
     node2->freq = 1;
     node2->next = NULL;
-    
+
     CU_ASSERT_EQUAL( test_makeHistArray(hashed_check, node1, 2), 1);
 
     destroyRelation(hashed_check);
@@ -275,12 +270,12 @@ void hist_test(void) {
     hashed_check->tuples[1]->key = 110;
     hashed_check->tuples[1]->payload = 2;
     hashed_check->tuples[1]->value = 6;
-    
+
     h = createHistogram(2, hashed_check);
-    
+
     node1 = malloc(sizeof(histogram));
     node2 = malloc(sizeof(histogram));
-    
+
     node1->value = 11;
     node1->freq = 1;
     node1->next = node2;
@@ -288,7 +283,7 @@ void hist_test(void) {
     node2->value = 110;
     node2->freq = 1;
     node2->next = NULL;
-    
+
     CU_ASSERT_EQUAL( test_makeHistArray(hashed_check, node1, 2), 1);
 
     destroyRelation(hashed_check);
@@ -317,7 +312,7 @@ void psum_test(void) {
     node2->value = 110;
     node2->freq = 1;
     node2->next = NULL;
-    
+
     CU_ASSERT_EQUAL(test_createPsum(2, node1, psum_check), 1);
 
     free(node1);
@@ -343,7 +338,7 @@ void psum_test(void) {
     node2->value = 110;
     node2->freq = 1;
     node2->next = NULL;
-    
+
     CU_ASSERT_EQUAL(test_createPsum(2, node1, psum_check), 1);
 
     free(node1);
@@ -369,7 +364,7 @@ void psum_test(void) {
     node2->value = 110;
     node2->freq = 1;
     node2->next = NULL;
-    
+
     CU_ASSERT_EQUAL(test_createPsum(2, node1, psum_check), 1);
 
     free(node1);
@@ -526,7 +521,7 @@ void index_test(void){
         int bottom = psum_check[i]->index-1;
 
         int bucket_size = bottom - top + 1;
-        
+
         test_indexes[i] = malloc(sizeof(bucket_index));
         test_indexes[i]->chain = malloc((bucket_size) * sizeof(int));
         test_indexes[i]->bucket = malloc(101 * sizeof(int));
@@ -549,7 +544,7 @@ void index_test(void){
 
     CU_ASSERT_EQUAL(test_createBucketIndexes(psum_check, 2, ord_rel, test_indexes), 1);
 
-    destroyIndexes(test_indexes, 2);
+    destroyBucketIndexes(test_indexes, 2);
     destroyOrdArray(ord_rel, 6);
     destroySum(psum_check, 2);
 
@@ -587,7 +582,7 @@ void index_test(void){
         int bottom = psum_check[i]->index-1;
 
         int bucket_size = bottom - top + 1;
-        
+
         test_indexes[i] = malloc(sizeof(bucket_index));
         test_indexes[i]->chain = malloc((bucket_size) * sizeof(int));
         test_indexes[i]->bucket = malloc(101 * sizeof(int));
@@ -610,7 +605,7 @@ void index_test(void){
 
     CU_ASSERT_EQUAL(test_createBucketIndexes(psum_check, 2, ord_rel, test_indexes), 1);
 
-    destroyIndexes(test_indexes, 2);
+    destroyBucketIndexes(test_indexes, 2);
     destroyOrdArray(ord_rel, 6);
     destroySum(psum_check, 2);
 
@@ -648,7 +643,7 @@ void index_test(void){
         int bottom = psum_check[i]->index-1;
 
         int bucket_size = bottom - top + 1;
-        
+
         test_indexes[i] = malloc(sizeof(bucket_index));
         test_indexes[i]->chain = malloc((bucket_size) * sizeof(int));
         test_indexes[i]->bucket = malloc(101 * sizeof(int));
@@ -671,7 +666,7 @@ void index_test(void){
 
     CU_ASSERT_EQUAL(test_createBucketIndexes(psum_check, 2, ord_rel, test_indexes), 1);
 
-    destroyIndexes(test_indexes, 2);
+    destroyBucketIndexes(test_indexes, 2);
     destroyOrdArray(ord_rel, 6);
     destroySum(psum_check, 2);
 }
@@ -695,7 +690,7 @@ int main(){
         CU_cleanup_registry();
         return CU_get_error();
     }
-    
+
     if (NULL == CU_add_test(pSuite, "h1_test", h1_test)) {
       CU_cleanup_registry();
       return CU_get_error();
@@ -705,17 +700,17 @@ int main(){
       CU_cleanup_registry();
       return CU_get_error();
     }
-    
+
     if (NULL == CU_add_test(pSuite, "psum_test", psum_test)) {
       CU_cleanup_registry();
       return CU_get_error();
     }
-    
+
     if (NULL == CU_add_test(pSuite, "ord_test", ord_test)) {
       CU_cleanup_registry();
       return CU_get_error();
     }
-    
+
     if (NULL == CU_add_test(pSuite, "index_test", index_test)) {
       CU_cleanup_registry();
       return CU_get_error();
@@ -725,7 +720,7 @@ int main(){
       CU_cleanup_registry();
       return CU_get_error();
     }
-    
+
 
     // Run all tests using the basic interface
    CU_basic_set_mode(CU_BRM_VERBOSE);

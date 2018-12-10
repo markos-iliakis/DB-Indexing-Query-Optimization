@@ -16,7 +16,7 @@ void hist_test();
 void parsing_test();
 
 
-static int test_makeHashIdArray(int **input_array, tuple **out, int length);
+static int test_makeHashIdArray(int64_t **input_array, tuple **out, int length);
 static int test_makeHistArray(relation *, histogram *, int );
 static int test_createPsum(int, histogram *, sum **);
 static int test_createReorderedarray(sum **, int, ord_relation **, relation *, int );
