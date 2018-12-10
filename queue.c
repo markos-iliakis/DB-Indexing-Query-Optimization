@@ -1,57 +1,57 @@
 #include "queue.h"
 
-Queue* createQueue(unsigned capacity){ 
-	Queue* queue = malloc(sizeof(Queue)); 
-	queue->capacity = capacity; 
-	queue->front = queue->size = 0; 
-	queue->rear = capacity - 1; // This is important, see the enqueue 
-	queue->array = malloc(queue->capacity * sizeof(pred_list*)); 
-	return queue; 
-} 
+Queue* createQueue(unsigned capacity){
+	Queue* queue = malloc(sizeof(Queue));
+	queue->capacity = capacity;
+	queue->front = queue->size = 0;
+	queue->rear = capacity - 1; // This is important, see the enqueue
+	queue->array = malloc(queue->capacity * sizeof(pred_list*));
+	return queue;
+}
 
-int isFull(Queue* queue) 
-{ return (queue->size == queue->capacity); } 
+int isFull(Queue* queue)
+{ return (queue->size == queue->capacity); }
 
-// Queue is empty when size is 0 
-int isEmpty(Queue* queue) 
-{ return (queue->size == 0); } 
+// Queue is empty when size is 0
+int isEmpty(Queue* queue)
+{ return (queue->size == 0); }
 
-void enqueue(Queue* queue, pred_list* item) 
-{ 
-	if (isFull(queue)) 
-		return; 
-	queue->rear = (queue->rear + 1)%queue->capacity; 
-	queue->array[queue->rear] = item; 
-	queue->size = queue->size + 1; 
-	// printf("%d enqueued to queue\n", item); 
-} 
+void enqueue(Queue* queue, pred_list* item)
+{
+	if (isFull(queue))
+		return;
+	queue->rear = (queue->rear + 1)%queue->capacity;
+	queue->array[queue->rear] = item;
+	queue->size = queue->size + 1;
+	// printf("%d enqueued to queue\n", item);
+}
 
-pred_list* dequeue(Queue* queue) 
-{ 
-	if (isEmpty(queue)) 
-		return NULL; 
-	pred_list* item = queue->array[queue->front]; 
-	queue->front = (queue->front + 1)%queue->capacity; 
-	queue->size = queue->size - 1; 
-	return item; 
-} 
+pred_list* dequeue(Queue* queue)
+{
+	if (isEmpty(queue))
+		return NULL;
+	pred_list* item = queue->array[queue->front];
+	queue->front = (queue->front + 1)%queue->capacity;
+	queue->size = queue->size - 1;
+	return item;
+}
 
-// Function to get front of queue 
-pred_list* front(Queue* queue) 
-{ 
-	if (isEmpty(queue)) 
-		return NULL; 
-	return queue->array[queue->front]; 
-} 
+// Function to get front of queue
+pred_list* front(Queue* queue)
+{
+	if (isEmpty(queue))
+		return NULL;
+	return queue->array[queue->front];
+}
 
-// Function to get rear of queue 
-pred_list* rear(Queue* queue) 
-{ 
-	if (isEmpty(queue)) 
-		return NULL; 
-	return queue->array[queue->rear]; 
-} 
- 
+// Function to get rear of queue
+pred_list* rear(Queue* queue)
+{
+	if (isEmpty(queue))
+		return NULL;
+	return queue->array[queue->rear];
+}
+
 Queue* makeInstructionQueue(pred_list* ls, int tot_j, int tot_f){
     pred_list* marked_j[tot_j];
     pred_list* marked_f[tot_f];
@@ -152,7 +152,7 @@ Queue* makeInstructionQueue(pred_list* ls, int tot_j, int tot_f){
 
 int check_Eq(data* d1, data* d2){
 	// if(d1->table == d2->table && d1->column == d2->column) return 1;
-    if(d1->table == d2->table) return 1;
+    if(d1->table == d2->table && d1->appearance == d2->appearance) return 1;
 	else return 0;
 }
 

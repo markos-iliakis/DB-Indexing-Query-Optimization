@@ -102,7 +102,7 @@ void addFreq(histogram *node) {
 }
 
 void destroyHistogram(histogram *r_hist){
-    
+
     histogram *temp = r_hist->next;
     while (temp->next != NULL) {
         free(r_hist);
@@ -148,10 +148,10 @@ sum** createPsum(int hist_length, histogram* hist){
 
     sum** psum = malloc(hist_length*sizeof(sum*));
     histogram *temp1 = hist, *temp2 = hist->next;
-    
+
     int sum = 0;
     for (int i = 0; i < hist_length; i++) {
-        psum[i] = malloc(sizeof(**psum));    
+        psum[i] = malloc(sizeof(**psum));
         if(i==0){
             psum[i]->index = 0;
             psum[i]->hashed_key = hist->value;
@@ -237,7 +237,7 @@ void destroyRelation(relation* rel){
         free(rel->tuples[i]);
     }
     free(rel->tuples);
-    
+
     free(rel);
 }
 
