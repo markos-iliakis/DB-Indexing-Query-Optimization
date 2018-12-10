@@ -30,33 +30,32 @@ void index_test1();
 void index_test2();
 void index_test3();
 
-<<<<<<< HEAD
 //void parseInput_test(void);
 
-// void loadTables_test(void);
+void loadTables_test(void);
 
-// void createIndexes_test(void);
+void createIndexes_test(void);
 
-// void parseInstructions_test(void);
+void parseInstructions_test(void);
 
-// void makeInstructionsQueue_test(void);
+void makeInstructionsQueue_test(void);
 
-// void executeQuery_test(void);
+void executeQuery_test(void);
 
-// void checkSum_test(void);
+void checkSum_test(void);
 
-// void filterApplication_test(void);
+void filterApplication_test(void);
 
-// void joinValue_test(void);
+void joinValue_test(void);
 
-// void selfJoin_test(void);
+void selfJoin_test(void);
 
-// void joinArrays_test(void);
+void joinArrays_test(void);
 
-// void addArray_test(void);
+void addArray_test(void);
 
-// void searchArray_test(void);
-=======
+void searchArray_test(void);
+
 void parseInput_test(void);
 
 void loadTables_test(void);
@@ -82,8 +81,6 @@ void joinArrays_test(void);
 void addArray_test(void);
 
 void searchArray_test(void);
->>>>>>> 78fd968eadea9f8977a87f60a614fc1b588e7d64
-
 
 static int test_makeHashIdArray(int64_t **input_array, tuple **out, int length);
 static int test_makeHistArray(relation *, histogram *, int );
@@ -92,15 +89,15 @@ static int test_createReorderedarray(sum **, int, ord_relation **, relation *, i
 static int test_createBucketIndexes(sum **, int, ord_relation **, bucket_index **);
 // static int test_createResults(result *result_test, ord_relation **r_ord, ord_relation **s_ord, bucket_index **r_bucket_indexes, sum **r_psum, sum **s_psum, int r_hist_length, int s_hist_length) {
 // static int test_parseInput(void);
-// static int test_loadTables(void);
-// static int test_createIndexes(void);
-// static int test_parseInstructions(void);
-// static int test_makeInstructionsQueue(void);
-// static int test_executeQuery(void);
-// static int test_checkSum(void);
-// static int test_filterApplication(void);
-// static int test_joinValue(void);
-// static int test_selfJoin(void);
-// static int test_joinArrays(void);
-// static int test_addArray(void);
-// static int test_searchArray(void);
+static int test_loadTables(void);
+static int test_createIndexes(void);
+static int test_parseInstructions(void);
+static int test_makeInstructionsQueue(void);
+static int test_executeQuery(void);
+static int test_checkSum(void);
+static int test_filterApplication(void);
+static int test_joinValue(void);
+static int test_selfJoin(void);
+static int test_joinArrays(void);
+static int test_addArray(void);
+static int test_searchArray(void);

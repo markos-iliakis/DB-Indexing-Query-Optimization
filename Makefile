@@ -5,7 +5,7 @@ OUTPUT		=main
 OUTPUT2		=utest
 HEADER  	=relation.h hash_functions.h help_functions.h result.h parsing_unit.h
 HEADER2  	=unit_testing.h help_functions.h
-CC			=gcc-8
+CC			=gcc
 FLAGS   	= -g -c -Wall -O3
 FLAGS2   	= -g -c -Wall -I$HOME/local/include
 

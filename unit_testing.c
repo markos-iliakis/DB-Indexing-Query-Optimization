@@ -94,53 +94,53 @@ static int test_createBucketIndexes(sum** psum, int length, ord_relation** rel, 
 //     return 1;
 // }
 
-// static int test_loadTables(void) {
-//     return 1;
-// }
+static int test_loadTables(void) {
+    return 1;
+}
 
-// static int test_createIndexes(void) {
-//     return 1;
-// }
+static int test_createIndexes(void) {
+    return 1;
+}
 
-// static int test_parseInstructions(void) {
-//     return 1;
-// }
+static int test_parseInstructions(void) {
+    return 1;
+}
 
-// static int test_makeInstructionsQueue(void) {
-//     return 1;
-// }
+static int test_makeInstructionsQueue(void) {
+    return 1;
+}
 
-// static int test_executeQuery(void) {
-//     return 1;
-// }
+static int test_executeQuery(void) {
+    return 1;
+}
 
-// static int test_checkSum(void) {
-//     return 1;
-// }
+static int test_checkSum(void) {
+    return 1;
+}
 
-// static int test_filterApplication(void) {
-//     return 1;
-// }
+static int test_filterApplication(void) {
+    return 1;
+}
 
-// static int test_joinValue(void) {
-//     return 1;
-// }
+static int test_joinValue(void) {
+    return 1;
+}
 
-// static int test_selfJoin(void) {
-//     return 1;
-// }
+static int test_selfJoin(void) {
+    return 1;
+}
 
-// static int test_joinArrays(void) {
-//     return 1;
-// }
+static int test_joinArrays(void) {
+    return 1;
+}
 
-// static int test_addArray(void) {
-//     return 1;
-// }
+static int test_addArray(void) {
+    return 1;
+}
 
-// static int test_searchArray(void) {
-//     return 1;
-// }
+static int test_searchArray(void) {
+    return 1;
+}
 
 int init_suite(void) {
     return 0;
@@ -192,10 +192,10 @@ void h1_test2(void) {
 
     //--------- SECOND TEST ------------
 
-    int64_t **testing_array = malloc(2 * sizeof(int64_t *));
+    int **testing_array = malloc(2 * sizeof(int *));
 
     for (int i = 0; i < ROWS; i++)
-        testing_array[i] = malloc(3 * sizeof(int64_t));
+        testing_array[i] = malloc(3 * sizeof(int));
 
     testing_array[0][0] = 1;
     testing_array[0][1] = 3;
@@ -208,28 +208,15 @@ void h1_test2(void) {
     hashed_check->tuples = malloc(ROWS * sizeof(tuple));
     for (int i = 0; i < ROWS; i++)
         hashed_check->tuples[i] = malloc(sizeof(tuple));
-    hashed_check->tuples[0]->key = 11;
+    hashed_check->tuples[0]->key = 100;
     hashed_check->tuples[0]->payload = 1;
-    hashed_check->tuples[0]->value = 3;
-    hashed_check->tuples[1]->key = 110;
+    hashed_check->tuples[0]->value = 4;
+    hashed_check->tuples[1]->key = 0;
     hashed_check->tuples[1]->payload = 2;
-    hashed_check->tuples[1]->value = 6;
+    hashed_check->tuples[1]->value = 0;
 
     CU_ASSERT_EQUAL( test_makeHashIdArray(testing_array, hashed_check->tuples, ROWS), 1);
 
-<<<<<<< HEAD
-    // for (int i = 0; i < ROWS; i++){
-    //     free(testing_array[i]);
-    // }
-    // free(testing_array);
-    // destroyRelation(hashed_check);
-}
-
-void h1_test3(void) {
-
-    // ----------- FIRST TEST -----------------------
-
-=======
     for (int i = 0; i < ROWS; i++){
         free(testing_array[i]);
     }
@@ -238,51 +225,14 @@ void h1_test3(void) {
     free(hashed_check);
 }
 
-void h1_test2(void) {
-
-    //--------- SECOND TEST ------------
-
-    int64_t **testing_array = malloc(2 * sizeof(int64_t *));
-
-    for (int i = 0; i < ROWS; i++)
-        testing_array[i] = malloc(3 * sizeof(int64_t));
-
-    testing_array[0][0] = 1;
-    testing_array[0][1] = 3;
-    testing_array[0][2] = 3;
-    testing_array[1][0] = 4;
-    testing_array[1][1] = 4;
-    testing_array[1][2] = 0;
-
-    relation *hashed_check = malloc(sizeof(relation));
-    hashed_check->tuples = malloc(ROWS * sizeof(tuple));
-    for (int i = 0; i < ROWS; i++)
-        hashed_check->tuples[i] = malloc(sizeof(tuple));
-    hashed_check->tuples[0]->key = 11;
-    hashed_check->tuples[0]->payload = 1;
-    hashed_check->tuples[0]->value = 3;
-    hashed_check->tuples[1]->key = 110;
-    hashed_check->tuples[1]->payload = 2;
-    hashed_check->tuples[1]->value = 6;
-
-    CU_ASSERT_EQUAL( test_makeHashIdArray(testing_array, hashed_check->tuples, ROWS), 1);
-
-    // for (int i = 0; i < ROWS; i++){
-    //     free(testing_array[i]);
-    // }
-    // free(testing_array);
-    // destroyRelation(hashed_check);
-}
-
 void h1_test3(void) {
 
     // ----------- FIRST TEST -----------------------
 
->>>>>>> 78fd968eadea9f8977a87f60a614fc1b588e7d64
-    int64_t **testing_array = malloc(2 * sizeof(int64_t *));
+    int **testing_array = malloc(2 * sizeof(int *));
 
     for (int i = 0; i < ROWS; i++)
-        testing_array[i] = malloc(3 * sizeof(int64_t));
+        testing_array[i] = malloc(3 * sizeof(int));
 
     testing_array[0][0] = 1;
     testing_array[0][1] = 1;
@@ -295,9 +245,9 @@ void h1_test3(void) {
     hashed_check->tuples = malloc(ROWS * sizeof(tuple));
     for (int i = 0; i < ROWS; i++)
         hashed_check->tuples[i] = malloc(sizeof(tuple));
-    hashed_check->tuples[0]->key = 11;
+    hashed_check->tuples[0]->key = 0;
     hashed_check->tuples[0]->payload = 1;
-    hashed_check->tuples[0]->value = 3;
+    hashed_check->tuples[0]->value = 0;
     hashed_check->tuples[1]->key = 110;
     hashed_check->tuples[1]->payload = 2;
     hashed_check->tuples[1]->value = 6;
@@ -307,8 +257,9 @@ void h1_test3(void) {
     for (int i = 0; i < ROWS; i++){
         free(testing_array[i]);
     }
+    free(hashed_check->tuples);
     free(testing_array);
-    destroyRelation(hashed_check);
+    free(hashed_check);
 }
 
 void hist_test1(void) {
@@ -831,113 +782,59 @@ void index_test3(void){
     destroySum(psum_check, 2);
 }
 
-<<<<<<< HEAD
 // void parseInput_test(void) {
-=======
-void parseInput_test(void) {
-
-}
-
-void loadTables_test(void) {
-
-}
-
-void createIndexes_test(void) {
-
-}
-
-void parseInstructions_test(void) {
->>>>>>> 78fd968eadea9f8977a87f60a614fc1b588e7d64
 
 
-<<<<<<< HEAD
 //     CU_ASSERT_EQUAL(test_parseInput(), 1);
 // }
 
-// void loadTables_test(void) {
-//     CU_ASSERT_EQUAL(test_loadTables(), 1);
-// }
+void loadTables_test(void) {
+    CU_ASSERT_EQUAL(test_loadTables(), 1);
+}
 
-// void createIndexes_test(void) {
-//     CU_ASSERT_EQUAL(test_createIndexes(), 1);
-// }
+void createIndexes_test(void) {
+    CU_ASSERT_EQUAL(test_createIndexes(), 1);
+}
 
-// void parseInstructions_test(void) {
-//     CU_ASSERT_EQUAL(test_parseInstructions(), 1);
-// }
+void parseInstructions_test(void) {
+    CU_ASSERT_EQUAL(test_parseInstructions(), 1);
+}
 
-// void makeInstructionsQueue_test(void) {
-//     CU_ASSERT_EQUAL(test_makeInstructionsQueue(), 1);
-// }
-
-// void executeQuery_test(void) {
-//     CU_ASSERT_EQUAL(test_executeQuery(), 1);
-// }
-
-// void checkSum_test(void) {
-//     CU_ASSERT_EQUAL(test_checkSum(), 1);
-// }
-
-// void filterApplication_test(void) {
-//     CU_ASSERT_EQUAL(test_filterApplication(), 1);
-// }
-
-// void joinValue_test(void) {
-//     CU_ASSERT_EQUAL(test_joinValue(), 1);
-// }
-
-// void selfJoin_test(void) {
-//     CU_ASSERT_EQUAL(test_selfJoin(), 1);
-// }
-
-// void joinArrays_test(void) {
-//     CU_ASSERT_EQUAL(test_joinArrays(), 1);
-// }
-
-// void addArray_test(void) {
-//     CU_ASSERT_EQUAL(test_addArray(), 1);
-// }
-
-// void searchArray_test(void) {
-//     CU_ASSERT_EQUAL(test_searchArray(), 1);
-// }
-=======
 void makeInstructionsQueue_test(void) {
-
+    CU_ASSERT_EQUAL(test_makeInstructionsQueue(), 1);
 }
 
 void executeQuery_test(void) {
-
+    CU_ASSERT_EQUAL(test_executeQuery(), 1);
 }
 
 void checkSum_test(void) {
-
+    CU_ASSERT_EQUAL(test_checkSum(), 1);
 }
 
 void filterApplication_test(void) {
-
+    CU_ASSERT_EQUAL(test_filterApplication(), 1);
 }
 
 void joinValue_test(void) {
-
+    CU_ASSERT_EQUAL(test_joinValue(), 1);
 }
 
 void selfJoin_test(void) {
-
+    CU_ASSERT_EQUAL(test_selfJoin(), 1);
 }
 
 void joinArrays_test(void) {
-
+    CU_ASSERT_EQUAL(test_joinArrays(), 1);
 }
 
 void addArray_test(void) {
-
+    CU_ASSERT_EQUAL(test_addArray(), 1);
 }
 
 void searchArray_test(void) {
-
+    CU_ASSERT_EQUAL(test_searchArray(), 1);
 }
->>>>>>> 78fd968eadea9f8977a87f60a614fc1b588e7d64
 
 int main(){
 
@@ -955,7 +852,6 @@ int main(){
     }
 
     if (NULL == CU_add_test(pSuite, "h1_test1", h1_test1)) {
-<<<<<<< HEAD
       CU_cleanup_registry();
       return CU_get_error();
     }
@@ -971,51 +867,15 @@ int main(){
     }
 
     if (NULL == CU_add_test(pSuite, "hist_test1", hist_test1)) {
-=======
->>>>>>> 78fd968eadea9f8977a87f60a614fc1b588e7d64
       CU_cleanup_registry();
       return CU_get_error();
     }
 
-<<<<<<< HEAD
     if (NULL == CU_add_test(pSuite, "hist_test2", hist_test2)) {
-=======
-    if (NULL == CU_add_test(pSuite, "h1_test2", h1_test2)) {
->>>>>>> 78fd968eadea9f8977a87f60a614fc1b588e7d64
       CU_cleanup_registry();
       return CU_get_error();
     }
 
-<<<<<<< HEAD
-    if (NULL == CU_add_test(pSuite, "hist_test3", hist_test3)) {
-=======
-    if (NULL == CU_add_test(pSuite, "h1_test3", h1_test3)) {
->>>>>>> 78fd968eadea9f8977a87f60a614fc1b588e7d64
-      CU_cleanup_registry();
-      return CU_get_error();
-    }
-
-<<<<<<< HEAD
-    if (NULL == CU_add_test(pSuite, "psum_test1", psum_test1)) {
-=======
-    if (NULL == CU_add_test(pSuite, "hist_test1", hist_test1)) {
->>>>>>> 78fd968eadea9f8977a87f60a614fc1b588e7d64
-      CU_cleanup_registry();
-      return CU_get_error();
-    }
-
-<<<<<<< HEAD
-    if (NULL == CU_add_test(pSuite, "psum_test2", psum_test2)) {
-=======
-    if (NULL == CU_add_test(pSuite, "hist_test2", hist_test2)) {
->>>>>>> 78fd968eadea9f8977a87f60a614fc1b588e7d64
-      CU_cleanup_registry();
-      return CU_get_error();
-    }
-
-<<<<<<< HEAD
-    if (NULL == CU_add_test(pSuite, "psum_test3", psum_test3)) {
-=======
     if (NULL == CU_add_test(pSuite, "hist_test3", hist_test3)) {
       CU_cleanup_registry();
       return CU_get_error();
@@ -1032,37 +892,6 @@ int main(){
     }
 
     if (NULL == CU_add_test(pSuite, "psum_test3", psum_test3)) {
-      CU_cleanup_registry();
-      return CU_get_error();
-    }
-
-    if (NULL == CU_add_test(pSuite, "ord_test1", ord_test1)) {
-      CU_cleanup_registry();
-      return CU_get_error();
-    }
-
-    if (NULL == CU_add_test(pSuite, "ord_test2", ord_test2)) {
-      CU_cleanup_registry();
-      return CU_get_error();
-    }
-
-    if (NULL == CU_add_test(pSuite, "ord_test3", ord_test3)) {
-      CU_cleanup_registry();
-      return CU_get_error();
-    }
-
-    if (NULL == CU_add_test(pSuite, "index_test1", index_test1)) {
-      CU_cleanup_registry();
-      return CU_get_error();
-    }
-
-    if (NULL == CU_add_test(pSuite, "index_test2", index_test2)) {
-      CU_cleanup_registry();
-      return CU_get_error();
-    }
-
-    if (NULL == CU_add_test(pSuite, "index_test3", index_test3)) {
->>>>>>> 78fd968eadea9f8977a87f60a614fc1b588e7d64
       CU_cleanup_registry();
       return CU_get_error();
     }
@@ -1102,65 +931,65 @@ int main(){
     //   return CU_get_error();
     // }
 
-    // if (NULL == CU_add_test(pSuite, "loadTables_test", loadTables_test)) {
-    //   CU_cleanup_registry();
-    //   return CU_get_error();
-    // }
+    if (NULL == CU_add_test(pSuite, "loadTables_test", loadTables_test)) {
+      CU_cleanup_registry();
+      return CU_get_error();
+    }
 
-    // if (NULL == CU_add_test(pSuite, "createIndexes_test", createIndexes_test)) {
-    //   CU_cleanup_registry();
-    //   return CU_get_error();
-    // }
+    if (NULL == CU_add_test(pSuite, "createIndexes_test", createIndexes_test)) {
+      CU_cleanup_registry();
+      return CU_get_error();
+    }
 
-    // if (NULL == CU_add_test(pSuite, "parseInstructions_test", parseInstructions_test)) {
-    //   CU_cleanup_registry();
-    //   return CU_get_error();
-    // }
+    if (NULL == CU_add_test(pSuite, "parseInstructions_test", parseInstructions_test)) {
+      CU_cleanup_registry();
+      return CU_get_error();
+    }
 
-    // if (NULL == CU_add_test(pSuite, "makeInstructionsQueue_test", makeInstructionsQueue_test)) {
-    //   CU_cleanup_registry();
-    //   return CU_get_error();
-    // }
+    if (NULL == CU_add_test(pSuite, "makeInstructionsQueue_test", makeInstructionsQueue_test)) {
+      CU_cleanup_registry();
+      return CU_get_error();
+    }
 
-    // if (NULL == CU_add_test(pSuite, "executeQuery_test", executeQuery_test)) {
-    //   CU_cleanup_registry();
-    //   return CU_get_error();
-    // }
+    if (NULL == CU_add_test(pSuite, "executeQuery_test", executeQuery_test)) {
+      CU_cleanup_registry();
+      return CU_get_error();
+    }
 
-    // if (NULL == CU_add_test(pSuite, "checkSum_test", checkSum_test)) {
-    //   CU_cleanup_registry();
-    //   return CU_get_error();
-    // }
+    if (NULL == CU_add_test(pSuite, "checkSum_test", checkSum_test)) {
+      CU_cleanup_registry();
+      return CU_get_error();
+    }
 
-    // if (NULL == CU_add_test(pSuite, "filterApplication_test", filterApplication_test)) {
-    //   CU_cleanup_registry();
-    //   return CU_get_error();
-    // }
+    if (NULL == CU_add_test(pSuite, "filterApplication_test", filterApplication_test)) {
+      CU_cleanup_registry();
+      return CU_get_error();
+    }
 
-    // if (NULL == CU_add_test(pSuite, "joinValue_test", joinValue_test)) {
-    //   CU_cleanup_registry();
-    //   return CU_get_error();
-    // }
+    if (NULL == CU_add_test(pSuite, "joinValue_test", joinValue_test)) {
+      CU_cleanup_registry();
+      return CU_get_error();
+    }
 
-    // if (NULL == CU_add_test(pSuite, "selfJoin_test", selfJoin_test)) {
-    //   CU_cleanup_registry();
-    //   return CU_get_error();
-    // }
+    if (NULL == CU_add_test(pSuite, "selfJoin_test", selfJoin_test)) {
+      CU_cleanup_registry();
+      return CU_get_error();
+    }
 
-    // if (NULL == CU_add_test(pSuite, "joinArrays_test", joinArrays_test)) {
-    //   CU_cleanup_registry();
-    //   return CU_get_error();
-    // }
+    if (NULL == CU_add_test(pSuite, "joinArrays_test", joinArrays_test)) {
+      CU_cleanup_registry();
+      return CU_get_error();
+    }
 
-    // if (NULL == CU_add_test(pSuite, "addArray_test", addArray_test)) {
-    //   CU_cleanup_registry();
-    //   return CU_get_error();
-    // }
+    if (NULL == CU_add_test(pSuite, "addArray_test", addArray_test)) {
+      CU_cleanup_registry();
+      return CU_get_error();
+    }
 
-    // if (NULL == CU_add_test(pSuite, "searchArray_test", searchArray_test)) {
-    //   CU_cleanup_registry();
-    //   return CU_get_error();
-    // }
+    if (NULL == CU_add_test(pSuite, "searchArray_test", searchArray_test)) {
+      CU_cleanup_registry();
+      return CU_get_error();
+    }
 
 
     // Run all tests using the basic interface
