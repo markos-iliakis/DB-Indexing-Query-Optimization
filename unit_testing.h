@@ -30,6 +30,7 @@ void index_test1();
 void index_test2();
 void index_test3();
 
+<<<<<<< HEAD
 //void parseInput_test(void);
 
 // void loadTables_test(void);
@@ -55,6 +56,33 @@ void index_test3();
 // void addArray_test(void);
 
 // void searchArray_test(void);
+=======
+void parseInput_test(void);
+
+void loadTables_test(void);
+
+void createIndexes_test(void);
+
+void parseInstructions_test(void);
+
+void makeInstructionsQueue_test(void);
+
+void executeQuery_test(void);
+
+void checkSum_test(void);
+
+void filterApplication_test(void);
+
+void joinValue_test(void);
+
+void selfJoin_test(void);
+
+void joinArrays_test(void);
+
+void addArray_test(void);
+
+void searchArray_test(void);
+>>>>>>> 78fd968eadea9f8977a87f60a614fc1b588e7d64
 
 
 static int test_makeHashIdArray(int64_t **input_array, tuple **out, int length);

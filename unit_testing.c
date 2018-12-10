@@ -217,6 +217,7 @@ void h1_test2(void) {
 
     CU_ASSERT_EQUAL( test_makeHashIdArray(testing_array, hashed_check->tuples, ROWS), 1);
 
+<<<<<<< HEAD
     // for (int i = 0; i < ROWS; i++){
     //     free(testing_array[i]);
     // }
@@ -228,6 +229,56 @@ void h1_test3(void) {
 
     // ----------- FIRST TEST -----------------------
 
+=======
+    for (int i = 0; i < ROWS; i++){
+        free(testing_array[i]);
+    }
+    free(hashed_check->tuples);
+    free(testing_array);
+    free(hashed_check);
+}
+
+void h1_test2(void) {
+
+    //--------- SECOND TEST ------------
+
+    int64_t **testing_array = malloc(2 * sizeof(int64_t *));
+
+    for (int i = 0; i < ROWS; i++)
+        testing_array[i] = malloc(3 * sizeof(int64_t));
+
+    testing_array[0][0] = 1;
+    testing_array[0][1] = 3;
+    testing_array[0][2] = 3;
+    testing_array[1][0] = 4;
+    testing_array[1][1] = 4;
+    testing_array[1][2] = 0;
+
+    relation *hashed_check = malloc(sizeof(relation));
+    hashed_check->tuples = malloc(ROWS * sizeof(tuple));
+    for (int i = 0; i < ROWS; i++)
+        hashed_check->tuples[i] = malloc(sizeof(tuple));
+    hashed_check->tuples[0]->key = 11;
+    hashed_check->tuples[0]->payload = 1;
+    hashed_check->tuples[0]->value = 3;
+    hashed_check->tuples[1]->key = 110;
+    hashed_check->tuples[1]->payload = 2;
+    hashed_check->tuples[1]->value = 6;
+
+    CU_ASSERT_EQUAL( test_makeHashIdArray(testing_array, hashed_check->tuples, ROWS), 1);
+
+    // for (int i = 0; i < ROWS; i++){
+    //     free(testing_array[i]);
+    // }
+    // free(testing_array);
+    // destroyRelation(hashed_check);
+}
+
+void h1_test3(void) {
+
+    // ----------- FIRST TEST -----------------------
+
+>>>>>>> 78fd968eadea9f8977a87f60a614fc1b588e7d64
     int64_t **testing_array = malloc(2 * sizeof(int64_t *));
 
     for (int i = 0; i < ROWS; i++)
@@ -780,9 +831,26 @@ void index_test3(void){
     destroySum(psum_check, 2);
 }
 
+<<<<<<< HEAD
 // void parseInput_test(void) {
+=======
+void parseInput_test(void) {
+
+}
+
+void loadTables_test(void) {
+
+}
+
+void createIndexes_test(void) {
+
+}
+
+void parseInstructions_test(void) {
+>>>>>>> 78fd968eadea9f8977a87f60a614fc1b588e7d64
 
 
+<<<<<<< HEAD
 //     CU_ASSERT_EQUAL(test_parseInput(), 1);
 // }
 
@@ -833,6 +901,43 @@ void index_test3(void){
 // void searchArray_test(void) {
 //     CU_ASSERT_EQUAL(test_searchArray(), 1);
 // }
+=======
+void makeInstructionsQueue_test(void) {
+
+}
+
+void executeQuery_test(void) {
+
+}
+
+void checkSum_test(void) {
+
+}
+
+void filterApplication_test(void) {
+
+}
+
+void joinValue_test(void) {
+
+}
+
+void selfJoin_test(void) {
+
+}
+
+void joinArrays_test(void) {
+
+}
+
+void addArray_test(void) {
+
+}
+
+void searchArray_test(void) {
+
+}
+>>>>>>> 78fd968eadea9f8977a87f60a614fc1b588e7d64
 
 int main(){
 
@@ -850,6 +955,7 @@ int main(){
     }
 
     if (NULL == CU_add_test(pSuite, "h1_test1", h1_test1)) {
+<<<<<<< HEAD
       CU_cleanup_registry();
       return CU_get_error();
     }
@@ -865,15 +971,51 @@ int main(){
     }
 
     if (NULL == CU_add_test(pSuite, "hist_test1", hist_test1)) {
+=======
+>>>>>>> 78fd968eadea9f8977a87f60a614fc1b588e7d64
       CU_cleanup_registry();
       return CU_get_error();
     }
 
+<<<<<<< HEAD
     if (NULL == CU_add_test(pSuite, "hist_test2", hist_test2)) {
+=======
+    if (NULL == CU_add_test(pSuite, "h1_test2", h1_test2)) {
+>>>>>>> 78fd968eadea9f8977a87f60a614fc1b588e7d64
       CU_cleanup_registry();
       return CU_get_error();
     }
 
+<<<<<<< HEAD
+    if (NULL == CU_add_test(pSuite, "hist_test3", hist_test3)) {
+=======
+    if (NULL == CU_add_test(pSuite, "h1_test3", h1_test3)) {
+>>>>>>> 78fd968eadea9f8977a87f60a614fc1b588e7d64
+      CU_cleanup_registry();
+      return CU_get_error();
+    }
+
+<<<<<<< HEAD
+    if (NULL == CU_add_test(pSuite, "psum_test1", psum_test1)) {
+=======
+    if (NULL == CU_add_test(pSuite, "hist_test1", hist_test1)) {
+>>>>>>> 78fd968eadea9f8977a87f60a614fc1b588e7d64
+      CU_cleanup_registry();
+      return CU_get_error();
+    }
+
+<<<<<<< HEAD
+    if (NULL == CU_add_test(pSuite, "psum_test2", psum_test2)) {
+=======
+    if (NULL == CU_add_test(pSuite, "hist_test2", hist_test2)) {
+>>>>>>> 78fd968eadea9f8977a87f60a614fc1b588e7d64
+      CU_cleanup_registry();
+      return CU_get_error();
+    }
+
+<<<<<<< HEAD
+    if (NULL == CU_add_test(pSuite, "psum_test3", psum_test3)) {
+=======
     if (NULL == CU_add_test(pSuite, "hist_test3", hist_test3)) {
       CU_cleanup_registry();
       return CU_get_error();
@@ -890,6 +1032,37 @@ int main(){
     }
 
     if (NULL == CU_add_test(pSuite, "psum_test3", psum_test3)) {
+      CU_cleanup_registry();
+      return CU_get_error();
+    }
+
+    if (NULL == CU_add_test(pSuite, "ord_test1", ord_test1)) {
+      CU_cleanup_registry();
+      return CU_get_error();
+    }
+
+    if (NULL == CU_add_test(pSuite, "ord_test2", ord_test2)) {
+      CU_cleanup_registry();
+      return CU_get_error();
+    }
+
+    if (NULL == CU_add_test(pSuite, "ord_test3", ord_test3)) {
+      CU_cleanup_registry();
+      return CU_get_error();
+    }
+
+    if (NULL == CU_add_test(pSuite, "index_test1", index_test1)) {
+      CU_cleanup_registry();
+      return CU_get_error();
+    }
+
+    if (NULL == CU_add_test(pSuite, "index_test2", index_test2)) {
+      CU_cleanup_registry();
+      return CU_get_error();
+    }
+
+    if (NULL == CU_add_test(pSuite, "index_test3", index_test3)) {
+>>>>>>> 78fd968eadea9f8977a87f60a614fc1b588e7d64
       CU_cleanup_registry();
       return CU_get_error();
     }

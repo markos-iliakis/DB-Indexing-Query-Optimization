@@ -102,7 +102,11 @@ void executeQuery(Queue* q, indexes_array* index, proj_list* pl){
                 }
 
                 else if((pos = searchArray(metadata, rel_num2, appearance_rel2)) >= 0 && (pos2 = searchArray(metadata, rel_num, appearance_rel1)) == -1){
+<<<<<<< HEAD
                     printf("2 -- applying join %d.%d = %d.%d rel2 : %d rel1 : %d\n", rel_num, col_num, rel_num2, col_num2, appearance_rel2, appearance_rel1);
+=======
+                    // printf("2 -- applying join %d.%d = %d.%d\n", rel_num, col_num, rel_num2, col_num2, appearance_rel2, appearance_rel1);
+>>>>>>> 78fd968eadea9f8977a87f60a614fc1b588e7d64
                     addArray(&metadata, rel_num);
                     res = RadixHashJoin(prev, index->ind[rel_num]->ord_relations[col_num], NULL, index->ind[rel_num]->array_bucket_indexes[col_num], index->ind[rel_num]->array_psums[col_num], NULL, hist_length1, -1, index->ind[rel_num2]->array_relations[col_num2], pos);
                 }

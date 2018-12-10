@@ -375,11 +375,19 @@ void print(queries *root) {
 
 int findAppearances(int *arrays, int array_num){
     int appearances = 0;
+<<<<<<< HEAD
     // printf("array[num]-->%d \n", arrays[array_num]);
     for(int i = 0; i<= array_num; i++){
         // printf("arr[%d]-->%d\n", i, arrays[i]);
         if(arrays[i] == arrays[array_num])
             appearances++;
+=======
+    printf("array[num]-->%d\n", arrays[array_num]);
+    for(int i = 0; i<= array_num; i++){
+        printf("arr[%d]-->%d\n", i, arrays[i]);
+        if(arrays[i] == arrays[array_num])
+            appearances++;                
+>>>>>>> 78fd968eadea9f8977a87f60a614fc1b588e7d64
     }
     // printf("appearances : %d\n", appearances);
     return appearances;
