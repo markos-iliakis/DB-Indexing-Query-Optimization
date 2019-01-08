@@ -1,16 +1,5 @@
 #include "histogram.h"
 
-void* createHistogram(int line_start, int line_stop, relation *rel, histogram* hist){
-
-    for (int i = line_start; i < line_stop; i++) {
-        histogram *temp = searchHistogram(hist, rel->tuples[i]->key);
-        if (temp == NULL)
-            addHistogram(&hist, rel->tuples[i]->key, 1);
-        else
-            addFreq(temp, 1);
-    }
-}
-
 //function to serach a hash value in histogram
 histogram* searchHistogram(histogram *r_hist, int32_t check){
 

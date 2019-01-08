@@ -1,9 +1,10 @@
 #include "queue3.h"
 
-void queueInit(Queue3 *q, size_t memSize){
-   q->sizeOfQueue = 0;
-   q->memSize = memSize;
-   q->head = q->tail = NULL;
+void queueInit(Queue3** q, size_t memSize){
+    (*q) = malloc(sizeof(Queue3));
+    (*q)->sizeOfQueue = 0;
+    (*q)->memSize = memSize;
+    (*q)->head = (*q)->tail = NULL;
 }
 
 int enqueue3(Queue3 *q, const void *data){
@@ -46,7 +47,7 @@ void dequeue3(Queue3 *q, void *data){
             q->tail = NULL;
         }
 
-        q->sizeOfQueue--;
+        (q->sizeOfQueue)--;
         free(temp->data);
         free(temp);
     }

@@ -1,10 +1,9 @@
 #include "job_scheduler.h"
 
-jobScheduler* jobScheduler_Init(){
-    jobScheduler* js = malloc(sizeof(jobScheduler));
-    js->pool = thr_pool_Init(THR_NUM);
-    queueInit(js->queue, sizeof(Job*));
-    return js;
+void jobScheduler_Init(jobScheduler** jSched){
+    *jSched = malloc(sizeof(jobScheduler));
+    queueInit(&((*jSched)->queue), sizeof(Job));
+    (*jSched)->pool = thr_pool_Init(THR_NUM);
 }
 
 void Schedule(Job* job){
@@ -13,9 +12,10 @@ void Schedule(Job* job){
 
     // add to queue
     enqueue3(jSched->queue, job);
+    // printQueue3(jSched->queue);
 
     // broadcast data in queue
-    pthread_cond_broadcast(&dataNotProduced);
+    pthread_cond_broadcast(&can_consume);
 
     // unlock access
     pthread_mutex_unlock(&mutex);
@@ -25,29 +25,30 @@ thr_pool* thr_pool_Init(int num){
     int err;
     thr_pool* pool = malloc(sizeof(thr_pool));
     pool->thr = malloc(num * sizeof(pthread_t*));
-
+    pool->thr_num = num;
     for(int i=0; i < num; i++)
         if((err = pthread_create(&(pool->thr[i]), NULL, threadFunction, NULL)) != 0) perror2("pthread_create", err);
     
-
-    pool->thr_num = num;
     return pool;
 }
 
-Job* jobInit(void* function, void* arg){
-    Job* job = malloc(sizeof(Job));
-    job->function = function;
-    job->argument = arg;
-    return job;
+void jobInit(void* function, void* arg, Job** job){
+    *job = malloc(sizeof(Job));
+    (*job)->function = function;
+    (*job)->argument = arg;
 }
 
 void Barrier(){
-    // initialize barrier
-    pthread_barrier_init(&barrier, NULL, THR_NUM);
-    // wait for it ...
-    pthread_barrier_wait(&barrier);
-    // destroy barrier
-    pthread_barrier_destroy(&barrier);
+    // lock access of queue
+        pthread_mutex_lock(&mutex);
+  
+        // Check if queue has at least 1 element 
+        while(jSched->queue->sizeOfQueue > 0){
+            printf("queue size : %d\n", jSched->queue->sizeOfQueue);
+            pthread_cond_wait(&can_produce, &mutex);
+        } 
+        // Get the mutex unlocked 
+        pthread_mutex_unlock(&mutex); 
 }
 
 histArgs* histArgsInit(int line_start, int line_stop, relation *rel){
@@ -61,31 +62,48 @@ histArgs* histArgsInit(int line_start, int line_stop, relation *rel){
 
 void* threadFunction(){
     while (1) { 
-  
         // lock access of queue
         pthread_mutex_lock(&mutex);
-
         Job* j = malloc(sizeof(Job)); 
   
         // Check if queue has at least 1 element 
-        if (jSched->queue->sizeOfQueue > 0) { 
-
-            // Get the Job
-            dequeue3(jSched->queue, j); 
-
-            // pthread_cond_signal(&dataNotConsumed); 
-        }   
-        else {  
-            // If some other thread is exectuing, wait
-            pthread_cond_wait(&dataNotProduced, &mutex); 
+        while(jSched->queue->sizeOfQueue <= 0){
+            pthread_cond_wait(&can_consume, &mutex);
         } 
-  
+
+        // Get the Job
+        printf("[thread %ld] getting the job\n", pthread_self());
+        dequeue3(jSched->queue, j);
+        // printQueue3(jSched->queue); 
+        
         // Get the mutex unlocked 
         pthread_mutex_unlock(&mutex); 
 
+        printf("[thread %ld] %d->%d\n", pthread_self(), ((histArgs*)(j->argument))->lines_start, ((histArgs*)(j->argument))->lines_stop);
+
         // run the function
         (*(j->function))(j->argument);
+        printf("[thread %ld] job done\n", pthread_self());
+
+        pthread_cond_signal(&can_produce);
     } 
+}
+
+void* createHistogram(histArgs* histAr){
+    printf("%d->%d\n", histAr->lines_start, histAr->lines_stop);
+    for (int i = histAr->lines_start; i < histAr->lines_stop; i++) {
+        histogram *temp = searchHistogram(histAr->hist, histAr->rel->tuples[i]->key);
+        if (temp == NULL)
+            addHistogram(&(histAr->hist), histAr->rel->tuples[i]->key, 1);
+        else
+            addFreq(temp, 1);
+    }
+
+    printHistogram(histAr->hist);
+
+    fflush(stdin);
+    getchar();
+    
 }
 
 void perror2(const char* s, int err){
@@ -107,20 +125,25 @@ histogram* createParallelHistogram(int tot_num, relation* rel){
         histArgs* hArg = histArgsInit(line_start, line_stop, rel);
 
         // make the job
-        jobs[i] = jobInit(createHistogram, hArg);
+        jobInit(createHistogram, hArg, &(jobs[i]));
 
         // add job to scheduler
+        printf("[main] adding a job %d->%d\n", hArg->lines_start, hArg->lines_stop);
         Schedule(jobs[i]);
 
         line_start = line_stop;
         line_stop += inc;
     }
 
+    printf("[main] waiting all threads to finish\n");
+
     // wait for all histograms to finish
     Barrier();
+    getchar();
 
     histogram* hist = NULL;
 
+    printf("[main] start to unite histograms\n");
     // unite histograms of all threads
     for(int i=0; i < THR_NUM; i++){
         histogram* temp = ((histArgs*)(jobs[i]->argument))->hist;
@@ -138,4 +161,14 @@ histogram* createParallelHistogram(int tot_num, relation* rel){
         }
     }
     return hist;
+}
+
+void printQueue3(Queue3* q){
+    printf("\n");
+    node* temp = q->head;
+    for(int i=0; i<getQueueSize(q); i++){
+        printf("%d->%d |", ((histArgs*)((Job*)(temp->data))->argument)->lines_start, ((histArgs*)((Job*)(temp->data))->argument)->lines_stop);
+        temp = temp->next;
+    }
+    printf("\n\n");
 }

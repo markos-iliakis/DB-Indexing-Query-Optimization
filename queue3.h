@@ -18,7 +18,7 @@ typedef struct QueueList
     node *tail;
 }Queue3;
 
-void queueInit(Queue3 *q, size_t memSize);
+void queueInit(Queue3** q, size_t memSize);
 int enqueue3(Queue3 *, const void *);
 void dequeue3(Queue3 *, void *);
 void queuePeek(Queue3 *, void *);

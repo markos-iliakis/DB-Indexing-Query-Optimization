@@ -10,14 +10,14 @@
 
 #define THR_NUM 8
 
+// extern pthread_mutex_t init_stop_mutex = PTHREAD_MUTEX_INITIALIZER;
 extern pthread_mutex_t mutex;  
-extern pthread_cond_t dataNotProduced; 
-extern pthread_cond_t dataNotConsumed;
-extern pthread_barrier_t barrier;
+extern pthread_cond_t can_produce; 
+extern pthread_cond_t can_consume;
 
 typedef struct thr_pool{
     pthread_t* thr;
-    int thr_num; 
+    int thr_num;
 }thr_pool;
 
 typedef struct Job{
@@ -40,17 +40,20 @@ typedef struct histArgs{
 
 extern jobScheduler* jSched;
 
-jobScheduler* jobScheduler_Init();
+void jobScheduler_Init(jobScheduler** jSched);
 void Schedule(Job* job);
 void Barrier();
 
 thr_pool* thr_pool_Init(int num);
 histArgs* histArgsInit(int line_start, int line_stop, relation *rel);
 
-Job* jobInit(void* function, void* arg);
+void jobInit(void* function, void* arg, Job** job);
 
 void* threadFunction();
 void perror2(const char* s, int err);
 
 histogram* createParallelHistogram(int tot_num, relation* rel);
+
+void printQueue3(Queue3* q);
+void* createHistogram(histArgs* histAr);
 #endif
