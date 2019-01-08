@@ -1,3 +1,6 @@
+#ifndef RESULT_H
+#define RESULT_H
+
 #include "index_functions.h"
 #include "queue.h"
 
@@ -36,3 +39,4 @@ void checkSum(result* res, proj_list* pl, indexes_array* index, query_metadata* 
 
 
 int parseInstuctions(indexes_array* indexes);
+#endif

@@ -1,4 +1,8 @@
 #include "index_functions.h"
+#ifndef HELP_FUNCTIONS_H
+#define HELP_FUNCTIONS_H
+#include "help_functions.h"
+#endif
 
 bucket_index** createBucketIndexes(sum** psum, int hist_length, ord_relation** rel){
 
@@ -118,7 +122,10 @@ indexes_array* createIndexes(tb_array* tb){
             i_a->ind[i]->array_relations[j]->num_tuples = tb->tb[i]->rowNum;
 
             //find different values for x_tuple and create x_hist
-            i_a->ind[i]->array_histograms[j] = createHistogram(tb->tb[i]->rowNum, i_a->ind[i]->array_relations[j]);
+            // i_a->ind[i]->array_histograms[j] = createHistogram(tb->tb[i]->rowNum, i_a->ind[i]->array_relations[j]);
+
+            //find different values for x_tuple and create x_hist (parallel)
+            i_a->ind[i]->array_histograms[j] = createParallelHistogram(tb->tb[i]->rowNum, i_a->ind[i]->array_relations[j]);
 
             //make psum tables
             int hist_length = histogramSize(i_a->ind[i]->array_histograms[j]);

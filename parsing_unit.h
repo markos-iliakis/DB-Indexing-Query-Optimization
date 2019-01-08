@@ -1,3 +1,6 @@
+#ifndef PARSING_UNIT_H
+#define PARSING_UNIT_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -57,3 +60,4 @@ typedef struct proj_list {
 void print(queries *root);
 void printQuery(parsed_instruction* pi);
 int findAppearances(int *arrays, int array_num);
+#endif

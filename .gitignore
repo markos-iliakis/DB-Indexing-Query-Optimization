@@ -1,5 +1,6 @@
 submission/Parser.cpp
 res.txt
+res2.txt
 submission/CMakeLists.txt
 submission/Joiner.cpp
 submission/Operators.cpp
@@ -80,3 +81,4 @@ main
 main.o
 result.o
 jj.code-workspace
+.vscode/*

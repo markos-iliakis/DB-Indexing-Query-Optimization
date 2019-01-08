@@ -1,4 +1,8 @@
 #include "help_functions.h"
+// #ifndef JOB_SCHEDULER_H
+// #define JOB_SCHEDULER_H
+// #include "job_scheduler.h"
+// #endif
 
 // function to print the initial array and it's hash/id array
 void printArrayTuple(int** x_array, tuple** x_tuple, int xdimen, int ydimen){
@@ -43,19 +47,62 @@ tuple** makeHashIdArray(int64_t** x_array, int xdimen, int colNo){
     return x_tuple;
 }
 
-histogram* createHistogram(int xdimen, relation *rel){
+histogram* createParallelHistogram(int tot_num, relation* rel){
+    int inc = tot_num/THR_NUM;
+    int line_start = 0;
+    int line_stop = inc;
+
+    Job** jobs = malloc(THR_NUM*sizeof(Job*)); 
+
+    // give the jobs to jobSchedler
+    for(int i=0; i < THR_NUM; i++){
+    
+        // make the argument
+        histArgs* hArg = histArgsInit(line_start, line_stop, rel);
+
+        // make the job
+        jobs[i] = jobInit(createHistogram, hArg);
+
+        // add job to scheduler
+        Schedule(jobs[i]);
+
+        line_start = line_stop;
+        line_stop += inc;
+    }
+
+    // wait for all histograms to finish
+    Barrier();
 
     histogram* hist = NULL;
 
-    for (int i = 0; i < xdimen; i++) {
+    // unite histograms of all threads
+    for(int i=0; i < THR_NUM; i++){
+        histogram* temp = ((histArgs*)(jobs[i]->argument))->hist;
+        
+        // run through sublist of one thread
+        while(temp != NULL){
+
+            histogram* temp2 = hist;
+            histogram* ret = NULL;
+
+            // check if exist in main histogram
+            if((ret = searchHistogram(temp2, temp->value)) != NULL) addFreq(temp2, ret->freq);
+            else addHistogram(&hist, temp->value, temp->freq);
+            temp = temp->next;
+        }
+    }
+    return hist;
+}
+
+void* createHistogram(int line_start, int line_stop, relation *rel, histogram* hist){
+
+    for (int i = line_start; i < line_stop; i++) {
         histogram *temp = searchHistogram(hist, rel->tuples[i]->key);
         if (temp == NULL)
-            addHistogram(&hist, rel->tuples[i]->key);
+            addHistogram(&hist, rel->tuples[i]->key, 1);
         else
-            addFreq(temp);
+            addFreq(temp, 1);
     }
-
-    return hist;
 }
 
 //function to serach a hash value in histogram
@@ -73,7 +120,7 @@ histogram* searchHistogram(histogram *r_hist, int32_t check){
     return NULL;
 }
 
-void addHistogram(histogram **r_hist, int32_t new_value) {
+void addHistogram(histogram **r_hist, int32_t new_value, int32_t freq) {
 
     histogram *temp = *r_hist;
 
@@ -81,7 +128,7 @@ void addHistogram(histogram **r_hist, int32_t new_value) {
         // printf("Prwth eisagwgh\n");
         (*r_hist) = malloc(sizeof(histogram));
         (*r_hist)->value = new_value;
-        (*r_hist)->freq = 1;
+        (*r_hist)->freq = freq;
         (*r_hist)->next = NULL;
     }
     else{
@@ -92,13 +139,13 @@ void addHistogram(histogram **r_hist, int32_t new_value) {
         temp->next = new_node;
         new_node->next = NULL;
         new_node->value = new_value;
-        new_node->freq = 1;
+        new_node->freq = freq;
     }
     return;
 }
 
-void addFreq(histogram *node) {
-    node->freq++;
+void addFreq(histogram *node, int freq) {
+    node->freq += freq;
 }
 
 void destroyHistogram(histogram *r_hist){

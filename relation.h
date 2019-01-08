@@ -1,3 +1,6 @@
+#ifndef RELATION_H
+#define RELATION_H
+
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -46,3 +49,4 @@ typedef struct tb_array{
 
 void loadTables(tb_array** t_a);
 void destroyTables(tb_array* tb);
+#endif

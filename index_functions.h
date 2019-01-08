@@ -1,3 +1,6 @@
+#ifndef INDEX_FUNCTIONS_H
+#define INDEX_FUNCTIONS_H
+
 #include "help_functions.h"
 
  typedef struct bucket_index {
@@ -25,3 +28,4 @@ void printChain(int* chain, int size);
 void destroyBucketIndexes(bucket_index** ind, int size);
 indexes_array* createIndexes(tb_array* tb);
 void destroyIndexes(indexes_array* indexes);
+#endif

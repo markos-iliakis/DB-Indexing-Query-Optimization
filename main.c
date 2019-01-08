@@ -1,8 +1,17 @@
-#include "result.h"
+#include "job_scheduler.h"
+
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;  
+pthread_cond_t dataNotProduced = PTHREAD_COND_INITIALIZER; 
+pthread_cond_t dataNotConsumed = PTHREAD_COND_INITIALIZER;
+pthread_barrier_t barrier;
+
+jobScheduler* jSched;
 
 int main(int argc, char** argv){
 
     srand(time(NULL));
+
+    jSched = jobScheduler_Init();
 
     // get table paths from stdin and store them
     tb_array* tb = NULL;

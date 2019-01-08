@@ -1,5 +1,6 @@
-#include <stdio.h> 
-#include <stdlib.h> 
+#ifndef QUEUE_H
+#define QUEUE_H
+
 #include <limits.h> 
 #include "parsing_unit.h"
 
@@ -20,3 +21,4 @@ pred_list* rear(Queue* queue);
 int check_Eq(data* d1, data* d2);
 Queue* makeInstructionQueue(pred_list* ls, int tot_j, int tot_f);
 void printQueue(Queue* q);
+#endif
