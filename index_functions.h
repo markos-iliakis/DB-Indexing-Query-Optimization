@@ -1,7 +1,10 @@
+#include "sum.h"
+#include "hash_functions.h"
+#include "job_scheduler.h"
+#include "help_functions.h"
+
 #ifndef INDEX_FUNCTIONS_H
 #define INDEX_FUNCTIONS_H
-
-#include "help_functions.h"
 
  typedef struct bucket_index {
      int *chain;

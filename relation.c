@@ -8,7 +8,7 @@ void loadTables(tb_array** t_a){
 
     // read the number of tables to be read
     char lines_str[10];
-    scanf("%s\n", lines_str);
+    if(scanf("%s\n", lines_str) < 0) exit(-2);
     lines = atoi(lines_str);
     // printf("tables: %d\n", lines);
 
@@ -20,7 +20,7 @@ void loadTables(tb_array** t_a){
     for(int i=0; i<14; i++){
 
         // read the table from the script
-        scanf("%s\n", buf);
+        if(scanf("%s\n", buf) < 0) exit(-2);
 
         // open the binary
         // printf("Going to open : %s\n", buf);
@@ -76,4 +76,14 @@ void destroyTables(tb_array* tb){
     }
     free(tb->tb);
     free(tb);
+}
+
+void destroyRelation(relation* rel){
+
+    for(int i=0; i < rel->num_tuples; i++){
+        free(rel->tuples[i]);
+    }
+    free(rel->tuples);
+
+    free(rel);
 }

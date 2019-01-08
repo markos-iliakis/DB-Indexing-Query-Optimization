@@ -1,8 +1,8 @@
+#include "queue.h"
+#include "index_functions.h"
+
 #ifndef RESULT_H
 #define RESULT_H
-
-#include "index_functions.h"
-#include "queue.h"
 
 struct result;
 struct query_metadata;

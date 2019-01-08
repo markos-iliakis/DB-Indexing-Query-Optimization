@@ -1,6 +1,3 @@
-#ifndef RELATION_H
-#define RELATION_H
-
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,6 +7,9 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <string.h>
+
+#ifndef RELATION_H
+#define RELATION_H
 
 /** Type definition for a tuple */
 struct tuple;
@@ -49,4 +49,5 @@ typedef struct tb_array{
 
 void loadTables(tb_array** t_a);
 void destroyTables(tb_array* tb);
+void destroyRelation(relation* rel);
 #endif

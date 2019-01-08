@@ -4,6 +4,7 @@ jobScheduler* jobScheduler_Init(){
     jobScheduler* js = malloc(sizeof(jobScheduler));
     js->pool = thr_pool_Init(THR_NUM);
     queueInit(js->queue, sizeof(Job*));
+    return js;
 }
 
 void Schedule(Job* job){
@@ -90,4 +91,51 @@ void* threadFunction(){
 void perror2(const char* s, int err){
     fprintf(stderr, "%s: %s\n", s, strerror(err));
     exit(1);
+}
+
+histogram* createParallelHistogram(int tot_num, relation* rel){
+    int inc = tot_num/THR_NUM;
+    int line_start = 0;
+    int line_stop = inc;
+
+    Job** jobs = malloc(THR_NUM*sizeof(Job*)); 
+
+    // give the jobs to jobSchedler
+    for(int i=0; i < THR_NUM; i++){
+    
+        // make the argument
+        histArgs* hArg = histArgsInit(line_start, line_stop, rel);
+
+        // make the job
+        jobs[i] = jobInit(createHistogram, hArg);
+
+        // add job to scheduler
+        Schedule(jobs[i]);
+
+        line_start = line_stop;
+        line_stop += inc;
+    }
+
+    // wait for all histograms to finish
+    Barrier();
+
+    histogram* hist = NULL;
+
+    // unite histograms of all threads
+    for(int i=0; i < THR_NUM; i++){
+        histogram* temp = ((histArgs*)(jobs[i]->argument))->hist;
+        
+        // run through sublist of one thread
+        while(temp != NULL){
+
+            histogram* temp2 = hist;
+            histogram* ret = NULL;
+
+            // check if exist in main histogram
+            if((ret = searchHistogram(temp2, temp->value)) != NULL) addFreq(temp2, ret->freq);
+            else addHistogram(&hist, temp->value, temp->freq);
+            temp = temp->next;
+        }
+    }
+    return hist;
 }

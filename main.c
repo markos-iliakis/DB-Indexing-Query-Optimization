@@ -1,4 +1,4 @@
-#include "job_scheduler.h"
+#include "result.h"
 
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;  
 pthread_cond_t dataNotProduced = PTHREAD_COND_INITIALIZER; 

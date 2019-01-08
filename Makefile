@@ -1,16 +1,16 @@
-OBJECTS		=main.o hash_functions.o help_functions.o index_functions.o result.o relation.o queue.o parsing_unit.o job_scheduler.o queue3.o
+OBJECTS		=main.o hash_functions.o help_functions.o index_functions.o result.o relation.o queue.o parsing_unit.o job_scheduler.o queue3.o histogram.o sum.o
 OBJECTS2    =unit_testing.o hash_functions.o help_functions.o index_functions.o result.o relation.o queue.o
-SOURCE		=main.c hash_functions.c help_functions.c index_functions.c result.c relation.c queue.c parsing_unit.c job_scheduler.c queue3.c
+SOURCE		=main.c hash_functions.c help_functions.c index_functions.c result.c relation.c queue.c parsing_unit.c job_scheduler.c queue3.c histogram.c sum.c
 OUTPUT		=main
 OUTPUT2		=utest
-HEADER  	=relation.h hash_functions.h help_functions.h result.h parsing_unit.h job_scheduler.h queue3.h
+HEADER  	=relation.h hash_functions.h help_functions.h result.h parsing_unit.h job_scheduler.h queue3.h histogram.h sum.h
 HEADER2  	=unit_testing.h help_functions.h
 CC			=gcc
 FLAGS   	= -g -c -Wall -O3
 FLAGS2   	= -g -c -Wall -I$HOME/local/include
 
 main: $(OBJECTS)
-	$(CC) -g $(OBJECTS) -o $@
+	$(CC) -g $(OBJECTS) -o $@ -lpthread
 
 main.o: main.c
 	$(CC) $(FLAGS) main.c
@@ -39,8 +39,14 @@ queue3.o: queue3.c
 parsing_unit.o: parsing_unit.c
 	$(CC) $(FLAGS) parsing_unit.c
 
-job_scheduler.0: job_scheduler.c
+job_scheduler.o: job_scheduler.c
 	$(CC) $(FLAGS) job_scheduler.c
+
+histogram.o: histogram.c
+	$(CC) $(FLAGS) histogram.c
+
+sum.o: sum.c
+	$(CC) $(FLAGS) sum.c
 
 utest: $(OBJECTS2)
 	$(CC) -g $(OBJECTS2) -o $@ -lcunit

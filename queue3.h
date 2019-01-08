@@ -1,7 +1,8 @@
+#include <stdlib.h>
+#include <string.h>
+
 #ifndef QUEUE3_H
 #define QUEUE3_H
-
-#include "parsing_unit.h"
 
 typedef struct Node
 {

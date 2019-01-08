@@ -1,8 +1,4 @@
 #include "index_functions.h"
-#ifndef HELP_FUNCTIONS_H
-#define HELP_FUNCTIONS_H
-#include "help_functions.h"
-#endif
 
 bucket_index** createBucketIndexes(sum** psum, int hist_length, ord_relation** rel){
 
