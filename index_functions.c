@@ -116,6 +116,7 @@ indexes_array* createIndexes(tb_array* tb){
             // make the hashings from the starting relations
             i_a->ind[i]->array_relations[j]->tuples = makeHashIdArray(tb->tb[i]->col, tb->tb[i]->rowNum, j);
             i_a->ind[i]->array_relations[j]->num_tuples = tb->tb[i]->rowNum;
+            printTestColumnHashed(i_a->ind[i]->array_relations[j]->tuples, i_a->ind[i]->array_relations[j]->num_tuples);
 
             //find different values for x_tuple and create x_hist
             // i_a->ind[i]->array_histograms[j] = createHistogram(tb->tb[i]->rowNum, i_a->ind[i]->array_relations[j]);

@@ -19,15 +19,52 @@ void printArrayTuple(int** x_array, tuple** x_tuple, int xdimen, int ydimen){
 }
 
 // function to make initial random arrays
-int** makeRandArray(int xdimen, int ydimen){
-    int **rand_array = malloc(xdimen * sizeof(int *));
-    for (int i = 0; i < xdimen; i++){
-        rand_array[i] = malloc(ydimen * sizeof(int));
-        for (size_t j = 0; j < ydimen; j++) {
-            rand_array[i][j] = rand() % 10;
+void makeRandArray(st_table** rand_tb){
+    (*rand_tb)->col = malloc((*rand_tb)->colNum * sizeof(int64_t*));
+        for (int j = 0; j < (*rand_tb)->colNum; j++){
+            (*rand_tb)->col[j] = malloc((*rand_tb)->rowNum * sizeof(int64_t));
+            for (int k = 0; k < (*rand_tb)->rowNum; k++) {
+                (*rand_tb)->col[j][k] = rand() % 10;
+            }
         }
+}
+
+void loadTestTables(tb_array** tb, int tables_num, int xdimen, int ydimen){
+    *tb = malloc(sizeof(tb_array));
+    (*tb)->size = tables_num;
+    (*tb)->tb = malloc((*tb)->size * sizeof(st_table*));
+
+    for(int i=0; i < (*tb)->size; i++){
+        (*tb)->tb[i] = malloc(sizeof(st_table));
+        (*tb)->tb[i]->colNum = ydimen;
+        (*tb)->tb[i]->rowNum = xdimen;
+
+        makeRandArray(&((*tb)->tb[i]));
+        printTestTable((*tb)->tb[i]);
     }
-    return rand_array;
+}
+
+void printTestTable(st_table* tb){
+    printf("---------------\n");
+    printf("Starting Array\n");
+    for(int i=0; i < tb->rowNum; i++){
+        for(int j=0; j < tb->colNum; j++){
+            printf("%3ld | ", tb->col[j][i]);
+        }
+        printf("\n");
+    }
+    printf("---------------\n");
+    getchar();
+}
+
+void printTestColumnHashed(tuple** tup, int tupNum){
+    printf("---------------\n");
+    printf("Hashed Array\n");
+    for (size_t i = 0; i < tupNum; i++) {
+        printf("%3d | %3d \n", tup[i]->key, tup[i]->value);
+    }
+    printf("---------------\n");
+    getchar();
 }
 
 ord_relation** createReorderedarray(sum **psum, int size, relation *r_relation, int xdimen){

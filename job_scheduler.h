@@ -10,7 +10,7 @@
 
 #define THR_NUM 8
 
-// extern pthread_mutex_t init_stop_mutex = PTHREAD_MUTEX_INITIALIZER;
+extern pthread_mutex_t print_mutex;
 extern pthread_mutex_t mutex;  
 extern pthread_cond_t can_produce; 
 extern pthread_cond_t can_consume;

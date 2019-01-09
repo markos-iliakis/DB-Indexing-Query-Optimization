@@ -61,7 +61,6 @@ void destroyHistogram(histogram *r_hist){
 }
 
 void printHistogram(histogram *r_hist){
-
     printf("---------------\n");
     printf("Histogram\n");
     histogram *temp = r_hist;

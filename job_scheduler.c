@@ -44,7 +44,6 @@ void Barrier(){
   
         // Check if queue has at least 1 element 
         while(jSched->queue->sizeOfQueue > 0){
-            printf("queue size : %d\n", jSched->queue->sizeOfQueue);
             pthread_cond_wait(&can_produce, &mutex);
         } 
         // Get the mutex unlocked 
@@ -72,25 +71,24 @@ void* threadFunction(){
         } 
 
         // Get the Job
-        printf("[thread %ld] getting the job\n", pthread_self());
         dequeue3(jSched->queue, j);
-        // printQueue3(jSched->queue); 
-        
+        // printQueue3(jSched->queue);
+        pthread_mutex_lock(&print_mutex); 
+        printf("[thread %ld] %d->%d\n", pthread_self(), ((histArgs*)(j->argument))->lines_start, ((histArgs*)(j->argument))->lines_stop);
+        pthread_mutex_unlock(&print_mutex);
+
         // Get the mutex unlocked 
         pthread_mutex_unlock(&mutex); 
 
-        printf("[thread %ld] %d->%d\n", pthread_self(), ((histArgs*)(j->argument))->lines_start, ((histArgs*)(j->argument))->lines_stop);
-
         // run the function
         (*(j->function))(j->argument);
-        printf("[thread %ld] job done\n", pthread_self());
 
         pthread_cond_signal(&can_produce);
     } 
 }
 
 void* createHistogram(histArgs* histAr){
-    printf("%d->%d\n", histAr->lines_start, histAr->lines_stop);
+    
     for (int i = histAr->lines_start; i < histAr->lines_stop; i++) {
         histogram *temp = searchHistogram(histAr->hist, histAr->rel->tuples[i]->key);
         if (temp == NULL)
@@ -99,11 +97,11 @@ void* createHistogram(histArgs* histAr){
             addFreq(temp, 1);
     }
 
+    pthread_mutex_lock(&print_mutex);
+    printf("%d->%d\n", histAr->lines_start, histAr->lines_stop);
     printHistogram(histAr->hist);
-
-    fflush(stdin);
-    getchar();
-    
+    pthread_mutex_unlock(&print_mutex);
+    return NULL;
 }
 
 void perror2(const char* s, int err){
@@ -128,18 +126,21 @@ histogram* createParallelHistogram(int tot_num, relation* rel){
         jobInit(createHistogram, hArg, &(jobs[i]));
 
         // add job to scheduler
+        pthread_mutex_lock(&print_mutex);
         printf("[main] adding a job %d->%d\n", hArg->lines_start, hArg->lines_stop);
+        pthread_mutex_unlock(&print_mutex);
         Schedule(jobs[i]);
 
         line_start = line_stop;
         line_stop += inc;
     }
 
+    pthread_mutex_lock(&print_mutex);
     printf("[main] waiting all threads to finish\n");
+    pthread_mutex_unlock(&print_mutex);
 
     // wait for all histograms to finish
     Barrier();
-    getchar();
 
     histogram* hist = NULL;
 
@@ -160,6 +161,8 @@ histogram* createParallelHistogram(int tot_num, relation* rel){
             temp = temp->next;
         }
     }
+    printHistogram(hist);
+
     return hist;
 }
 
