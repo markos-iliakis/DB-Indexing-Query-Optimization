@@ -97,6 +97,7 @@ void printOrderedarray(ord_relation** array, int xdimen){
         printf("RowId : %2d Value %2d\n", array[i]->row_id, array[i]->value);
     }
     printf("---------------\n");
+    getchar();
 }
 
 void destroyOrdArray(ord_relation** ord, int size){

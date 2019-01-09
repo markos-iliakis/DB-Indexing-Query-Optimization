@@ -73,9 +73,6 @@ void* threadFunction(){
         // Get the Job
         dequeue3(jSched->queue, j);
         // printQueue3(jSched->queue);
-        pthread_mutex_lock(&print_mutex); 
-        printf("[thread %ld] %d->%d\n", pthread_self(), ((histArgs*)(j->argument))->lines_start, ((histArgs*)(j->argument))->lines_stop);
-        pthread_mutex_unlock(&print_mutex);
 
         // Get the mutex unlocked 
         pthread_mutex_unlock(&mutex); 
@@ -96,11 +93,6 @@ void* createHistogram(histArgs* histAr){
         else
             addFreq(temp, 1);
     }
-
-    pthread_mutex_lock(&print_mutex);
-    printf("%d->%d\n", histAr->lines_start, histAr->lines_stop);
-    printHistogram(histAr->hist);
-    pthread_mutex_unlock(&print_mutex);
     return NULL;
 }
 
@@ -125,26 +117,17 @@ histogram* createParallelHistogram(int tot_num, relation* rel){
         // make the job
         jobInit(createHistogram, hArg, &(jobs[i]));
 
-        // add job to scheduler
-        pthread_mutex_lock(&print_mutex);
-        printf("[main] adding a job %d->%d\n", hArg->lines_start, hArg->lines_stop);
-        pthread_mutex_unlock(&print_mutex);
+        // add job to schedulers
         Schedule(jobs[i]);
 
         line_start = line_stop;
         line_stop += inc;
     }
 
-    pthread_mutex_lock(&print_mutex);
-    printf("[main] waiting all threads to finish\n");
-    pthread_mutex_unlock(&print_mutex);
-
     // wait for all histograms to finish
     Barrier();
 
     histogram* hist = NULL;
-
-    printf("[main] start to unite histograms\n");
     // unite histograms of all threads
     for(int i=0; i < THR_NUM; i++){
         histogram* temp = ((histArgs*)(jobs[i]->argument))->hist;
@@ -156,14 +139,85 @@ histogram* createParallelHistogram(int tot_num, relation* rel){
             histogram* ret = NULL;
 
             // check if exist in main histogram
-            if((ret = searchHistogram(temp2, temp->value)) != NULL) addFreq(temp2, ret->freq);
+            if((ret = searchHistogram(temp2, temp->value)) != NULL) addFreq(ret, temp->freq);
             else addHistogram(&hist, temp->value, temp->freq);
             temp = temp->next;
         }
     }
-    printHistogram(hist);
 
     return hist;
+}
+
+ord_relation** createParallelReaorderedArray(sum **psum, int size, relation *rel, int xdimen){
+    
+    // get the required space
+    ord_relation** new_array = malloc(xdimen * sizeof(ord_relation *));
+    for (int i = 0; i < xdimen; i++) new_array[i] = malloc(sizeof(ord_relation));
+
+    Job** jobs = malloc(size*sizeof(Job*)); 
+
+    // give the jobs to jobSchedler
+    for(int i=1; i <= size; i++){
+
+        int line_start = psum[i-1]->index;
+        int line_stop;
+        if(i == size) line_stop = xdimen;
+        else line_stop = psum[i]->index;
+
+        // make the argument
+        ordArgs* oArg = ordArgsInit(line_start, line_stop, xdimen, psum[i-1]->hashed_key, rel, new_array);
+
+        // make the job
+        jobInit(createPartialReorderedArray, oArg, &(jobs[i-1]));
+
+        // add job to scheduler
+        // pthread_mutex_lock(&print_mutex);
+        // printf("[main] adding a job %d->%d\n", oArg->lines_start, oArg->lines_stop);
+        // pthread_mutex_unlock(&print_mutex);
+        Schedule(jobs[i-1]);
+    }
+
+    // pthread_mutex_lock(&print_mutex);
+    // printf("[main] waiting all threads to finish\n");
+    // pthread_mutex_unlock(&print_mutex);
+
+    // wait for all subarrays to finish
+    Barrier();
+
+    for(int i=0; i<size-1; i++){
+        psum[i]->index = psum[i+1]->index;
+    }
+    psum[size-1]->index = xdimen;
+
+    return new_array;
+}
+
+void* createPartialReorderedArray(ordArgs* oArg){
+    int ind = oArg->lines_start;
+    for(int i=0; i<oArg->total_lines; i++){
+        if(oArg->rel->tuples[i]->key == oArg->search_key){
+            oArg->ord_rel[ind]->row_id = oArg->rel->tuples[i]->payload;
+            oArg->ord_rel[ind]->value = oArg->rel->tuples[i]->value;
+            ind++;
+            if(ind > oArg->lines_stop) break; 
+        }
+    }
+
+    // pthread_mutex_lock(&print_mutex);
+    // printf("[Thread] %d->%d\n", oArg->lines_start, oArg->lines_stop);
+    // pthread_mutex_unlock(&print_mutex);
+    return NULL;
+}
+
+ordArgs* ordArgsInit(int line_start, int line_stop, int total_lines, int search_key, relation* rel, ord_relation** ord_rel){
+    ordArgs* oArg = malloc(sizeof(ordArgs));
+    oArg->lines_start = line_start;
+    oArg->lines_stop = line_stop;
+    oArg->total_lines = total_lines;
+    oArg->search_key = search_key;
+    oArg->rel = rel;
+    oArg->ord_rel = ord_rel;
+    return oArg;
 }
 
 void printQueue3(Queue3* q){

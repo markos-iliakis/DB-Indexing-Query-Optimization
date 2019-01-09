@@ -2,7 +2,7 @@
 #include <semaphore.h>
 #include <dirent.h>
 #include "queue3.h"
-#include "histogram.h"
+#include "sum.h"
 #include <unistd.h>
 
 #ifndef JOB_SCHEDULER_H
@@ -38,6 +38,15 @@ typedef struct histArgs{
     histogram* hist;
 }histArgs;
 
+typedef struct ordArgs{
+    int lines_start;
+    int lines_stop;
+    int total_lines;
+    int search_key;
+    relation* rel;
+    ord_relation** ord_rel;
+}ordArgs;
+
 extern jobScheduler* jSched;
 
 void jobScheduler_Init(jobScheduler** jSched);
@@ -56,4 +65,8 @@ histogram* createParallelHistogram(int tot_num, relation* rel);
 
 void printQueue3(Queue3* q);
 void* createHistogram(histArgs* histAr);
+
+ordArgs* ordArgsInit(int line_start, int line_stop, int total_lines, int search_key, relation* rel, ord_relation** ord_rel);
+ord_relation** createParallelReaorderedArray(sum **psum, int size, relation *rel, int xdimen);
+void* createPartialReorderedArray(ordArgs* oArg);
 #endif

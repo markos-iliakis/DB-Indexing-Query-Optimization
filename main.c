@@ -17,15 +17,15 @@ int main(int argc, char** argv){
     // get table paths from stdin and store them
     tb_array* tb = NULL;
     printf("Loading Tables\n");
-    // loadTables(&tb);
-    loadTestTables(&tb, 1, 8, 3);
+    loadTables(&tb);
+    // loadTestTables(&tb, 1, 8, 3);
     printf("\nTables Loaded\n");
     
     // create indexes for every table and column
     printf("\nCreating Indexes\n");
     indexes_array* indexes = createIndexes(tb);
     printf("\nIndexes Created\n");
-    getchar();
+
     // get and serve the queries
     parseInstuctions(indexes);
 

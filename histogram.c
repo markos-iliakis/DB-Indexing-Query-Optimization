@@ -69,7 +69,7 @@ void printHistogram(histogram *r_hist){
         temp = temp->next;
     }
     printf("---------------\n");
-
+    getchar();
 }
 
 int histogramSize(histogram *r_hist){
