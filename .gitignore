@@ -84,5 +84,8 @@ relation.o
 main
 main.o
 result.o
+unit_testing.o
+utest
 jj.code-workspace
+.DS_Store
 .vscode/*
