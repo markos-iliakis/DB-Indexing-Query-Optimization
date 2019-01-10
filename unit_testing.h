@@ -6,8 +6,6 @@
 #include <assert.h>
 #include "result.h"
 
-// #define mu_assert(message, test) do { if (!(test)) return message; } while (0)
-// #define mu_run_test(test) do { char *message = test(); tests_run++; if (message) return message; } while (0)
 extern int tests_run;
 
 void h1_test1();
@@ -32,7 +30,7 @@ void index_test3();
 
 //void parseInput_test(void);
 
-void loadTables_test(void);
+// void loadTables_test(void);
 
 void createIndexes_test(void);
 
