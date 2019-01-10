@@ -25,3 +25,14 @@ BestTree join_enumeration() {
 
 	return bt;
 }
+
+
+//MALLON JOINTREE KAI BESTTREE IDIA SINARTISI, MPOREI KAI OXI, PROXWRAME
+
+BestTree createJoinTree() {
+
+}
+
+BestTree createBestTree() {
+
+}
