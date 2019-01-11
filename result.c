@@ -124,7 +124,7 @@ void executeQuery(Queue* q, indexes_array* index, proj_list* pl){
                 }
                 // periptwsh pou to join 2 pinakwn den einai sta endiamesa apotelesamta
                 else{
-                         printf("applying AKURO JOIN PINAKWN %d.%d = %d.%d pos : %d\n", rel_num, col_num, rel_num2, col_num2, pos);
+                         fprintf(stderr, "applying AKURO JOIN PINAKWN %d.%d = %d.%d pos : %d\n", rel_num, col_num, rel_num2, col_num2, pos);
                 //      //kalese th radix kateutheian
                 //     // trekse osa operations xreiazontai etsi wste ta 2 endiamesa apotelesmata na ginoun 1
                 //     // proxwra kai to i
@@ -180,10 +180,13 @@ void checkSum(result* res, proj_list* pl, indexes_array* index, query_metadata *
             }
             tmp = tmp->next;
         }
-        printf("\nChecksum of %d.%d : %ld\n", temp->t->table, temp->t->column, sum);
+        fprintf(stderr, "\nChecksum of %d.%d : %ld\n", temp->t->table, temp->t->column, sum);
+        if(sum != 0) printf("%ld", sum);
+        else printf("NULL");
         temp = temp->next;
+        if(temp != NULL) printf(" ");
     }
-
+    printf("\n");
 }
 
 result* filterApplication(query_metadata *metadata, result *res, int buff_size, relation *relA, int op, int tot_rows, int c_value, int col_num, int rel_num, int appearance_rel1){
@@ -720,9 +723,9 @@ void printList(query_metadata *ref_arrays){
 
     query_metadata *temp = ref_arrays;
 
-    printf("Referrenced arrays are : \n");
+    fprintf(stderr, "Referrenced arrays are : \n");
     while (temp != NULL) {
-        printf("%d\n", temp->array_num);
+        fprintf(stderr, "%d\n", temp->array_num);
         temp = temp->next;
     }
 

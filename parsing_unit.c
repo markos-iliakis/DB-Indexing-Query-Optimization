@@ -6,7 +6,7 @@ int parseInstuctions(indexes_array* indexes) {
     char * line = NULL;
     size_t len = 0;
 
-    fp = fopen("./submission/workloads/small/small.work", "r");
+    fp = fopen("./small.work", "r");
     if (fp == NULL)
         return -1;
 
@@ -307,13 +307,13 @@ int parseInstuctions(indexes_array* indexes) {
             pl_temp = pl_temp->next;
         }
 
-        printf("\n-------------------------\n");//added
+        fprintf(stderr, "\n-------------------------\n");//added
 
         printQuery(pi_tmp);
 
         Queue *q = makeInstructionQueue(pi_tmp->pl, total_j, total_f);
         // printQueue(q);
-        printf("\nPriority Queue Created\n\n");
+        fprintf(stderr, "\nPriority Queue Created\n\n");
 
         //run query
         executeQuery(q, indexes, pi_tmp->prl);
@@ -327,27 +327,27 @@ void printQuery(parsed_instruction* p_i){
     proj_list* prl = p_i->prl;
     pred_list* pl = p_i->pl;
 
-    printf("\nSelect ");
+    fprintf(stderr, "\nSelect ");
     while(prl != NULL){
-        printf("sum(%d.%d) ", prl->t->table, prl->t->column);
+        fprintf(stderr, "sum(%d.%d) ", prl->t->table, prl->t->column);
         prl = prl->next;
     }
-    printf("Where ");
+    fprintf(stderr, "Where ");
     while(pl != NULL){
-        if(pl->op == 0) printf("%d.%d = %d.%d", pl->t1->table, pl->t1->column, pl->t2->table, pl->t2->column);
+        if(pl->op == 0) fprintf(stderr, "%d.%d = %d.%d", pl->t1->table, pl->t1->column, pl->t2->table, pl->t2->column);
         else {
-            printf("%d.%d", pl->t1->table, pl->t1->column);
+            fprintf(stderr, "%d.%d", pl->t1->table, pl->t1->column);
 
-            if(pl->op == 1) printf(" < ");
-            else if(pl->op == 2) printf(" > ");
-            else printf(" = ");
+            if(pl->op == 1) fprintf(stderr, " < ");
+            else if(pl->op == 2) fprintf(stderr, " > ");
+            else fprintf(stderr, " = ");
 
-            printf("%d", pl->t2->table);
+            fprintf(stderr, "%d", pl->t2->table);
         }
         pl = pl->next;
-        if(pl != NULL) printf(" and ");
+        if(pl != NULL) fprintf(stderr, " and ");
     }
-    printf("\n\n");
+    fprintf(stderr, "\n\n");
 }
 
 void print(queries *root) {

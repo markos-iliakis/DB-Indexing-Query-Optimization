@@ -119,10 +119,10 @@ indexes_array* createIndexes(tb_array* tb){
             // printTestColumnHashed(i_a->ind[i]->array_relations[j]->tuples, i_a->ind[i]->array_relations[j]->num_tuples);
 
             //find different values for x_tuple and create x_hist
-            // i_a->ind[i]->array_histograms[j] = createHistogram(tb->tb[i]->rowNum, i_a->ind[i]->array_relations[j]);
-
-            //find different values for x_tuple and create x_hist (parallel)
-            i_a->ind[i]->array_histograms[j] = createParallelHistogram(tb->tb[i]->rowNum, i_a->ind[i]->array_relations[j]);
+            histArgs* hArg = histArgsInit(0, tb->tb[i]->rowNum, i_a->ind[i]->array_relations[j]);
+            createHistogram(hArg);
+            i_a->ind[i]->array_histograms[j] = hArg->hist;
+            // i_a->ind[i]->array_histograms[j] = createParallelHistogram(tb->tb[i]->rowNum, i_a->ind[i]->array_relations[j]);
             // printHistogram(i_a->ind[i]->array_histograms[j]);
 
             //make psum tables
@@ -130,8 +130,8 @@ indexes_array* createIndexes(tb_array* tb){
             i_a->ind[i]->array_psums[j] = createPsum(hist_length, i_a->ind[i]->array_histograms[j]);
 
             // create x'
-            // i_a->ind[i]->ord_relations[j] = createReorderedarray(i_a->ind[i]->array_psums[j], hist_length, i_a->ind[i]->array_relations[j], tb->tb[i]->rowNum);
-            i_a->ind[i]->ord_relations[j] = createParallelReaorderedArray(i_a->ind[i]->array_psums[j], hist_length, i_a->ind[i]->array_relations[j], tb->tb[i]->rowNum);
+            i_a->ind[i]->ord_relations[j] = createReorderedarray(i_a->ind[i]->array_psums[j], hist_length, i_a->ind[i]->array_relations[j], tb->tb[i]->rowNum);
+            // i_a->ind[i]->ord_relations[j] = createParallelReaorderedArray(i_a->ind[i]->array_psums[j], hist_length, i_a->ind[i]->array_relations[j], tb->tb[i]->rowNum);
             // printOrderedarray(i_a->ind[i]->ord_relations[j], tb->tb[i]->rowNum);
 
             // create indexes

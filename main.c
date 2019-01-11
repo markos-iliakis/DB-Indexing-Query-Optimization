@@ -16,15 +16,15 @@ int main(int argc, char** argv){
 
     // get table paths from stdin and store them
     tb_array* tb = NULL;
-    printf("Loading Tables\n");
+    fprintf(stderr, "Loading Tables\n");
     loadTables(&tb);
     // loadTestTables(&tb, 1, 8, 3);
-    printf("\nTables Loaded\n");
+    fprintf(stderr, "\nTables Loaded\n");
     
     // create indexes for every table and column
-    printf("\nCreating Indexes\n");
+    fprintf(stderr, "\nCreating Indexes\n");
     indexes_array* indexes = createIndexes(tb);
-    printf("\nIndexes Created\n");
+    fprintf(stderr, "\nIndexes Created\n");
 
     // get and serve the queries
     parseInstuctions(indexes);
@@ -36,3 +36,4 @@ int main(int argc, char** argv){
 }
 
 // bash ./start.sh ./submission/workloads/small/small.init | ./main
+// ./submission/runTestharness.sh

@@ -3,13 +3,12 @@
 void loadTables(tb_array** t_a){
 
     char* line = NULL;
-    char buf[1024];
-    int lines=0;
+    int lines=14;
 
     // read the number of tables to be read
-    char lines_str[10];
-    if(scanf("%s\n", lines_str) < 0) exit(-2);
-    lines = atoi(lines_str);
+    // char lines_str[10];
+    // if(scanf("%s\n", lines_str) < 0) exit(-2);
+    // lines = atoi(lines_str);
     // printf("tables: %d\n", lines);
 
     (*t_a) = malloc(sizeof(tb_array));
@@ -17,18 +16,30 @@ void loadTables(tb_array** t_a){
     (*t_a)->size = lines;
 
     // for each table file in the initial
-    for(int i=0; i<14; i++){
+    for(int i=0; i<lines; i++){
 
+        // char cwd[1024];
+        // getcwd(cwd, sizeof(cwd));
+        // fprintf(stderr, "Current working dir: %s\n", cwd);
+
+        char* buf = malloc(5*sizeof(char));
+        
         // read the table from the script
         if(scanf("%s\n", buf) < 0) exit(-2);
 
+        // char buf2 [1024];
+        // strcpy(buf2, "./submission/workloads/small/\0");
+        // strcat(buf2, buf);
+
         // open the binary
-        // printf("Going to open : %s\n", buf);
+        // fprintf(stderr, "Going to open : %s\n", buf);
         int fd = open(buf, O_RDONLY);
         if(fd == -1) {
             perror("File not Found!");
             exit(-1);
         }
+
+        free(buf);
 
         // Obtain file size
         struct stat sb;

@@ -9,7 +9,8 @@ submission/README
 submission/Relation.cpp
 submission/Utils.cpp
 submission/compile.sh
-submission/harness.cpp
+submission/harness
+submission/build/*
 submission/main.cpp
 submission/package.sh
 submission/run.sh
