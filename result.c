@@ -180,13 +180,23 @@ void checkSum(result* res, proj_list* pl, indexes_array* index, query_metadata *
             }
             tmp = tmp->next;
         }
-        fprintf(stderr, "\nChecksum of %d.%d : %ld\n", temp->t->table, temp->t->column, sum);
-        if(sum != 0) printf("%ld", sum);
-        else printf("NULL");
+        // fprintf(stderr, "\nChecksum of %d.%d : %ld\n", temp->t->table, temp->t->column, sum);
+        if(sum != 0){
+            printf("%ld", sum);
+            // fprintf(stderr, "%ld", sum);
+        }
+        else {
+            printf("NULL");
+            // fprintf(stderr, "NULL");
+        }
         temp = temp->next;
-        if(temp != NULL) printf(" ");
+        if(temp != NULL){
+            printf(" ");
+            // fprintf(stderr, " ");
+        }
     }
     printf("\n");
+    // fprintf(stderr, "\n");
 }
 
 result* filterApplication(query_metadata *metadata, result *res, int buff_size, relation *relA, int op, int tot_rows, int c_value, int col_num, int rel_num, int appearance_rel1){

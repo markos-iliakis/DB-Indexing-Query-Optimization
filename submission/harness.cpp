@@ -247,12 +247,12 @@ int main(int argc, char *argv[]) {
         // Count how many lines were returned
         for (size_t j = 0; j != size_t(bytes); ++j) {
           if (buffer[j] == '\n') ++output_read;
-          cout << buffer[j] << endl;
+          // cout << buffer[j] << endl;
         }
         output.append(buffer, bytes);
       }
 
-      cout << "Read output " << input_ofs << " " << input_batches[batch].length() << " " << output_read << " " << result_batches[batch].size() << endl;
+      // cout << "Read output " << input_ofs << " " << input_batches[batch].length() << " " << output_read << " " << result_batches[batch].size() << endl;
       sleep(1);
       // Feed another chunk of data from this batch to the test program
       // if (FD_ISSET(stdin_pipe[1], &write_fd)) {
@@ -269,8 +269,9 @@ int main(int argc, char *argv[]) {
 
     // Parse and compare the batch result
     stringstream result(output);
-
-    for (unsigned i = 0; i != result_batches[batch].size() && failure_cnt < MAX_FAILED_QUERIES; ++i) {
+    int j=0;
+    for (unsigned i = 0; i != output_read ; ++i) {
+      
       string val;
 
       // result >> val;
@@ -280,29 +281,36 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
       }
 
-      bool matched = val == result_batches[batch][i];
+      bool matched = val == result_batches[batch][j];
       if (!matched) {
-        cerr << "Result mismatch for query " << query_no << ", expected: " << result_batches[batch][i]
+        cerr << "Result mismatch for query " << query_no << ", expected: " << result_batches[batch][j]
                   << ", actual: " << val << endl;
         ++failure_cnt;
       }
-      if (matched){
-          cout << endl << "Result MATCH for query " << query_no << endl <<  endl;
-      }
+      // if (matched){
+      //     cout << endl << "Result MATCH for query " << query_no << endl <<  endl;
+      // }
       ++query_no;
+      j++;
+      if(j == result_batches[batch].size()) {
+        batch++;
+        j=0;
+        // cout << "Batch ended" << endl;
+      }
+      if(batch == input_batches.size()) break;
     }
-    cout << "Batch ended" << endl;
+    break;
   }
 
   struct timeval end;
   gettimeofday(&end, NULL);
 
-  if (failure_cnt == 0) {
+  // if (failure_cnt == 0) {
     // Output the elapsed time in milliseconds
     double elapsed_sec = (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec) / 1000000.0;
     cout << (long)(elapsed_sec * 1000) << endl;
     return EXIT_SUCCESS;
-  }
+  // }
 
   return EXIT_FAILURE;
 }
