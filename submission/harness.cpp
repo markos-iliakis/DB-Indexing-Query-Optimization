@@ -213,7 +213,7 @@ int main(int argc, char *argv[]) {
 
   // Loop over all batches
   for (unsigned long batch = 0; batch != input_batches.size() && failure_cnt < MAX_FAILED_QUERIES; ++batch) {
-    cout << "Starting Batch" << endl;
+    // cout << "Starting Batch" << endl;
     string output;  // raw output is collected here
     output.reserve(1000000);
 

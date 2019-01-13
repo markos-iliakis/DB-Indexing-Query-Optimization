@@ -10,8 +10,10 @@
 
 #define THR_NUM 8
 
+extern pthread_mutex_t done_jobs_mutex;
 extern pthread_mutex_t print_mutex;
 extern pthread_mutex_t mutex;  
+extern pthread_mutex_t mutex2;
 extern pthread_cond_t can_produce; 
 extern pthread_cond_t can_consume;
 
@@ -48,6 +50,7 @@ typedef struct ordArgs{
 }ordArgs;
 
 extern jobScheduler* jSched;
+int done_jobs;
 
 void jobScheduler_Init(jobScheduler** jSched);
 void Schedule(Job* job);

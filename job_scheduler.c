@@ -38,25 +38,22 @@ void jobInit(void* function, void* arg, Job** job){
     (*job)->argument = arg;
 }
 
-void Barrier(){
+void Barrier(int to_be_done){
     // lock access of queue
-        pthread_mutex_lock(&mutex);
-  
-        // Check if queue has at least 1 element 
-        while(jSched->queue->sizeOfQueue > 0){
-            pthread_cond_wait(&can_produce, &mutex);
-        } 
-        // Get the mutex unlocked 
-        pthread_mutex_unlock(&mutex); 
-}
+    pthread_mutex_lock(&mutex2);
 
-histArgs* histArgsInit(int line_start, int line_stop, relation *rel){
-    histArgs* hArg = malloc(sizeof(histArgs));
-    hArg->lines_start = line_start;
-    hArg->lines_stop = line_stop;
-    hArg->rel = rel;
-    hArg->hist = NULL;
-    return hArg;
+    // Check if queue has at least 1 element 
+    while(done_jobs < to_be_done){
+        pthread_cond_wait(&can_produce, &mutex2); // must use semaphore tha starts with -number of jobs to be done
+        // pthread_mutex_lock(&done_jobs_mutex);
+        // done_jobs++;
+        // pthread_mutex_unlock(&done_jobs_mutex);
+        // pthread_mutex_lock(&print_mutex);
+        // fprintf(stderr, "done jobs %d\n", done_jobs);
+        // pthread_mutex_unlock(&print_mutex);
+    } 
+    // Get the mutex unlocked 
+    pthread_mutex_unlock(&mutex2); 
 }
 
 void* threadFunction(){
@@ -80,7 +77,17 @@ void* threadFunction(){
         // run the function
         (*(j->function))(j->argument);
 
+        // pthread_mutex_lock(&print_mutex);
+        // fprintf(stderr, "A job finished\n");
+        // pthread_mutex_unlock(&print_mutex);
+
+        
+        pthread_mutex_lock(&done_jobs_mutex);
+        done_jobs++;
+        pthread_mutex_unlock(&done_jobs_mutex);
+        pthread_mutex_lock(&mutex2);
         pthread_cond_signal(&can_produce);
+        pthread_mutex_unlock(&mutex2);
     } 
 }
 
@@ -96,17 +103,13 @@ void* createHistogram(histArgs* histAr){
     return NULL;
 }
 
-void perror2(const char* s, int err){
-    fprintf(stderr, "%s: %s\n", s, strerror(err));
-    exit(1);
-}
-
 histogram* createParallelHistogram(int tot_num, relation* rel){
     int inc = tot_num/THR_NUM;
     int line_start = 0;
     int line_stop = inc;
 
-    Job** jobs = malloc(THR_NUM*sizeof(Job*)); 
+    Job** jobs = malloc(THR_NUM*sizeof(Job*));
+    done_jobs = 0; 
 
     // give the jobs to jobSchedler
     for(int i=0; i < THR_NUM; i++){
@@ -122,10 +125,15 @@ histogram* createParallelHistogram(int tot_num, relation* rel){
 
         line_start = line_stop;
         line_stop += inc;
+        if(i+2 == THR_NUM) line_stop = tot_num;
     }
 
     // wait for all histograms to finish
-    Barrier();
+    Barrier(THR_NUM);
+    // pthread_mutex_lock(&print_mutex);
+    // fprintf(stderr, "All jobs finished\n");
+    // pthread_mutex_unlock(&print_mutex);
+    // getchar();
 
     histogram* hist = NULL;
     // unite histograms of all threads
@@ -155,6 +163,7 @@ ord_relation** createParallelReaorderedArray(sum **psum, int size, relation *rel
     for (int i = 0; i < xdimen; i++) new_array[i] = malloc(sizeof(ord_relation));
 
     Job** jobs = malloc(size*sizeof(Job*)); 
+    done_jobs = 0;
 
     // give the jobs to jobSchedler
     for(int i=1; i <= size; i++){
@@ -182,7 +191,7 @@ ord_relation** createParallelReaorderedArray(sum **psum, int size, relation *rel
     // pthread_mutex_unlock(&print_mutex);
 
     // wait for all subarrays to finish
-    Barrier();
+    Barrier(size);
 
     for(int i=0; i<size-1; i++){
         psum[i]->index = psum[i+1]->index;
@@ -220,6 +229,15 @@ ordArgs* ordArgsInit(int line_start, int line_stop, int total_lines, int search_
     return oArg;
 }
 
+histArgs* histArgsInit(int line_start, int line_stop, relation *rel){
+    histArgs* hArg = malloc(sizeof(histArgs));
+    hArg->lines_start = line_start;
+    hArg->lines_stop = line_stop;
+    hArg->rel = rel;
+    hArg->hist = NULL;
+    return hArg;
+}
+
 void printQueue3(Queue3* q){
     printf("\n");
     node* temp = q->head;
@@ -228,4 +246,9 @@ void printQueue3(Queue3* q){
         temp = temp->next;
     }
     printf("\n\n");
+}
+
+void perror2(const char* s, int err){
+    fprintf(stderr, "%s: %s\n", s, strerror(err));
+    exit(1);
 }

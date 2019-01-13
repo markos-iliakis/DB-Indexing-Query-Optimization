@@ -18,4 +18,5 @@ int histogramSize(histogram *);
 void destroyHistogram(histogram *r_hist);
 void printHistogram(histogram* hist);
 
+void histogramCompare(histogram* h1, histogram* h2);
 #endif

@@ -61,14 +61,14 @@ void destroyHistogram(histogram *r_hist){
 }
 
 void printHistogram(histogram *r_hist){
-    printf("---------------\n");
-    printf("Histogram\n");
+    fprintf(stderr, "---------------\n");
+    fprintf(stderr, "Histogram\n");
     histogram *temp = r_hist;
     while (temp != NULL) {
-        printf("Value : %3d Frequency : %3d\n", temp->value, temp->freq);
+        fprintf(stderr, "Value : %3d Frequency : %3d\n", temp->value, temp->freq);
         temp = temp->next;
     }
-    printf("---------------\n");
+    fprintf(stderr, "---------------\n");
     getchar();
 }
 
@@ -83,4 +83,28 @@ int histogramSize(histogram *r_hist){
 
     return length;
 
+}
+
+void histogramCompare(histogram* h1, histogram* h2){
+    histogram* temp1 = h1;
+    histogram* temp2 = h2;
+    int flag = 1;
+
+    while(temp1 != NULL){
+        if(temp2 == NULL){
+            flag = 0;
+            break;
+        }
+        
+        if((temp1->value == temp2->value) && (temp1->freq == temp2->freq)){
+            temp1 = temp1->next;
+            temp2 = temp2->next;
+        }
+        else{
+            flag = 0;
+            break;
+        }
+    }
+
+    fprintf(stderr, "parallel histogram correct : %d\n", flag);
 }

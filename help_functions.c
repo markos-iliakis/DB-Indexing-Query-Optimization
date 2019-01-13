@@ -40,7 +40,7 @@ void loadTestTables(tb_array** tb, int tables_num, int xdimen, int ydimen){
         (*tb)->tb[i]->rowNum = xdimen;
 
         makeRandArray(&((*tb)->tb[i]));
-        printTestTable((*tb)->tb[i]);
+        // printTestTable((*tb)->tb[i]);
     }
 }
 
