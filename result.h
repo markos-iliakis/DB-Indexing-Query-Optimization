@@ -4,6 +4,8 @@
 #ifndef RESULT_H
 #define RESULT_H
 
+#define RESULT_NODE_SIZE 1024
+
 struct result;
 struct query_metadata;
 
@@ -17,6 +19,21 @@ typedef struct query_metadata{
     int array_num;
     struct query_metadata *next;
 }query_metadata;
+
+typedef struct joinArgs{
+    int hash_to_check;
+    int r_hist_length;
+    int lines_start;
+    int lines_stop;
+    int array_pos;
+    sum** r_psum;
+    relation* relA;
+    ord_relation **relR;
+    ord_relation **relS;
+    bucket_index **r_bucket_indexes;
+    result* prev_res;
+    result* new_res;
+}joinArgs;
 
 void printResults(result *root);
 void printResults2(result *root);
@@ -37,6 +54,8 @@ void destroyResult(result* r);
 void executeQuery(Queue* q, indexes_array* index, proj_list* pl);
 void checkSum(result* res, proj_list* pl, indexes_array* index, query_metadata* metadata);
 
+void* radixHashJoin(joinArgs* jArg);
+result* radixHashJoinParallel(result *res, ord_relation **relR, ord_relation **relS, bucket_index **r_bucket_indexes, sum **r_psum, sum **s_psum, int r_hist_length, int s_hist_length, relation *relA, int array_pos);
 
 int parseInstuctions(indexes_array* indexes);
 #endif

@@ -3,10 +3,10 @@
 // edw isws thelei na einai dunamiko oi sthles tou buffer analoga me to posoi pinakes emplekontai
 result* createBuffer(result *prev, int buffer_size) {
     result *new = malloc(sizeof(result));
-    new->buffer = malloc((1024 / (buffer_size * sizeof(int32_t))) * sizeof(int32_t *));
+    new->buffer = malloc((RESULT_NODE_SIZE / (buffer_size * sizeof(int32_t))) * sizeof(int32_t *));
     new->buffer_size = buffer_size;
 
-    for(int i = 0; i < (1024 / (buffer_size * sizeof(int32_t))); i++) {
+    for(int i = 0; i < (RESULT_NODE_SIZE / (buffer_size * sizeof(int32_t))); i++) {
         new->buffer[i] = malloc(buffer_size * sizeof(int32_t));
         for (size_t j = 0; j < buffer_size; j++)
             new->buffer[i][j] = -1;
@@ -47,7 +47,7 @@ void executeQuery(Queue* q, indexes_array* index, proj_list* pl){
                 prev = filterApplication(NULL, NULL, 1, index->ind[rel_num]->array_relations[col_num], op, tot_rows, c_value, col_num, rel_num, appearance_rel1);
                 //edw tha prepei na bazoume sta metadata ton pinaka pou xrhsimopoihsame
                 // printf("Bazw sthn oura ton pinaka %d\n", q->array[i]->t1->table);
-                printResults2(prev);
+                // printResults2(prev);
                 addArray(&metadata, q->array[i]->t1->table);
             }
             else{
@@ -173,7 +173,7 @@ void checkSum(result* res, proj_list* pl, indexes_array* index, query_metadata *
         while(tmp != NULL){
 
 
-            for(int i = 0; i< 1024 / tmp->buffer_size * sizeof(int32_t); i++){
+            for(int i = 0; i< RESULT_NODE_SIZE / tmp->buffer_size * sizeof(int32_t); i++){
                 if(tmp->buffer[i][0] == -1)
                     break;
                 sum += index->ind[temp->t->table]->array_relations[temp->t->column]->tuples[tmp->buffer[i][array_pos]]->value;
@@ -257,7 +257,7 @@ result* filterApplication(query_metadata *metadata, result *res, int buff_size, 
         int array_pos = searchArray(metadata, rel_num, appearance_rel1);
         while(check_buffer != NULL){
 
-            for(int i = 0; i < 1024 / (check_buffer->buffer_size * sizeof(int32_t)); i++){
+            for(int i = 0; i < RESULT_NODE_SIZE / (check_buffer->buffer_size * sizeof(int32_t)); i++){
 
                 if(op == 1){
 
@@ -314,6 +314,194 @@ result* filterApplication(query_metadata *metadata, result *res, int buff_size, 
     return root;
 }
 
+result* radixHashJoinParallel(result *res, ord_relation **relR, ord_relation **relS, bucket_index **r_bucket_indexes, sum **r_psum, sum **s_psum, int r_hist_length, int s_hist_length, relation *relA, int array_pos){
+    
+    if(res == NULL){
+        Job** jobs = malloc(s_hist_length*sizeof(Job*)); 
+        done_jobs = 0;
+
+        // give the jobs to jobSchedler
+        for(int i=1; i <= s_hist_length; i++){
+
+            int line_start = (i==0) ? 0 : s_psum[i-1]->index;
+            int line_stop = s_psum[i]->index;
+            // The hash value we want to check from each bucket of S
+            int hash_to_check = s_psum[i]->hashed_key;
+
+            // make the argument
+            joinArgs* jArg = joinArgsInit(hash_to_check, r_hist_length, line_start, line_stop, array_pos, r_psum, relA, relR, relS, r_bucket_indexes, res);
+
+            // make the job
+            jobInit(radixHashJoin, jArg, &(jobs[i-1]));
+
+            // add job to scheduler
+            Schedule(jobs[i-1]);
+        }
+
+        // wait for all subarrays to finish
+        Barrier(s_hist_length);
+
+        result* root = ((joinArgs*)(jobs[0]->argument))->new_res;
+        result* temp = root;
+        // unite all results
+        for(int i=1; i<s_hist_length; i++){
+            
+            // go at the end of the list
+            while(temp->next != NULL) temp = temp->next;
+
+            // append the new list
+            temp->next = ((joinArgs*)(jobs[i]->argument))->new_res;        
+        }
+        return root;
+    }
+    else{
+
+        // loop through the middle result list to determine the size
+        result* temp = res;
+        int nodes_num = 0;
+        while(temp != NULL){
+            nodes_num++;
+            temp = temp->next;
+        }
+
+        Job** jobs = malloc(nodes_num*sizeof(Job*)); 
+        done_jobs = 0;
+
+        // give the jobs to jobSchedler
+        for(int i=1; i <= nodes_num; i++){
+
+            int line_start = (i==0) ? 0 : s_psum[i-1]->index;
+            int line_stop = s_psum[i]->index;
+            // The hash value we want to check from each bucket of S
+            int hash_to_check = s_psum[i]->hashed_key;
+
+            // make the argument
+            joinArgs* jArg = joinArgsInit(hash_to_check, r_hist_length, line_start, line_stop, array_pos, r_psum, relA, relR, relS, r_bucket_indexes, res);
+
+            // make the job
+            jobInit(radixHashJoin, jArg, &(jobs[i-1]));
+
+            // add job to scheduler
+            Schedule(jobs[i-1]);
+        }
+
+        // wait for all subarrays to finish
+        Barrier(s_hist_length);
+
+        result* root = ((joinArgs*)(jobs[0]->argument))->new_res;
+        result* temp = root;
+        // unite all results
+        for(int i=1; i<s_hist_length; i++){
+            
+            // go at the end of the list
+            while(temp->next != NULL) temp = temp->next;
+
+            // append the new list
+            temp->next = ((joinArgs*)(jobs[i]->argument))->new_res;        
+        }
+        return root;
+    }
+}
+
+void* radixHashJoin(joinArgs* jArg){
+
+    int buffer_pos = 0;
+    result *root = createBuffer(NULL, 2);
+    result *current_buffer = root;
+
+    if(jArg->prev_res == NULL){
+
+        for (int j = 0; j < jArg->r_hist_length; j++) {
+
+            if (jArg->r_psum[j]->hashed_key == jArg->hash_to_check) {
+
+                // for each row of  each bucket of S
+                for (int k = jArg->lines_start; k < jArg->lines_stop; k++) {
+
+                    int32_t to_check = jArg->relS[k]->value;
+                    int test = jArg->r_bucket_indexes[j]->bucket[h2(to_check)];
+
+                    // run through the chain
+                    while (test > 0) {
+
+                        int pos = (j==0) ? 0 : jArg->r_psum[j-1]->index;
+                        if (jArg->relR[pos + test-1]->value == to_check) {
+
+                            //If there is space in buffer
+                            if(buffer_pos < 127){
+                                current_buffer->buffer[buffer_pos][0] = jArg->relR[pos + test-1]->row_id;
+                                current_buffer->buffer[buffer_pos][1] = jArg->relS[k]->row_id;
+                                buffer_pos++;
+                            }
+                            //Not enough space in current buffer create new node
+                            else{
+                                result *new_buffer = createBuffer(current_buffer, 2);
+                                new_buffer->buffer[0][0] = jArg->relR[pos + test-1]->row_id;
+                                new_buffer->buffer[0][1] = jArg->relS[k]->row_id;
+                                buffer_pos = 1;
+                                current_buffer = new_buffer;
+                            }
+                        }
+                        test = jArg->r_bucket_indexes[j]->chain[test-1];
+                    }
+                }
+            }
+        }
+    }
+    else{
+        result *check_buffer = jArg->prev_res;
+
+        //for each row of buffer in node
+        for(int i = 0; i < RESULT_NODE_SIZE / (check_buffer->buffer_size * sizeof(int32_t)); i++){
+
+            //check if the buffer is full
+            if (check_buffer->buffer[i][0] == -1) break;
+
+            int h1_value = h1(jArg->relA->tuples[check_buffer->buffer[i][jArg->array_pos]]->value);
+
+            for (int j = 0; j < jArg->r_hist_length; j++) {
+
+                if (jArg->r_psum[j]->hashed_key == h1_value) {
+
+                    int pos = (j==0) ? 0 : jArg->r_psum[j-1]->index;
+                    int32_t to_check = jArg->relA->tuples[check_buffer->buffer[i][jArg->array_pos]]->value;
+                    int test = jArg->r_bucket_indexes[j]->bucket[h2(to_check)];
+
+                    while (test > 0) {
+                        if (jArg->relR[pos + test-1]->value == to_check) {
+
+                            //there is space to store the new results
+                            if(buffer_pos < current_buffer->buffer_size * sizeof(int32_t)){
+
+                                for (int p = 0; p < check_buffer->buffer_size; p++)
+                                    current_buffer->buffer[buffer_pos][p] = check_buffer->buffer[i][p];
+
+                                current_buffer->buffer[buffer_pos][check_buffer->buffer_size] = jArg->relR[pos + test-1]->row_id;
+                                buffer_pos++;
+
+                            }
+                            else{
+                                result *new_buffer = createBuffer(current_buffer, check_buffer->buffer_size + 1);
+
+                                for (int p = 0; p < check_buffer->buffer_size; p++)
+                                    new_buffer->buffer[0][p] = check_buffer->buffer[i][p];
+
+                                new_buffer->buffer[0][check_buffer->buffer_size] = jArg->relR[pos + test-1]->row_id;
+                                buffer_pos = 1;
+                                current_buffer = new_buffer;
+                            }
+                        }
+                        test = jArg->r_bucket_indexes[j]->chain[test-1];
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    jArg->new_res = root;
+    return NULL;
+}
+
 result* RadixHashJoin(result *res, ord_relation **relR, ord_relation **relS, bucket_index **r_bucket_indexes, sum **r_psum, sum **s_psum, int r_hist_length, int s_hist_length, relation *relA, int array_pos){
 
     if(res == NULL){
@@ -323,7 +511,7 @@ result* RadixHashJoin(result *res, ord_relation **relR, ord_relation **relS, buc
 
         int buffer_pos = 0;
 
-        for(int i = 0; i < s_hist_length; i++) {
+        for(int i = 0; i < s_hist_length; i++) { //Parallel check
 
             // The hash value we want to check from each bucket of S
             int hash_to_check = s_psum[i]->hashed_key;
@@ -386,10 +574,10 @@ result* RadixHashJoin(result *res, ord_relation **relR, ord_relation **relS, buc
         int buffer_pos = 0;
 
         //for all nodes of middle results
-        while(check_buffer != NULL){
+        while(check_buffer != NULL){    //Parallel check
 
             //for each row of buffer in node
-            for(int i = 0; i < 1024 / (check_buffer->buffer_size * sizeof(int32_t)); i++){
+            for(int i = 0; i < RESULT_NODE_SIZE / (check_buffer->buffer_size * sizeof(int32_t)); i++){
 
                 //check if the buffer is full
                 if (check_buffer->buffer[i][0] == -1)
@@ -501,7 +689,7 @@ result* joinValue(result *res, ord_relation **ord_relR, bucket_index **r_bucket_
 
         while(check_buffer != NULL){
 
-            for(int i = 0; i < 1024 / (check_buffer->buffer_size * sizeof(int32_t)); i++){
+            for(int i = 0; i < RESULT_NODE_SIZE / (check_buffer->buffer_size * sizeof(int32_t)); i++){
 
                 if (check_buffer->buffer[i][0] == -1)
                     break;
@@ -569,7 +757,7 @@ result* selfJoin(result *res, relation *relColA, relation *relColB, int total_ro
 
         while(check_buffer != NULL){
 
-            for (int i = 0; i < 1024 / (check_buffer->buffer_size * sizeof(int32_t)); i++) {
+            for (int i = 0; i < RESULT_NODE_SIZE / (check_buffer->buffer_size * sizeof(int32_t)); i++) {
 
                 if (check_buffer->buffer[i][0] == -1)
                     break;
@@ -612,7 +800,7 @@ result *joinArrays(result *res, relation *relR, relation *relS, int array_posR, 
 
     while (check_buffer != NULL) {
 
-        for (int i = 0; i < 1024 / (check_buffer->buffer_size * sizeof(int32_t)); i++) {
+        for (int i = 0; i < RESULT_NODE_SIZE / (check_buffer->buffer_size * sizeof(int32_t)); i++) {
 
             if (check_buffer->buffer[i][0] == -1)
                 break;
@@ -747,7 +935,7 @@ void destroyResult(result* r){
 
     while (temp != NULL) {
         r = r->next;
-        for(int i = 0; i < 1024 / (temp->buffer_size * sizeof(int32_t)); i++) {
+        for(int i = 0; i < RESULT_NODE_SIZE / (temp->buffer_size * sizeof(int32_t)); i++) {
             free(temp->buffer[i]);
         }
         free(temp->buffer);
