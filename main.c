@@ -22,7 +22,7 @@ int main(int argc, char** argv){
     tb_array* tb = NULL;
     fprintf(stderr, "Loading Tables\n");
     loadTables(&tb);
-    // loadTestTables(&tb, 1, 60, 3);
+    // loadTestTables(&tb, 8, 8, 8);
     fprintf(stderr, "\nTables Loaded\n");
     
     // create indexes for every table and column
@@ -31,6 +31,7 @@ int main(int argc, char** argv){
     fprintf(stderr, "\nIndexes Created\n");
 
     // get and serve the queries
+    fprintf(stderr, "\nExecuting Queries\n");
     parseInstuctions(indexes);
 
     destroyTables(tb);

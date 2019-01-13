@@ -6,9 +6,12 @@ int parseInstuctions(indexes_array* indexes) {
     char * line = NULL;
     size_t len = 0;
 
-    fp = fopen("./small.work", "r");
-    if (fp == NULL)
-        return -1;
+    if((fp = fopen("./small.work", "r")) == NULL){
+        if((fp = fopen("./submission/workloads/small/small.work", "r")) == NULL){
+            fprintf(stderr, "Instructions not found\n");
+            return -1;
+        }
+    }
 
     queries *root = malloc(sizeof(queries));
     root->num = 0;
@@ -66,7 +69,7 @@ int parseInstuctions(indexes_array* indexes) {
             // free(token);
         }
     }
-
+    // fprintf(stderr, "1\n");
     // print(root);
 
     parsed_instruction *pi = NULL;
@@ -238,7 +241,7 @@ int parseInstuctions(indexes_array* indexes) {
 
             // -------------- PARSE PROJECTIONS ------------
 
-            //printf("Koitaw to projection\n");
+            // printf("Koitaw to projection\n");
             //getchar();
             save1 = NULL;
             token = strtok_r(i->proj, " \n", &save1);
@@ -255,7 +258,7 @@ int parseInstuctions(indexes_array* indexes) {
                 }
                 //printf("%s\n", storage);
 
-                //printf("edw2");
+                // printf("edw2");
                 //getchar();
                 save2 = NULL;
                 pr_temp->t = malloc(sizeof(data));
@@ -270,7 +273,7 @@ int parseInstuctions(indexes_array* indexes) {
 
             }
 
-            //printf("teleiwsa to parsing\n");
+            // printf("teleiwsa to parsing\n");
             //getchar();
             if (pi == NULL) {
                 pi = new;
@@ -317,6 +320,7 @@ int parseInstuctions(indexes_array* indexes) {
 
         //run query
         executeQuery(q, indexes, pi_tmp->prl);
+        fprintf(stderr, "\nQuery executed \n");
 
         pi_tmp = pi_tmp->next;
     }

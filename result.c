@@ -71,14 +71,24 @@ void executeQuery(Queue* q, indexes_array* index, proj_list* pl){
                 if(rel_num != rel_num2){
                     //size of rel_num > size of rel_num2
                     if(tot_rows > tot_rows2){
-                        prev = RadixHashJoin(NULL, index->ind[rel_num]->ord_relations[col_num], index->ind[rel_num2]->ord_relations[col_num2],
+                        // prev = RadixHashJoin(NULL, index->ind[rel_num]->ord_relations[col_num], index->ind[rel_num2]->ord_relations[col_num2],
+                            // index->ind[rel_num]->array_bucket_indexes[col_num], index->ind[rel_num]->array_psums[col_num],
+                            // index->ind[rel_num]->array_psums[col_num2], hist_length1, hist_length2, NULL, -1);
+                        prev = radixHashJoinParallel(
+                            NULL, index->ind[rel_num]->ord_relations[col_num], index->ind[rel_num2]->ord_relations[col_num2],
                             index->ind[rel_num]->array_bucket_indexes[col_num], index->ind[rel_num]->array_psums[col_num],
-                            index->ind[rel_num]->array_psums[col_num2], hist_length1, hist_length2, NULL, -1);
+                            index->ind[rel_num]->array_psums[col_num2], hist_length1, hist_length2, NULL, -1
+                        );
                         addArray(&metadata, rel_num);
                         addArray(&metadata, rel_num2);
                     }
                     else{
-                        prev = RadixHashJoin(NULL, index->ind[rel_num2]->ord_relations[col_num2], index->ind[rel_num]->ord_relations[col_num], index->ind[rel_num2]->array_bucket_indexes[col_num2], index->ind[rel_num2]->array_psums[col_num2], index->ind[rel_num]->array_psums[col_num], hist_length2, hist_length1, NULL, -1);
+                        // prev = RadixHashJoin(NULL, index->ind[rel_num2]->ord_relations[col_num2], index->ind[rel_num]->ord_relations[col_num], index->ind[rel_num2]->array_bucket_indexes[col_num2], index->ind[rel_num2]->array_psums[col_num2], index->ind[rel_num]->array_psums[col_num], hist_length2, hist_length1, NULL, -1);
+                        prev = radixHashJoinParallel(
+                            NULL, index->ind[rel_num2]->ord_relations[col_num2], index->ind[rel_num]->ord_relations[col_num],
+                            index->ind[rel_num2]->array_bucket_indexes[col_num2], index->ind[rel_num2]->array_psums[col_num2], 
+                            index->ind[rel_num]->array_psums[col_num], hist_length2, hist_length1, NULL, -1
+                        );
                         addArray(&metadata, rel_num);
                         addArray(&metadata, rel_num2);
                     }
@@ -97,7 +107,11 @@ void executeQuery(Queue* q, indexes_array* index, proj_list* pl){
                 if((pos = searchArray(metadata, rel_num, appearance_rel1)) >= 0 && (pos2 = searchArray(metadata, rel_num2, appearance_rel2)) == -1){
                     addArray(&metadata, rel_num2);
                     // printf("applying join %d.%d = %d.%d\n", rel_num, col_num, rel_num2, col_num2);
-                    res = RadixHashJoin(prev, index->ind[rel_num2]->ord_relations[col_num2], NULL, index->ind[rel_num2]->array_bucket_indexes[col_num2], index->ind[rel_num2]->array_psums[col_num2], NULL, hist_length2, -1, index->ind[rel_num]->array_relations[col_num], pos);
+                    // res = RadixHashJoin(prev, index->ind[rel_num2]->ord_relations[col_num2], NULL, index->ind[rel_num2]->array_bucket_indexes[col_num2], index->ind[rel_num2]->array_psums[col_num2], NULL, hist_length2, -1, index->ind[rel_num]->array_relations[col_num], pos);
+                    res = radixHashJoinParallel(
+                        prev, index->ind[rel_num2]->ord_relations[col_num2], NULL, index->ind[rel_num2]->array_bucket_indexes[col_num2], 
+                        index->ind[rel_num2]->array_psums[col_num2], NULL, hist_length2, -1, index->ind[rel_num]->array_relations[col_num], pos
+                    );
                     // printResults2(res);
                 }
 
@@ -106,7 +120,11 @@ void executeQuery(Queue* q, indexes_array* index, proj_list* pl){
                     // printf("2 -- applying join %d.%d = %d.%d rel2 : %d rel1 : %d\n", rel_num, col_num, rel_num2, col_num2, appearance_rel2, appearance_rel1);
                     // printf("2 -- applying join %d.%d = %d.%d\n", rel_num, col_num, rel_num2, col_num2, appearance_rel2, appearance_rel1);
                     addArray(&metadata, rel_num);
-                    res = RadixHashJoin(prev, index->ind[rel_num]->ord_relations[col_num], NULL, index->ind[rel_num]->array_bucket_indexes[col_num], index->ind[rel_num]->array_psums[col_num], NULL, hist_length1, -1, index->ind[rel_num2]->array_relations[col_num2], pos);
+                    // res = RadixHashJoin(prev, index->ind[rel_num]->ord_relations[col_num], NULL, index->ind[rel_num]->array_bucket_indexes[col_num], index->ind[rel_num]->array_psums[col_num], NULL, hist_length1, -1, index->ind[rel_num2]->array_relations[col_num2], pos);
+                    res = radixHashJoinParallel(
+                        prev, index->ind[rel_num]->ord_relations[col_num], NULL, index->ind[rel_num]->array_bucket_indexes[col_num], 
+                        index->ind[rel_num]->array_psums[col_num], NULL, hist_length1, -1, index->ind[rel_num2]->array_relations[col_num2], pos
+                    );
                 }
                 //self join
                 else if((pos = searchArray(metadata, rel_num2, appearance_rel2)) >= 0 && (pos2 = searchArray(metadata, rel_num, appearance_rel1)) >= 0 && pos == pos2){
@@ -132,6 +150,7 @@ void executeQuery(Queue* q, indexes_array* index, proj_list* pl){
                 }
             }
         }
+        // exw filtro me isothta
         else{
             if(prev == NULL){
                 // printf("applying join filter %d.%d-%d\n", rel_num, col_num, c_value);
@@ -315,31 +334,36 @@ result* filterApplication(query_metadata *metadata, result *res, int buff_size, 
 }
 
 result* radixHashJoinParallel(result *res, ord_relation **relR, ord_relation **relS, bucket_index **r_bucket_indexes, sum **r_psum, sum **s_psum, int r_hist_length, int s_hist_length, relation *relA, int array_pos){
-    
+    // fprintf(stderr, " radix parallel\n");
     if(res == NULL){
         Job** jobs = malloc(s_hist_length*sizeof(Job*)); 
         done_jobs = 0;
 
         // give the jobs to jobSchedler
-        for(int i=1; i <= s_hist_length; i++){
-
-            int line_start = (i==0) ? 0 : s_psum[i-1]->index;
-            int line_stop = s_psum[i]->index;
+        for(int i=0; i < s_hist_length; i++){
+            
             // The hash value we want to check from each bucket of S
             int hash_to_check = s_psum[i]->hashed_key;
 
             // make the argument
-            joinArgs* jArg = joinArgsInit(hash_to_check, r_hist_length, line_start, line_stop, array_pos, r_psum, relA, relR, relS, r_bucket_indexes, res);
+            joinArgs* jArg = joinArgsInit(hash_to_check, r_hist_length, array_pos, r_psum, s_psum, relA, relR, relS, r_bucket_indexes, res, i);
 
             // make the job
-            jobInit(radixHashJoin, jArg, &(jobs[i-1]));
+            jobInit(radixHashJoin, jArg, &(jobs[i]));
 
             // add job to scheduler
-            Schedule(jobs[i-1]);
+            // pthread_mutex_lock(&print_mutex);
+            // fprintf(stderr, "[main] adding a job %d->%d\n", jArg->lines_start, jArg->lines_stop);
+            // pthread_mutex_unlock(&print_mutex);
+            Schedule(jobs[i]);
         }
 
         // wait for all subarrays to finish
         Barrier(s_hist_length);
+        // pthread_mutex_lock(&print_mutex);
+        // fprintf(stderr, "All jobs finished\n");
+        // pthread_mutex_unlock(&print_mutex);
+        // getchar();
 
         result* root = ((joinArgs*)(jobs[0]->argument))->new_res;
         result* temp = root;
@@ -355,7 +379,7 @@ result* radixHashJoinParallel(result *res, ord_relation **relR, ord_relation **r
         return root;
     }
     else{
-
+        // fprintf(stderr, "here2\n");
         // loop through the middle result list to determine the size
         result* temp = res;
         int nodes_num = 0;
@@ -363,35 +387,41 @@ result* radixHashJoinParallel(result *res, ord_relation **relR, ord_relation **r
             nodes_num++;
             temp = temp->next;
         }
+        temp = res;
 
         Job** jobs = malloc(nodes_num*sizeof(Job*)); 
         done_jobs = 0;
 
         // give the jobs to jobSchedler
-        for(int i=1; i <= nodes_num; i++){
-
-            int line_start = (i==0) ? 0 : s_psum[i-1]->index;
-            int line_stop = s_psum[i]->index;
-            // The hash value we want to check from each bucket of S
-            int hash_to_check = s_psum[i]->hashed_key;
-
+        for(int i=0; i < nodes_num; i++){
             // make the argument
-            joinArgs* jArg = joinArgsInit(hash_to_check, r_hist_length, line_start, line_stop, array_pos, r_psum, relA, relR, relS, r_bucket_indexes, res);
+            joinArgs* jArg = joinArgsInit(-1, r_hist_length, array_pos, r_psum, s_psum, relA, relR, relS, r_bucket_indexes, temp, i);
 
             // make the job
-            jobInit(radixHashJoin, jArg, &(jobs[i-1]));
+            jobInit(radixHashJoin, jArg, &(jobs[i]));
 
             // add job to scheduler
-            Schedule(jobs[i-1]);
+            Schedule(jobs[i]);
+
+            temp = temp->next;
         }
 
         // wait for all subarrays to finish
-        Barrier(s_hist_length);
+        Barrier(nodes_num);
+        // pthread_mutex_lock(&print_mutex);
+        // fprintf(stderr, "All jobs finished\n");
+        // pthread_mutex_unlock(&print_mutex);
+        // getchar();
 
         result* root = ((joinArgs*)(jobs[0]->argument))->new_res;
-        result* temp = root;
+        temp = root;
         // unite all results
         for(int i=1; i<s_hist_length; i++){
+            if(temp == NULL){
+                if(root == NULL) root = ((joinArgs*)(jobs[i]->argument))->new_res;
+                temp = ((joinArgs*)(jobs[i]->argument))->new_res; 
+                continue;
+            }
             
             // go at the end of the list
             while(temp->next != NULL) temp = temp->next;
@@ -415,8 +445,12 @@ void* radixHashJoin(joinArgs* jArg){
 
             if (jArg->r_psum[j]->hashed_key == jArg->hash_to_check) {
 
+                // Find the rows of bucket in R
+                int start = (jArg->hist_pos==0) ? 0 : jArg->s_psum[jArg->hist_pos-1]->index;
+                int end = jArg->s_psum[jArg->hist_pos]->index;
+
                 // for each row of  each bucket of S
-                for (int k = jArg->lines_start; k < jArg->lines_stop; k++) {
+                for (int k = start; k < end; k++) {
 
                     int32_t to_check = jArg->relS[k]->value;
                     int test = jArg->r_bucket_indexes[j]->bucket[h2(to_check)];
@@ -467,6 +501,7 @@ void* radixHashJoin(joinArgs* jArg){
                     int32_t to_check = jArg->relA->tuples[check_buffer->buffer[i][jArg->array_pos]]->value;
                     int test = jArg->r_bucket_indexes[j]->bucket[h2(to_check)];
 
+                    // run through chain
                     while (test > 0) {
                         if (jArg->relR[pos + test-1]->value == to_check) {
 
@@ -942,4 +977,20 @@ void destroyResult(result* r){
         free(temp);
         temp = r;
     }
+}
+
+joinArgs* joinArgsInit(int hash_to_check, int r_hist_length, int array_pos, sum** r_psum, sum** s_psum, relation* relA, ord_relation** relR, ord_relation** relS, bucket_index** r_bucket_indexes, result* res, int hist_pos){
+    joinArgs* jArg = malloc(sizeof(joinArgs));
+    jArg->array_pos = array_pos;
+    jArg->hash_to_check = hash_to_check;
+    jArg->hist_pos = hist_pos;
+    jArg->prev_res = res;
+    jArg->r_bucket_indexes = r_bucket_indexes;
+    jArg->r_hist_length = r_hist_length;
+    jArg->r_psum = r_psum;
+    jArg->s_psum = s_psum;
+    jArg->relA = relA;
+    jArg->relR = relR;
+    jArg->relS = relS;
+    return jArg;
 }
