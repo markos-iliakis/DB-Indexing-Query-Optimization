@@ -1,5 +1,6 @@
 #include "relation.h"
 
+//void loadTables(tb_array** t_a, stat_array** sa){
 void loadTables(tb_array** t_a){
 
     char* line = NULL;
@@ -15,6 +16,8 @@ void loadTables(tb_array** t_a){
     (*t_a)->tb = malloc(lines*sizeof(st_table*));
     (*t_a)->size = lines;
 
+    //malloc for sa
+
     // for each table file in the initial
     for(int i=0; i<lines; i++){
 
@@ -23,7 +26,7 @@ void loadTables(tb_array** t_a){
         // fprintf(stderr, "Current working dir: %s\n", cwd);
 
         char* buf = malloc(5*sizeof(char));
-        
+
         // read the table from the script
         if(scanf("%s\n", buf) < 0) exit(-2);
 
