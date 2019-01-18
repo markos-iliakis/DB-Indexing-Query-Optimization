@@ -59,6 +59,7 @@ typedef struct stat_array {
 
 typedef struct stat_holder {
     stat_array *stats;
+    int size;
 } stat_holder;
 
 void loadTables(tb_array** t_a);

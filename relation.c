@@ -16,8 +16,10 @@ void loadTables(tb_array** t_a){
     (*t_a)->tb = malloc(lines*sizeof(st_table*));
     (*t_a)->size = lines;
 
-    (*sh) = malloc(sizeof());
-    
+    // (*sh) = malloc(sizeof(stat_holder));
+    // (*sh)->stats = malloc(lines*sizeof(stats*));
+    // (*sh)->size = lines;
+
 
     // for each table file in the initial
     for(int i=0; i<lines; i++){
@@ -79,6 +81,13 @@ void loadTables(tb_array** t_a){
             (*t_a)-> tb[i]->col[j] = addr+offset;
             offset += size;
         }
+
+        // (*sh)->stats[i] = malloc(sizeof(stat_array));
+        // (*sh)->stats[i]->l = malloc(numColumns*sizeof(int));
+        // (*sh)->stats[i]->u = malloc(numColumns*sizeof(int));
+        // (*sh)->stats[i]->f = malloc(numColumns*sizeof(int));
+        // (*sh)->stats[i]->d = malloc(numColumns*sizeof(bool));
+
     }
 
     if(line) free(line);
