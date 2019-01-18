@@ -1,5 +1,7 @@
 #include "relation.h"
 
+#define N 50000000
+
 //void loadTables(tb_array** t_a, stat_holder** sh){
 void loadTables(tb_array** t_a){
 
@@ -87,6 +89,40 @@ void loadTables(tb_array** t_a){
         // (*sh)->stats[i]->u = malloc(numColumns*sizeof(int));
         // (*sh)->stats[i]->f = malloc(numColumns*sizeof(int));
         // (*sh)->stats[i]->d = malloc(numColumns*sizeof(bool));
+
+        // for (int j = 0; j < numColumns; j++) {
+        //     int temp_l = 0;
+        //     int temp_u = 0;
+        //     int temp_f = 0;
+        //
+        //     // how to find num of rows of each column
+        //     for (int k = 0; k < rows; k++) {
+        //         temp_f++;
+        //
+        //         if (temp_l > tables[i][k][j]) {
+        //             temp_l = tables[i][k][j];
+        //         }
+        //
+        //         if (temp_u < tables[i][k][j]) {
+        //             temp_u = tables[i][k][j];
+        //         }
+        //     }
+        //
+        //     bool* find_d;
+        //
+        //     int bool_lim = u[j] - l[j] + 1;
+        //     if (bool_lim > N)
+        //         find_d = malloc(N*sizeof(bool));
+        //     else
+        //         find_d = malloc(bool_lim*sizeof(bool));
+        //
+        //     for (int m = 0; m < bool_lim; m++)
+        //         find_d[m] = false;
+        //
+        //     for (int k = 0; k < row; k++) {
+        //
+        //     }
+        // }
 
     }
 
