@@ -17,6 +17,7 @@ struct tuple;
 struct relation;
 struct result;
 struct stat_array;
+struct stat_holder;
 
 typedef struct tuple {
     int32_t key;
@@ -50,11 +51,15 @@ typedef struct tb_array {
 } tb_array;
 
 typedef struct stat_array {
-    int l;
-    int u;
-    int f;
+    int* l;
+    int* u;
+    int* f;
     bool* d;
 } stat_array;
+
+typedef struct stat_holder {
+    stat_array *stats;
+} stat_holder;
 
 void loadTables(tb_array** t_a);
 void destroyTables(tb_array* tb);

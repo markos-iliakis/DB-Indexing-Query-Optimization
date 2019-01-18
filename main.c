@@ -20,10 +20,10 @@ int main(int argc, char** argv){
 
     // get table paths from stdin and store them
     tb_array* tb = NULL;
-    //stat_array* sa = NULL;
+    //stat_holder* sh = NULL;
 
     fprintf(stderr, "Loading Tables\n");
-    //loadTables(&tb, &sa)
+    //loadTables(&tb, &sh)
     loadTables(&tb);
     // loadTestTables(&tb, 8, 8, 8);
     fprintf(stderr, "\nTables Loaded\n");

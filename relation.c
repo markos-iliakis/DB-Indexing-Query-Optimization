@@ -1,6 +1,6 @@
 #include "relation.h"
 
-//void loadTables(tb_array** t_a, stat_array** sa){
+//void loadTables(tb_array** t_a, stat_holder** sh){
 void loadTables(tb_array** t_a){
 
     char* line = NULL;
@@ -16,7 +16,8 @@ void loadTables(tb_array** t_a){
     (*t_a)->tb = malloc(lines*sizeof(st_table*));
     (*t_a)->size = lines;
 
-    //malloc for sa
+    (*sh) = malloc(sizeof());
+    
 
     // for each table file in the initial
     for(int i=0; i<lines; i++){
