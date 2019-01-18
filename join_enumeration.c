@@ -29,48 +29,44 @@ BestTree join_enumeration() {
 
 //MALLON JOINTREE KAI BESTTREE IDIA SINARTISI, MPOREI KAI OXI, PROXWRAME
 
-BestTree createJoinTree() {
+BestTree createJoinTree(int relNum) {
+	node* root[relNum+1] = {NULL};
 
+	
 }
 
-BestTree createBestTree() {
+// BestTree createBestTree() {
+//
+// }
 
-}
-
-void insert(char* buffer) {
-    // try to instantiate node for number
+void insert(int key, const char* buffer)
+{
+    // try to instantiate node to insert word
     node* newptr = malloc(sizeof(node));
     if (newptr == NULL)
     {
         return;
     }
 
-    // make a new ponter
-    newptr->name = buffer;
+    // make a new pointer
+    strcpy(newptr->word, buffer);
     newptr->next = NULL;
 
     // check for empty list
-    if (first == NULL)
+    if (first[key] == NULL)
     {
-        first = newptr;
+       first[key] = newptr;
     }
     // check for insertion at tail
     else
     {
-        // keep track of the previous spot in list
-        node* predptr = first;
-
-        // because we don't know how long this list is
-        // we must induce a forever loop until we find the end
+        node* predptr = first[key];
         while (true)
         {
-            // check if it is the end of the list
+            // insert at tail
             if (predptr->next == NULL)
             {
-                // add new node to end of list
                 predptr->next = newptr;
-
-                // break out of forever loop
                 break;
             }
 
@@ -78,4 +74,8 @@ void insert(char* buffer) {
             predptr = predptr->next;
         }
     }
+}
+
+int hashing() {
+
 }
