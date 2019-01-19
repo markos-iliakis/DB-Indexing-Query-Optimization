@@ -110,21 +110,21 @@ void loadTables(tb_array** t_a, stat_holder** sh){
             (*sh)->stats[i]->l[j] = temp_l;
             (*sh)->stats[i]->u[j] = temp_u;
             (*sh)->stats[i]->f[j] = size;
-            //
-            // bool* find_d;
-            //
-            // int bool_lim = u[j] - l[j] + 1;
-            // if (bool_lim > N)
-            //     find_d = malloc(N*sizeof(bool));
-            // else
-            //     find_d = malloc(bool_lim*sizeof(bool));
-            //
-            // for (int m = 0; m < bool_lim; m++)
-            //     find_d[m] = false;
-            //
-            // for (int k = 0; k < row; k++) {
-            //
-            // }
+
+            bool* find_d;
+
+            int bool_lim = (*sh)->stats[i]->u[j] - (*sh)->stats[i]->l[j] + 1;
+            if (bool_lim > N)
+                find_d = malloc(N*sizeof(bool));
+            else
+                find_d = malloc(bool_lim*sizeof(bool));
+
+            for (int m = 0; m < bool_lim; m++)
+                find_d[m] = false;
+
+            for (int k = 0; k < row; k++) {
+
+            }
         }
 
         printf("edwww\n");

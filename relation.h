@@ -54,7 +54,7 @@ typedef struct stat_array {
     int* l;
     int* u;
     int* f;
-    bool* d;
+    int* d;
     int rows;
 } stat_array;
 
