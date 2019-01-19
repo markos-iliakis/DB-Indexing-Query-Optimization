@@ -10,7 +10,7 @@ BestTree join_enumeration() {
 		while (r[i] != NULL) {
 			for (int j = 0; j < n; j++) {
 				if (r[j] != r[i]) {
-					if (NoCrossProducts && !connected(r[i], r[j])) {
+					if (!connected(r[i], r[j])) {
 						continue;
 					}
 					else {
@@ -32,7 +32,7 @@ BestTree join_enumeration() {
 BestTree createJoinTree(int relNum) {
 	node* root[relNum+1] = {NULL};
 
-	
+
 }
 
 // BestTree createBestTree() {
@@ -76,6 +76,25 @@ void insert(int key, const char* buffer)
     }
 }
 
-int hashing() {
+int hashing(int ) {
 
 }
+
+
+
+2 5 7 8 9 11
+
+
+
+2 6 8 10 57 89           thesi:57?
+
+
+h(57) = 4;
+
+
+
+
+
+
+
+array[h(57)] = 57;
