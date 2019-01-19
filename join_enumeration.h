@@ -19,4 +19,4 @@ BestTree createJoinTree(int );
 #endif
 void insert(int, char *);
 int hashing(char *);
-int cost();
+int cost(stat_holder *);

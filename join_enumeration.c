@@ -1,10 +1,14 @@
+//dedomena eisodou:
+// - ta join tis priorityQueue
+// - N! twn sxesewn -- arithmos sindiasmwn
+
 BestTree join_enumeration() {
 	BestTree bt;
-	bt = createBestTree()
+	bt = createBestTree();
+	int* costs;
 
-	for (int i = 0; i <=n; i++) {
-		bt(r[i]) = r[i];
-	}
+	//initialize bt to single relation
+	//initialize costs
 
 	for (int i = 0; i < n; i++) {
 		while (r[i] != NULL) {
@@ -82,17 +86,14 @@ int hashing(int ) {
 
 
 
-int cost() {
+int cost(stat_holder* sh) {
     int c = 0;
 
-    if () {
+    if (same table) {
 
     }
-    else if () {
-
-    }
-    else if () {
-
+    else if (different table) {
+		
     }
 
     return c;
