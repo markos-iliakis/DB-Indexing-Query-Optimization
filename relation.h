@@ -55,6 +55,7 @@ typedef struct stat_array {
     int* u;
     int* f;
     int* d;
+    bool** d_array;
     int rows;
 } stat_array;
 
@@ -64,6 +65,6 @@ typedef struct stat_holder {
 } stat_holder;
 
 void loadTables(tb_array** t_a);
-void destroyTables(tb_array* tb);
+void destroyTables(tb_array* tb);*=
 void destroyRelation(relation* rel);
 #endif

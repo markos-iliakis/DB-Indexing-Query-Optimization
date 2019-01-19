@@ -109,36 +109,35 @@ void loadTables(tb_array** t_a, stat_holder** sh){
 
             (*sh)->stats[i]->l[j] = temp_l;
             (*sh)->stats[i]->u[j] = temp_u;
-                    (*sh)->stats[i]->f[j] = size;
-
-            bool* find_d;
+            (*sh)->stats[i]->f[j] = size;
 
             int bool_lim = (*sh)->stats[i]->u[j] - (*sh)->stats[i]->l[j] + 1;
+            (*sh)->stats[i]->d_array = malloc(numColumns*sizeof(bool*));
             if (bool_lim > N)
-                find_d = malloc(N*sizeof(bool));
+                (*sh)->stats[i]->d_array[j] = malloc(N*sizeof(bool));
             else
-                find_d = malloc(bool_lim*sizeof(bool));
+                (*sh)->stats[i]->d_array[j] = malloc(bool_lim*sizeof(bool));
 
             for (int m = 0; m < bool_lim; m++)
-                find_d[m] = false;
+                (*sh)->stats[i]->d_array[j][m] = false;
 
             for (int k = 0; k < size; k++) {
                 int64_t tmp = (*t_a)->tb[i]->col[j][k];
 
                 if (bool_lim > N) {
                     int new_index = (tmp - (*sh)->stats[i]->u[j])
-                    if (find_d[new_index] == false)
-                        find_d[new_index] = true;
+                    if ((*sh)->stats[i]->d_array[j][new_index] == false)
+                        (*sh)->stats[i]->d_array[j][new_index] = true;
                 }
                 else {
-                    if (find_d[tmp-1] == false)
-                        find_d[tmp-1] = true;
+                    if ((*sh)->stats[i]->d_array[j][tmp-1] == false)
+                        (*sh)->stats[i]->d_array[j][tmp-1] = true;
                 }
             }
 
             int tmp_d = 0;
             for (int m = 0; m < bool_lim; m++)
-                if (find_d[m] == true)
+                if ((*sh)->stats[i]->d_array[j][m] == true)
                     tmp_d++;
 
             (*sh)->stats[i]->d[j] = tmp_d;
