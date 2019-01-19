@@ -82,8 +82,21 @@ int hashing(int ) {
 
 
 
-2 5 7 8 9 11
+int cost() {
+    int c = 0;
 
+    if () {
+
+    }
+    else if () {
+
+    }
+    else if () {
+
+    }
+
+    return c;
+}
 
 
 2 6 8 10 57 89           thesi:57?
