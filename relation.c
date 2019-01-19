@@ -93,20 +93,22 @@ void loadTables(tb_array** t_a){
         // for (int j = 0; j < numColumns; j++) {
         //     int temp_l = 0;
         //     int temp_u = 0;
-        //     int temp_f = 0;
         //
         //     // how to find num of rows of each column
-        //     for (int k = 0; k < rows; k++) {
-        //         temp_f++;
+        //     for (int k = 0; k < size; k++) {
         //
-        //         if (temp_l > tables[i][k][j]) {
-        //             temp_l = tables[i][k][j];
+        //         if (temp_l > (*t_a)->tb[i]->col[k][j]) {
+        //             temp_l = (*t_a)->tb[i]->col[k][j];
         //         }
         //
-        //         if (temp_u < tables[i][k][j]) {
-        //             temp_u = tables[i][k][j];
+        //         if (temp_u < (*t_a)->tb[i]->col[k][j]) {
+        //             temp_u = (*t_a)->tb[i]->col[k][j];
         //         }
         //     }
+        //
+        //     (*sh)->stats[i]->l[j] = temp_l;
+        //     (*sh)->stats[i]->u[j] = temp_u;
+        //     (*sh)->stats[i]->f[j] = size;
         //
         //     bool* find_d;
         //
