@@ -1,8 +1,9 @@
 //dedomena eisodou:
 // - ta join tis priorityQueue
-// - N! twn sxesewn -- arithmos sindiasmwn
+// - stat_holder sh
+//
 
-BestTree join_enumeration() {
+BestTree join_enumeration(Queue *q, stat_holder* sh) {
 	BestTree bt;
 	bt = createBestTree();
 	int* costs;
@@ -10,22 +11,7 @@ BestTree join_enumeration() {
 	//initialize bt to single relation
 	//initialize costs
 
-	for (int i = 0; i < n; i++) {
-		while (r[i] != NULL) {
-			for (int j = 0; j < n; j++) {
-				if (r[j] != r[i]) {
-					if (!connected(r[i], r[j])) {
-						continue;
-					}
-					else {
-						BestTree ct = createJoinTree(bt(r[i]), r[j]);
-						// s' = s u r[j]
-						if (bt)
-					}
-				}
-			}
-		}
-	}
+
 
 	return bt;
 }
@@ -43,8 +29,7 @@ BestTree createJoinTree(int relNum) {
 //
 // }
 
-void insert(int key, const char* buffer)
-{
+void insert(int key, const char* buffer) {
     // try to instantiate node to insert word
     node* newptr = malloc(sizeof(node));
     if (newptr == NULL)
@@ -93,17 +78,17 @@ int cost(stat_holder* sh) {
 
     }
     else if (different table) {
-		
+
     }
 
     return c;
 }
 
 
-2 6 8 10 57 89           thesi:57?
-
-
-h(57) = 4;
+// 2 6 8 10 57 89           thesi:57?
+//
+//
+// h(57) = 4;
 
 
 

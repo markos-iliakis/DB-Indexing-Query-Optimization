@@ -13,10 +13,12 @@ typedef struct BestTree {
 
 } BestTree;
 
-BestTree join_enumeration();
+BestTree join_enumeration(Queue* , stat_holder* );
 BestTree createJoinTree(int );
 //BestTree createBestTree();
-#endif
+
 void insert(int, char *);
 int hashing(char *);
 int cost(stat_holder *);
+
+#endif
