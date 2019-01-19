@@ -2,8 +2,8 @@
 
 #define N 50000000
 
-//void loadTables(tb_array** t_a, stat_holder** sh){
-void loadTables(tb_array** t_a){
+void loadTables(tb_array** t_a, stat_holder** sh){
+// void loadTables(tb_array** t_a){
 
     char* line = NULL;
     int lines=14;
@@ -18,9 +18,9 @@ void loadTables(tb_array** t_a){
     (*t_a)->tb = malloc(lines*sizeof(st_table*));
     (*t_a)->size = lines;
 
-    // (*sh) = malloc(sizeof(stat_holder));
-    // (*sh)->stats = malloc(lines*sizeof(stats*));
-    // (*sh)->size = lines;
+    (*sh) = malloc(sizeof(stat_holder));
+    (*sh)->stats = malloc(lines*sizeof(stat_array*));
+    (*sh)->size = lines;
 
 
     // for each table file in the initial
@@ -84,47 +84,50 @@ void loadTables(tb_array** t_a){
             offset += size;
         }
 
-        // (*sh)->stats[i] = malloc(sizeof(stat_array));
-        // (*sh)->stats[i]->l = malloc(numColumns*sizeof(int));
-        // (*sh)->stats[i]->u = malloc(numColumns*sizeof(int));
-        // (*sh)->stats[i]->f = malloc(numColumns*sizeof(int));
-        // (*sh)->stats[i]->d = malloc(numColumns*sizeof(bool));
+        (*sh)->stats[i] = malloc(sizeof(stat_array));
+        (*sh)->stats[i]->l = malloc(numColumns*sizeof(int));
+        (*sh)->stats[i]->u = malloc(numColumns*sizeof(int));
+        (*sh)->stats[i]->f = malloc(numColumns*sizeof(int));
+        (*sh)->stats[i]->d = malloc(numColumns*sizeof(bool));
 
-        // for (int j = 0; j < numColumns; j++) {
-        //     int temp_l = 0;
-        //     int temp_u = 0;
-        //
-        //     // how to find num of rows of each column
-        //     for (int k = 0; k < size; k++) {
-        //
-        //         if (temp_l > (*t_a)->tb[i]->col[k][j]) {
-        //             temp_l = (*t_a)->tb[i]->col[k][j];
-        //         }
-        //
-        //         if (temp_u < (*t_a)->tb[i]->col[k][j]) {
-        //             temp_u = (*t_a)->tb[i]->col[k][j];
-        //         }
-        //     }
-        //
-        //     (*sh)->stats[i]->l[j] = temp_l;
-        //     (*sh)->stats[i]->u[j] = temp_u;
-        //     (*sh)->stats[i]->f[j] = size;
-        //
-        //     bool* find_d;
-        //
-        //     int bool_lim = u[j] - l[j] + 1;
-        //     if (bool_lim > N)
-        //         find_d = malloc(N*sizeof(bool));
-        //     else
-        //         find_d = malloc(bool_lim*sizeof(bool));
-        //
-        //     for (int m = 0; m < bool_lim; m++)
-        //         find_d[m] = false;
-        //
-        //     for (int k = 0; k < row; k++) {
-        //
-        //     }
-        // }
+
+        for (int j = 0; j < numColumns; j++) {
+            int temp_l = 0;
+            int temp_u = 0;
+
+            // how to find num of rows of each column
+            for (int k = 0; k < size; k++) {
+
+                if (temp_l > (*t_a)->tb[i]->col[j][k]) {
+                    temp_l = (*t_a)->tb[i]->col[j][k];
+                }
+
+                if (temp_u < (*t_a)->tb[i]->col[j][k]) {
+                    temp_u = (*t_a)->tb[i]->col[j][k];
+                }
+            }
+
+            (*sh)->stats[i]->l[j] = temp_l;
+            (*sh)->stats[i]->u[j] = temp_u;
+            (*sh)->stats[i]->f[j] = size;
+            //
+            // bool* find_d;
+            //
+            // int bool_lim = u[j] - l[j] + 1;
+            // if (bool_lim > N)
+            //     find_d = malloc(N*sizeof(bool));
+            // else
+            //     find_d = malloc(bool_lim*sizeof(bool));
+            //
+            // for (int m = 0; m < bool_lim; m++)
+            //     find_d[m] = false;
+            //
+            // for (int k = 0; k < row; k++) {
+            //
+            // }
+        }
+
+        printf("edwww\n");
 
     }
 
