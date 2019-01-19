@@ -9,9 +9,19 @@ BestTree join_enumeration(Queue *q, stat_holder* sh) {
 	int* costs;
 
 	//initialize bt to single relation
+	for (int i = 0; i < n; i++) {
+
+	}
+
 	//initialize costs
+	for (int i = 0; i < n; i++) {
+		
+	}
 
+	//increasing length of relations to check
+	for (int i = 0; i < n; i++) {
 
+	}
 
 	return bt;
 }
@@ -87,13 +97,5 @@ int cost(stat_holder* sh) {
 
 // 2 6 8 10 57 89           thesi:57?
 //
-//
 // h(57) = 4;
-
-
-
-
-
-
-
-array[h(57)] = 57;
+// array[h(57)] = 57;
