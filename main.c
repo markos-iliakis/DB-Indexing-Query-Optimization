@@ -37,6 +37,7 @@ int main(int argc, char** argv){
     // get and serve the queries
     fprintf(stderr, "\nExecuting Queries\n");
     parseInstuctions(indexes);
+    fprintf(stderr, "\nQueries Run\n");
     //parseInstuctions(indexes, sh);
 
     destroyTables(tb);
