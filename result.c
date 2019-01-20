@@ -40,7 +40,7 @@ void executeQuery(Queue* q, indexes_array* index, proj_list* pl){
 
         //exw filtro
         if(q->array[i]->op == 1 || q->array[i]->op == 2){
-            fprintf(stderr, "Applying filter\n");
+            // fprintf(stderr, "Applying filter\n");
             // printf("applying filter %d.%d-%d\n", rel_num, col_num, c_value);
             //na ftiaksoume sunarthsh na efarmozei filtro kai na epostrefei result *
             if(prev == NULL){
@@ -59,7 +59,7 @@ void executeQuery(Queue* q, indexes_array* index, proj_list* pl){
         }
         //exw join pinakwn
         else if(q->array[i]->op == 0){
-            fprintf(stderr, "Applying table join \n");
+            // fprintf(stderr, "Applying table join \n");
             int rel_num2 = q->array[i]->t2->table;
             int col_num2 = q->array[i]->t2->column;
             // printf("rel %d App1 : %d rel %d App2 : %d\n", rel_num, appearance_rel1, rel_num2, appearance_rel2);
@@ -96,7 +96,7 @@ void executeQuery(Queue* q, indexes_array* index, proj_list* pl){
                 }
                 //self join
                 else{
-                    fprintf(stderr, "Self Join \n");
+                    // fprintf(stderr, "Self Join \n");
                     prev = selfJoin(NULL, index->ind[rel_num2]->array_relations[col_num], index->ind[rel_num2]->array_relations[col_num2], tot_rows, -1);
                     addArray(&metadata, rel_num);
                 }
@@ -120,7 +120,7 @@ void executeQuery(Queue* q, indexes_array* index, proj_list* pl){
                 else if((pos = searchArray(metadata, rel_num2, appearance_rel2)) >= 0 && (pos2 = searchArray(metadata, rel_num, appearance_rel1)) == -1){
 
                     // printf("2 -- applying join %d.%d = %d.%d rel2 : %d rel1 : %d\n", rel_num, col_num, rel_num2, col_num2, appearance_rel2, appearance_rel1);
-                    fprintf(stderr,"2 -- applying join %d.%d = %d.%d %d %d\n", rel_num, col_num, rel_num2, col_num2, appearance_rel2, appearance_rel1);
+                    // fprintf(stderr,"2 -- applying join %d.%d = %d.%d %d %d\n", rel_num, col_num, rel_num2, col_num2, appearance_rel2, appearance_rel1);
                     addArray(&metadata, rel_num);
                     // res = RadixHashJoin(prev, index->ind[rel_num]->ord_relations[col_num], NULL, index->ind[rel_num]->array_bucket_indexes[col_num], index->ind[rel_num]->array_psums[col_num], NULL, hist_length1, -1, index->ind[rel_num2]->array_relations[col_num2], pos);
                     res = radixHashJoinParallel(
@@ -130,7 +130,7 @@ void executeQuery(Queue* q, indexes_array* index, proj_list* pl){
                 }
                 //self join
                 else if((pos = searchArray(metadata, rel_num2, appearance_rel2)) >= 0 && (pos2 = searchArray(metadata, rel_num, appearance_rel1)) >= 0 && pos == pos2){
-                    fprintf(stderr,"applying Self join %d.%d = %d.%d pos : %d\n", rel_num, col_num, rel_num2, col_num2, pos);
+                    // fprintf(stderr,"applying Self join %d.%d = %d.%d pos : %d\n", rel_num, col_num, rel_num2, col_num2, pos);
 
                     //logika tha thelei orisma na an exw self join pinaka o opoiow brisketai 2 fores sta endiamesa apotelesmata
                     //se poia sthlh brisketai kai o deuteros ???
@@ -139,12 +139,12 @@ void executeQuery(Queue* q, indexes_array* index, proj_list* pl){
                 }
                 // periptwsh pou oi 2 pinakes einai sta endiamesa apotelesmata kai einai diaforetikoi
                 else if((pos = searchArray(metadata, rel_num, appearance_rel1)) >= 0 && (pos2 = searchArray(metadata, rel_num2, appearance_rel2)) >= 0 && pos != pos2){
-                    fprintf(stderr,"applying MIDDLE join %d.%d = %d.%d pos : %d\n", rel_num, col_num, rel_num2, col_num2, pos);
+                    // fprintf(stderr,"applying MIDDLE join %d.%d = %d.%d pos : %d\n", rel_num, col_num, rel_num2, col_num2, pos);
                     res = joinArrays(prev, index->ind[rel_num]->array_relations[col_num], index->ind[rel_num2]->array_relations[col_num2], pos, pos2);
                 }
                 // periptwsh pou to join 2 pinakwn den einai sta endiamesa apotelesamta
                 else{
-                         fprintf(stderr, "applying AKURO JOIN PINAKWN %d.%d = %d.%d pos : %d\n", rel_num, col_num, rel_num2, col_num2, pos);
+                        //  fprintf(stderr, "applying AKURO JOIN PINAKWN %d.%d = %d.%d pos : %d\n", rel_num, col_num, rel_num2, col_num2, pos);
                 //      //kalese th radix kateutheian
                 //     // trekse osa operations xreiazontai etsi wste ta 2 endiamesa apotelesmata na ginoun 1
                 //     // proxwra kai to i
@@ -154,7 +154,7 @@ void executeQuery(Queue* q, indexes_array* index, proj_list* pl){
         }
         // exw filtro me isothta
         else{
-            fprintf(stderr, "Applying filter with = \n");
+            // fprintf(stderr, "Applying filter with = \n");
             if(prev == NULL){
                 // printf("applying join filter %d.%d-%d\n", rel_num, col_num, c_value);
                 int hist_length1 = histogramSize(index->ind[rel_num]->array_histograms[col_num]);
@@ -190,18 +190,18 @@ void checkSum(result* res, proj_list* pl, indexes_array* index, query_metadata *
         uint64_t sum = 0;
 
         int array_pos = searchArray(metadata, temp->t->table, temp->t->appearance);
-        fprintf(stderr,"\npos %d\n\n", array_pos);
+        // fprintf(stderr,"\npos %d\n\n", array_pos);
         result *tmp = res;
         while(tmp != NULL){
-            fprintf(stderr, "here\n");
+            // fprintf(stderr, "here\n");
 
             for(int i = 0; i< RESULT_NODE_SIZE / tmp->buffer_size * sizeof(int32_t); i++){
-                fprintf(stderr, "here2\n");
+                // fprintf(stderr, "here2\n");
                 if(tmp->buffer[i][0] == -1){
-                    fprintf(stderr, "here3\n");
+                    // fprintf(stderr, "here3\n");
                     break;
                 }
-                fprintf(stderr, "here4\n");
+                // fprintf(stderr, "here4\n");
                 sum += index->ind[temp->t->table]->array_relations[temp->t->column]->tuples[tmp->buffer[i][array_pos]]->value;
             }
             tmp = tmp->next;
@@ -343,7 +343,7 @@ result* filterApplication(query_metadata *metadata, result *res, int buff_size, 
 result* radixHashJoinParallel(result *res, ord_relation **relR, ord_relation **relS, bucket_index **r_bucket_indexes, sum **r_psum, sum **s_psum, int r_hist_length, int s_hist_length, relation *relA, int array_pos){
     
     if(res == NULL){
-        fprintf(stderr, " radix parallel without middle results\n");
+        // fprintf(stderr, " radix parallel without middle results\n");
         Job** jobs = malloc(s_hist_length*sizeof(Job*)); 
         done_jobs = 0;
 
@@ -424,7 +424,7 @@ result* radixHashJoinParallel(result *res, ord_relation **relR, ord_relation **r
         result* root = ((joinArgs*)(jobs[0]->argument))->new_res;
         temp = root;
         // unite all results
-        for(int i=1; i<s_hist_length; i++){
+        for(int i=1; i<nodes_num; i++){
             if(temp == NULL){
                 if(root == NULL) root = ((joinArgs*)(jobs[i]->argument))->new_res;
                 temp = ((joinArgs*)(jobs[i]->argument))->new_res; 
