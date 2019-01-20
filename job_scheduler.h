@@ -8,7 +8,7 @@
 #ifndef JOB_SCHEDULER_H
 #define JOB_SCHEDULER_H
 
-#define THR_NUM 1
+#define THR_NUM 8
 
 extern pthread_mutex_t done_jobs_mutex;
 extern pthread_mutex_t print_mutex;

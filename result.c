@@ -108,18 +108,20 @@ void executeQuery(Queue* q, indexes_array* index, proj_list* pl){
                 //size of rel_num > size of rel_num2
                 if((pos = searchArray(metadata, rel_num, appearance_rel1)) >= 0 && (pos2 = searchArray(metadata, rel_num2, appearance_rel2)) == -1){
                     addArray(&metadata, rel_num2);
-                    fprintf(stderr,"applying join %d.%d = %d.%d\n", rel_num, col_num, rel_num2, col_num2);
+                    // fprintf(stderr,"applying join %d.%d = %d.%d\n", rel_num, col_num, rel_num2, col_num2);
+                    // res = RadixHashJoin(prev, index->ind[rel_num2]->ord_relations[col_num2], NULL, index->ind[rel_num2]->array_bucket_indexes[col_num2], index->ind[rel_num2]->array_psums[col_num2], NULL, hist_length2, -1, index->ind[rel_num]->array_relations[col_num], pos);
                     res = radixHashJoinParallel(
                         prev, index->ind[rel_num2]->ord_relations[col_num2], NULL, index->ind[rel_num2]->array_bucket_indexes[col_num2], 
                         index->ind[rel_num2]->array_psums[col_num2], NULL, hist_length2, -1, index->ind[rel_num]->array_relations[col_num], pos
                     );
-                    if(t == 1){ 
-                        printResults2(res, "query7.txt");
-                        result* res2 = RadixHashJoin(prev, index->ind[rel_num2]->ord_relations[col_num2], NULL, index->ind[rel_num2]->array_bucket_indexes[col_num2], index->ind[rel_num2]->array_psums[col_num2], NULL, hist_length2, -1, index->ind[rel_num]->array_relations[col_num], pos);
-                        // fprintf(stderr, "here\n");
-                        printResults2(res2, "query7_2.txt");
-                        // fprintf(stderr, "here2\n");
-                    }
+                    // if(t == 2){ 
+                    //     printResults2(res, "query7.txt");
+                    //     result* res2 = RadixHashJoin(prev, index->ind[rel_num2]->ord_relations[col_num2], NULL, index->ind[rel_num2]->array_bucket_indexes[col_num2], index->ind[rel_num2]->array_psums[col_num2], NULL, hist_length2, -1, index->ind[rel_num]->array_relations[col_num], pos);
+                    //     // fprintf(stderr, "here\n");
+                    //     printResults2(res2, "query7_2.txt");
+                    //     // fprintf(stderr, "here2\n");
+                    // }
+                    t++;
                 }
 
                 else if((pos = searchArray(metadata, rel_num2, appearance_rel2)) >= 0 && (pos2 = searchArray(metadata, rel_num, appearance_rel1)) == -1){
@@ -214,20 +216,20 @@ void checkSum(result* res, proj_list* pl, indexes_array* index, query_metadata *
         // fprintf(stderr, "\nChecksum of %d.%d : %ld\n", temp->t->table, temp->t->column, sum);
         if(sum != 0){
             printf("%ld", sum);
-            fprintf(stderr, "%ld", sum);
+            // fprintf(stderr, "%ld", sum);
         }
         else {
             printf("NULL");
-            fprintf(stderr, "NULL");
+            // fprintf(stderr, "NULL");
         }
         temp = temp->next;
         if(temp != NULL){
             printf(" ");
-            fprintf(stderr, " ");
+            // fprintf(stderr, " ");
         }
     }
     printf("\n");
-    fprintf(stderr, "\n");
+    // fprintf(stderr, "\n");
 }
 
 result* filterApplication(query_metadata *metadata, result *res, int buff_size, relation *relA, int op, int tot_rows, int c_value, int col_num, int rel_num, int appearance_rel1){
@@ -392,7 +394,7 @@ result* radixHashJoinParallel(result *res, ord_relation **relR, ord_relation **r
         return root;
     }
     else{
-        fprintf(stderr, " radix parallel with middle results\n");
+        // fprintf(stderr, " radix parallel with middle results\n");
         // loop through the middle result list to determine the size
         result* temp = res;
         int nodes_num = 0;
@@ -408,7 +410,7 @@ result* radixHashJoinParallel(result *res, ord_relation **relR, ord_relation **r
         // give the jobs to jobSchedler
         for(int i=0; i < nodes_num; i++){
             // make the argument
-            joinArgs* jArg = joinArgsInit(-1, r_hist_length, array_pos, r_psum, s_psum, relA, relR, relS, r_bucket_indexes, temp, i);
+            joinArgs* jArg = joinArgsInit(-1, r_hist_length, array_pos, r_psum, s_psum, relA, relR, relS, r_bucket_indexes, temp, -1);
 
             // make the job
             jobInit(radixHashJoin, jArg, &(jobs[i]));
@@ -431,13 +433,19 @@ result* radixHashJoinParallel(result *res, ord_relation **relR, ord_relation **r
         // unite all results
         for(int i=1; i<nodes_num; i++){
             if(temp == NULL){
-                if(root == NULL) root = ((joinArgs*)(jobs[i]->argument))->new_res;
+                if(root == NULL){
+                    root = ((joinArgs*)(jobs[i]->argument))->new_res;
+                    // fprintf(stderr, "%d root null\n", i);
+                }
+                // fprintf(stderr, "%d temp null\n", i);
                 temp = ((joinArgs*)(jobs[i]->argument))->new_res; 
                 continue;
             }
-            
+            // if(t == 2) printResults2(temp, "test.txt");
             // go at the end of the list
-            while(temp->next != NULL) temp = temp->next;
+            while(temp->next != NULL){
+                temp = temp->next;
+            }
 
             // append the new list
             temp->next = ((joinArgs*)(jobs[i]->argument))->new_res;        
@@ -450,11 +458,9 @@ result* radixHashJoinParallel(result *res, ord_relation **relR, ord_relation **r
 void* radixHashJoin(joinArgs* jArg){
 
     int buffer_pos = 0;
-    result *root = createBuffer(NULL, 2);
-    result *current_buffer = root;
-
     if(jArg->prev_res == NULL){
-
+        result *root = createBuffer(NULL, 2);
+         result *current_buffer = root;
         for (int j = 0; j < jArg->r_hist_length; j++) {
 
             if (jArg->r_psum[j]->hashed_key == jArg->hash_to_check) {
@@ -495,16 +501,18 @@ void* radixHashJoin(joinArgs* jArg){
                 }
             }
         }
+        jArg->new_res = root;
     }
     else{
         result *check_buffer = jArg->prev_res;
-
+        result *root = createBuffer(NULL, check_buffer->buffer_size + 1);
+         result *current_buffer = root;
         //for each row of buffer in node
         for(int i = 0; i < RESULT_NODE_SIZE / (check_buffer->buffer_size * sizeof(int32_t)); i++){
-
+            
             //check if the buffer is full
             if (check_buffer->buffer[i][0] == -1) break;
-
+            // if(t == 2) fprintf(stderr, "%d %d\n", i, check_buffer->buffer[i][1]);
             int h1_value = h1(jArg->relA->tuples[check_buffer->buffer[i][jArg->array_pos]]->value);
 
             for (int j = 0; j < jArg->r_hist_length; j++) {
@@ -521,7 +529,7 @@ void* radixHashJoin(joinArgs* jArg){
 
                             //there is space to store the new results
                             if(buffer_pos < current_buffer->buffer_size * sizeof(int32_t)){
-
+                                // if(t == 2) fprintf(stderr, "%d %d\n", i, check_buffer->buffer_size);
                                 for (int p = 0; p < check_buffer->buffer_size; p++)
                                     current_buffer->buffer[buffer_pos][p] = check_buffer->buffer[i][p];
 
@@ -530,6 +538,7 @@ void* radixHashJoin(joinArgs* jArg){
 
                             }
                             else{
+                                // if(t == 2) fprintf(stderr, "%d %d\n", i, check_buffer->buffer_size);
                                 result *new_buffer = createBuffer(current_buffer, check_buffer->buffer_size + 1);
 
                                 for (int p = 0; p < check_buffer->buffer_size; p++)
@@ -546,8 +555,9 @@ void* radixHashJoin(joinArgs* jArg){
                 }
             }
         }
+        jArg->new_res = root;
     }
-    jArg->new_res = root;
+    
     return NULL;
 }
 
@@ -914,6 +924,7 @@ void printResults2(result *root, char* path) {
                 fprintf(f, "|\n----------------------\n");
             i++;
         }
+        fprintf(f, "|\n----------------------\n");
         temp = temp->next;
     }
     fclose(f);
