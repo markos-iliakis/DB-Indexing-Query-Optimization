@@ -6,7 +6,6 @@ struct node;
 
 typedef struct node {
     pred_list* q;
-    struct node* next;
 } node;
 
 typedef struct BestTree {
