@@ -14,7 +14,8 @@ typedef struct BestTree {
 
 BestTree join_enumeration(Queue* , stat_holder* );
 BestTree createJoinTree(int );
-//BestTree createBestTree();
+BestTree createBestTree();
+Cost createHashCost();
 
 void insert(int, char *);
 int hashing(char *);

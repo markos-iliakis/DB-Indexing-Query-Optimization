@@ -5,7 +5,7 @@
 
 BestTree join_enumeration(Queue *q, stat_holder* sh) {
 	BestTree bt;
-	int* costs;
+	Cost costs;
 	int n = q->size;
 
 	bt = createBestTree(n);
@@ -85,9 +85,17 @@ void insert(int key, const char* buffer) {
 }
 
 int hashing(int* pred_int, int l) {
-	for (int i = 0; i < l; i++) {
+	int h = 0;
 
+	for (int i = 0; i < l; i++) {
+		pred_int[i]++;
+
+		pred_int[i] = factorial(pred_int[i]);
+
+		h += pred_int[i];
 	}
+
+	return h;
 }
 
 int factorial(int n) {
@@ -97,16 +105,24 @@ int factorial(int n) {
 		return n * factorial(n-1);
 }
 
-
 int cost(stat_holder* sh) {
     int c = 0;
 
-    if (same table) {
+	if (column with num) {
+
+	}
+	else if (column between nums) {
+		
+	}
+    else if (same table) {
 
     }
     else if (different table) {
 
     }
+	else if (same column same table) {
+
+	}
 
     return c;
 }
@@ -115,7 +131,6 @@ void addToBestTree(BestTree , pred_list) {
 
 }
 
-// 2 6 8 10 57 89           thesi:57?
-//
-// h(57) = 4;
-// array[h(57)] = 57;
+Cost createHashCost() {
+
+}
