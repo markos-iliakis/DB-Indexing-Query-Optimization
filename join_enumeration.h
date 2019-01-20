@@ -9,7 +9,7 @@ typedef struct node {
 } node;
 
 typedef struct BestTree {
-
+    
 } BestTree;
 
 BestTree join_enumeration(Queue* , stat_holder* );

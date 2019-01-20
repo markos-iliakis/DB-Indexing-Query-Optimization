@@ -1,6 +1,6 @@
 Queue* q;
 
-//for each element in q
+for (int i = q->front; i < q->size; i++) {
     //create new stat_holder for preds in q
 
     //for each pred with filter
@@ -10,3 +10,4 @@ Queue* q;
     //create/update stat_holder to be ready
     //call join enum for rest joins
     //update q order
+}
