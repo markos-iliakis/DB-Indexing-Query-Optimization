@@ -300,7 +300,7 @@ int parseInstuctions(indexes_array* indexes) {
         int total_j = 0;
         int total_f = 0;
         pred_list *pl_temp =  pi_tmp->pl;
-
+        
         while (pl_temp != NULL) {
             if (pl_temp->op == 0)
                 total_j++;

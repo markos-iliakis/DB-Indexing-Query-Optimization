@@ -60,4 +60,5 @@ result* radixHashJoinParallel(result *res, ord_relation **relR, ord_relation **r
 joinArgs* joinArgsInit(int hash_to_check, int r_hist_length, int array_pos, sum** r_psum, sum** s_psum, relation* relA, ord_relation** relR, ord_relation** relS, bucket_index** r_bucket_indexes, result* res, int hist_pos);
 
 int parseInstuctions(indexes_array* indexes);
+//int parseInstuctions(indexes_array* indexes, stat_holder* sh)
 #endif

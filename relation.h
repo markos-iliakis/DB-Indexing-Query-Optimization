@@ -7,6 +7,7 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <string.h>
+#include <stdbool.h>
 
 #ifndef RELATION_H
 #define RELATION_H
@@ -15,6 +16,8 @@
 struct tuple;
 struct relation;
 struct result;
+struct stat_array;
+struct stat_holder;
 
 typedef struct tuple {
     int32_t key;
@@ -36,18 +39,32 @@ typedef struct ord_relation {
     int32_t value;
 } ord_relation;
 
-typedef struct st_table{
+typedef struct st_table {
     int colNum;
     int rowNum;
     int64_t** col;
-}st_table;
+} st_table;
 
-typedef struct tb_array{
+typedef struct tb_array {
     st_table** tb;
     int size;
-}tb_array;
+} tb_array;
+
+typedef struct stat_array {
+    int* l;
+    int* u;
+    int* f;
+    int* d;
+    bool** d_array;
+    int rows;
+} stat_array;
+
+typedef struct stat_holder {
+    stat_array *stats;
+    int size;
+} stat_holder;
 
 void loadTables(tb_array** t_a);
-void destroyTables(tb_array* tb);
+void destroyTables(tb_array* tb);*=
 void destroyRelation(relation* rel);
 #endif
