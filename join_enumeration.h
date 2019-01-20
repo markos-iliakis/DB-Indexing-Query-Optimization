@@ -5,7 +5,7 @@ struct BestTree;
 struct node;
 
 typedef struct node {
-    char* name;
+    pred_list* q;
     struct node* next;
 } node;
 
@@ -20,5 +20,6 @@ BestTree createJoinTree(int );
 void insert(int, char *);
 int hashing(char *);
 int cost(stat_holder *);
+void addToBestTree(BestTree , pred_list);
 
 #endif

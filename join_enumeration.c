@@ -5,22 +5,31 @@
 
 BestTree join_enumeration(Queue *q, stat_holder* sh) {
 	BestTree bt;
-	bt = createBestTree();
 	int* costs;
+	int n = q->size;
 
+	bt = createBestTree(n);
 	//initialize bt to single relation
-	for (int i = 0; i < n; i++) {
-
+	pred_list* curr = q->(*array);
+	while (curr->next != NULL) {
+		addToBestTree(bt, curr);
 	}
 
 	//initialize costs
 	for (int i = 0; i < n; i++) {
-		
+
 	}
 
 	//increasing length of relations to check
 	for (int i = 0; i < n; i++) {
-
+		//take i rel(s) from pred_list
+			//for that i rel(s) take another i rel(s) without taking the same
+				//if crossProducts or !connected
+					//continue
+				//create currTree
+				//create union of the two sets of i rel(s)
+				//if BestTree(union) == null or cost(BestTree(union)) > cost(currTree)
+					//BestTree(union) = currTree
 	}
 
 	return bt;
@@ -35,9 +44,9 @@ BestTree createJoinTree(int relNum) {
 
 }
 
-// BestTree createBestTree() {
-//
-// }
+BestTree createBestTree(int relNum) {
+	node* root[relNum+1] = {NULL};
+}
 
 void insert(int key, const char* buffer) {
     // try to instantiate node to insert word
@@ -94,6 +103,9 @@ int cost(stat_holder* sh) {
     return c;
 }
 
+void addToBestTree(BestTree , pred_list) {
+
+}
 
 // 2 6 8 10 57 89           thesi:57?
 //
