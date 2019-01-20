@@ -12,7 +12,7 @@ struct parsed_instruction;
 struct pred_list;
 struct proj_list;
 struct data;
-struct new_stats;
+// struct new_stats;
 
 typedef struct queries {
     int num;
@@ -59,15 +59,15 @@ typedef struct proj_list {
     struct proj_list *next;
 } proj_list;
 
-typedef struct new_stats {
-    int l;
-    int u;
-    int f;
-    int d;
-    bool* d_array;
-    data* t;
-    struct new_stats* next;
-} new_stats;
+// typedef struct new_stats {
+//     int l;
+//     int u;
+//     int f;
+//     int d;
+//     bool* d_array;
+//     data* t;
+//     struct new_stats* next;
+// } new_stats;
 
 extern int t;
 
