@@ -57,6 +57,8 @@ typedef struct proj_list {
     struct proj_list *next;
 } proj_list;
 
+extern int t;
+
 void print(queries *root);
 void printQuery(parsed_instruction* pi);
 int findAppearances(int *arrays, int array_num);

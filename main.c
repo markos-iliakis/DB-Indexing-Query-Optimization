@@ -6,6 +6,7 @@ pthread_mutex_t mutex2 = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t done_jobs_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t can_produce = PTHREAD_COND_INITIALIZER;
 pthread_cond_t can_consume = PTHREAD_COND_INITIALIZER;
+int t = 1;
 // sem_t finished_jobs;
 
 jobScheduler* jSched;

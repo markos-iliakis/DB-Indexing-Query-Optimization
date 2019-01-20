@@ -37,7 +37,7 @@ typedef struct joinArgs{
 }joinArgs;
 
 void printResults(result *root);
-void printResults2(result *root);
+void printResults2(result *root, char* path);
 
 void addArray(query_metadata **, int new_array);
 int searchArray(query_metadata *, int array_num, int appearence);

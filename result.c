@@ -109,12 +109,17 @@ void executeQuery(Queue* q, indexes_array* index, proj_list* pl){
                 if((pos = searchArray(metadata, rel_num, appearance_rel1)) >= 0 && (pos2 = searchArray(metadata, rel_num2, appearance_rel2)) == -1){
                     addArray(&metadata, rel_num2);
                     fprintf(stderr,"applying join %d.%d = %d.%d\n", rel_num, col_num, rel_num2, col_num2);
-                    // res = RadixHashJoin(prev, index->ind[rel_num2]->ord_relations[col_num2], NULL, index->ind[rel_num2]->array_bucket_indexes[col_num2], index->ind[rel_num2]->array_psums[col_num2], NULL, hist_length2, -1, index->ind[rel_num]->array_relations[col_num], pos);
                     res = radixHashJoinParallel(
                         prev, index->ind[rel_num2]->ord_relations[col_num2], NULL, index->ind[rel_num2]->array_bucket_indexes[col_num2], 
                         index->ind[rel_num2]->array_psums[col_num2], NULL, hist_length2, -1, index->ind[rel_num]->array_relations[col_num], pos
                     );
-                    // printResults2(res);
+                    if(t == 1){ 
+                        printResults2(res, "query7.txt");
+                        result* res2 = RadixHashJoin(prev, index->ind[rel_num2]->ord_relations[col_num2], NULL, index->ind[rel_num2]->array_bucket_indexes[col_num2], index->ind[rel_num2]->array_psums[col_num2], NULL, hist_length2, -1, index->ind[rel_num]->array_relations[col_num], pos);
+                        // fprintf(stderr, "here\n");
+                        printResults2(res2, "query7_2.txt");
+                        // fprintf(stderr, "here2\n");
+                    }
                 }
 
                 else if((pos = searchArray(metadata, rel_num2, appearance_rel2)) >= 0 && (pos2 = searchArray(metadata, rel_num, appearance_rel1)) == -1){
@@ -894,11 +899,11 @@ void printResults(result *root) {
     return;
 }
 
-void printResults2(result *root) {
+void printResults2(result *root, char* path) {
 
     result *temp = root;
     int i;
-    FILE *f = fopen("res2.txt", "w");
+    FILE *f = fopen(path, "w");
     // fprintf(f, "\n----------------------\n|    R    |     S    |     X    |\n----------------------\n");
     while (temp != NULL) {
         i = 0;

@@ -321,7 +321,7 @@ int parseInstuctions(indexes_array* indexes) {
         //run query
         executeQuery(q, indexes, pi_tmp->prl);
         fprintf(stderr, "Query executed \n\n");
-
+        t++;
         pi_tmp = pi_tmp->next;
     }
     return 1;
