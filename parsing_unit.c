@@ -310,9 +310,9 @@ int parseInstuctions(indexes_array* indexes) {
             pl_temp = pl_temp->next;
         }
 
-        // fprintf(stderr, "\n-------------------------\n");//added
+        fprintf(stderr, "\n-------------------------\n");//added
 
-        // printQuery(pi_tmp);
+        printQuery(pi_tmp);
 
         Queue *q = makeInstructionQueue(pi_tmp->pl, total_j, total_f);
         // printQueue(q);
@@ -320,7 +320,7 @@ int parseInstuctions(indexes_array* indexes) {
 
         //run query
         executeQuery(q, indexes, pi_tmp->prl);
-        fprintf(stderr, "\nQuery executed \n");
+        fprintf(stderr, "Query executed \n\n");
 
         pi_tmp = pi_tmp->next;
     }
