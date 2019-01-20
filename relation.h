@@ -64,7 +64,7 @@ typedef struct stat_holder {
     int size;
 } stat_holder;
 
-void loadTables(tb_array** t_a);
-void destroyTables(tb_array* tb);*=
+void loadTables(tb_array** t_a, stat_holder** sh);
+void destroyTables(tb_array* tb);
 void destroyRelation(relation* rel);
 #endif

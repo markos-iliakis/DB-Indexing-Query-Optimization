@@ -84,64 +84,64 @@ void loadTables(tb_array** t_a, stat_holder** sh){
             offset += size;
         }
 
-        (*sh)->stats[i] = malloc(sizeof(stat_array));
-        (*sh)->stats[i]->l = malloc(numColumns*sizeof(int));
-        (*sh)->stats[i]->u = malloc(numColumns*sizeof(int));
-        (*sh)->stats[i]->f = malloc(numColumns*sizeof(int));
-        (*sh)->stats[i]->d = malloc(numColumns*sizeof(bool));
+    //     (*sh)->stats[i] = malloc(sizeof(stat_array));
+    //     (*sh)->stats[i]->l = malloc(numColumns*sizeof(int));
+    //     (*sh)->stats[i]->u = malloc(numColumns*sizeof(int));
+    //     (*sh)->stats[i]->f = malloc(numColumns*sizeof(int));
+    //     (*sh)->stats[i]->d = malloc(numColumns*sizeof(bool));
 
 
-        for (int j = 0; j < numColumns; j++) {
-            int64_t temp_l = 0;
-            int64_t temp_u = 0;
+    //     for (int j = 0; j < numColumns; j++) {
+    //         int64_t temp_l = 0;
+    //         int64_t temp_u = 0;
 
-            // how to find num of rows of each column
-            for (int k = 0; k < size; k++) {
+    //         // how to find num of rows of each column
+    //         for (int k = 0; k < size; k++) {
 
-                if (temp_l > (*t_a)->tb[i]->col[j][k]) {
-                    temp_l = (*t_a)->tb[i]->col[j][k];
-                }
+    //             if (temp_l > (*t_a)->tb[i]->col[j][k]) {
+    //                 temp_l = (*t_a)->tb[i]->col[j][k];
+    //             }
 
-                if (temp_u < (*t_a)->tb[i]->col[j][k]) {
-                    temp_u = (*t_a)->tb[i]->col[j][k];
-                }
-            }
+    //             if (temp_u < (*t_a)->tb[i]->col[j][k]) {
+    //                 temp_u = (*t_a)->tb[i]->col[j][k];
+    //             }
+    //         }
 
-            (*sh)->stats[i]->l[j] = temp_l;
-            (*sh)->stats[i]->u[j] = temp_u;
-            (*sh)->stats[i]->f[j] = size;
+    //         (*sh)->stats[i]->l[j] = temp_l;
+    //         (*sh)->stats[i]->u[j] = temp_u;
+    //         (*sh)->stats[i]->f[j] = size;
 
-            int bool_lim = (*sh)->stats[i]->u[j] - (*sh)->stats[i]->l[j] + 1;
-            (*sh)->stats[i]->d_array = malloc(numColumns*sizeof(bool*));
-            if (bool_lim > N)
-                (*sh)->stats[i]->d_array[j] = malloc(N*sizeof(bool));
-            else
-                (*sh)->stats[i]->d_array[j] = malloc(bool_lim*sizeof(bool));
+    //         int bool_lim = (*sh)->stats[i]->u[j] - (*sh)->stats[i]->l[j] + 1;
+    //         (*sh)->stats[i]->d_array = malloc(numColumns*sizeof(bool*));
+    //         if (bool_lim > N)
+    //             (*sh)->stats[i]->d_array[j] = malloc(N*sizeof(bool));
+    //         else
+    //             (*sh)->stats[i]->d_array[j] = malloc(bool_lim*sizeof(bool));
 
-            for (int m = 0; m < bool_lim; m++)
-                (*sh)->stats[i]->d_array[j][m] = false;
+    //         for (int m = 0; m < bool_lim; m++)
+    //             (*sh)->stats[i]->d_array[j][m] = false;
 
-            for (int k = 0; k < size; k++) {
-                int64_t tmp = (*t_a)->tb[i]->col[j][k];
+    //         for (int k = 0; k < size; k++) {
+    //             int64_t tmp = (*t_a)->tb[i]->col[j][k];
 
-                if (bool_lim > N) {
-                    int new_index = (tmp - (*sh)->stats[i]->u[j])
-                    if ((*sh)->stats[i]->d_array[j][new_index] == false)
-                        (*sh)->stats[i]->d_array[j][new_index] = true;
-                }
-                else {
-                    if ((*sh)->stats[i]->d_array[j][tmp-1] == false)
-                        (*sh)->stats[i]->d_array[j][tmp-1] = true;
-                }
-            }
+    //             if (bool_lim > N) {
+    //                 int new_index = (tmp - (*sh)->stats[i]->u[j])
+    //                 if ((*sh)->stats[i]->d_array[j][new_index] == false)
+    //                     (*sh)->stats[i]->d_array[j][new_index] = true;
+    //             }
+    //             else {
+    //                 if ((*sh)->stats[i]->d_array[j][tmp-1] == false)
+    //                     (*sh)->stats[i]->d_array[j][tmp-1] = true;
+    //             }
+    //         }
 
-            int tmp_d = 0;
-            for (int m = 0; m < bool_lim; m++)
-                if ((*sh)->stats[i]->d_array[j][m] == true)
-                    tmp_d++;
+    //         int tmp_d = 0;
+    //         for (int m = 0; m < bool_lim; m++)
+    //             if ((*sh)->stats[i]->d_array[j][m] == true)
+    //                 tmp_d++;
 
-            (*sh)->stats[i]->d[j] = tmp_d;
-        }
+    //         (*sh)->stats[i]->d[j] = tmp_d;
+    //     }
     }
 
     if(line) free(line);
