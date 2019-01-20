@@ -1,6 +1,8 @@
 #ifndef JOIN_ENUMERATION_H
 #define JOIN_ENUMERATION_H
 
+#include <math.h>
+
 struct BestTree;
 struct Cost;
 

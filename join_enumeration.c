@@ -1,7 +1,6 @@
 //dedomena eisodou:
 // - ta join tis priorityQueue
 // - stat_holder sh
-//
 
 BestTree join_enumeration(Queue *q, stat_holder* sh) {
 	BestTree* bt;
@@ -37,8 +36,6 @@ BestTree join_enumeration(Queue *q, stat_holder* sh) {
 	return bt;
 }
 
-
-//MALLON JOINTREE KAI BESTTREE IDIA SINARTISI, MPOREI KAI OXI, PROXWRAME
 
 BestTree createJoinTree(int relNum) {
 	node* root[relNum+1] = {NULL};
@@ -107,23 +104,61 @@ int factorial(int n) {
 		return n * factorial(n-1);
 }
 
-int cost(stat_holder* sh) {
+int cost(int op, data* t1, data* t2, new_stats* st1, new_stats* st2) {
     int c = 0;
+	int nl, nu, nf, nd;
 
-	if (column with num) {
+	if (op == 3) {
+		int dim = st1->u - st1->l + 1;
+		if (dim > N)
+			dim = N;
 
+		nl = t2->table;
+		nu = t2->table;
+
+		//search if k is in d_table
+		if (dim > t2->table) {
+			if (st1->d_table[t2->table]) {
+				nf = st1->f/st1->d;
+				nd = 1;
+			}
+		}
+		else {
+			nf = 0;
+			nd = 0;
+		}
+
+		//change stats of other columns
+		for(int i= 0; i < t_a->tb[t1->table]->colNum; i++) {
+			if (i != t1->column) {
+				sh->stats[t1->table]->d[i] = sh->stats[t1->table]->d[i] * (1 - pow(1-(nf/st1->f), sh->stats[t1->table]->f[i]/sh->stats[t1->table]->d[i]));
+				sh->stats[t1->table]->f[i] = nf;
+			}
+		}
+
+		st1->l = nl;
+		st1->u = nu;
+		st1->f = nf;
+		st1->d = nd;
 	}
-	else if (column between nums) {
-
+	else if (op == 1 || op == 2) {
+		if (op == 1) {
+			//
+		}
+		else if (op == 2) {
+			//
+		}
 	}
-    else if (same table) {
+    else if (op == 0) {
+		if (same table) {
 
-    }
-    else if (different table) {
+	    }
+	    else if (different table) {
 
-    }
-	else if (same column same table) {
+	    }
+		else if (same column same table) {
 
+		}
 	}
 
     return c;
