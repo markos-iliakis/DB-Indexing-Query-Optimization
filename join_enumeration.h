@@ -19,6 +19,7 @@ BestTree createJoinTree(int );
 void insert(int, char *);
 int hashing(char *);
 int cost(stat_holder *);
+int factorial(int );
 void addToBestTree(BestTree , pred_list);
 
 #endif

@@ -84,10 +84,18 @@ void insert(int key, const char* buffer) {
     }
 }
 
-int hashing(int ) {
+int hashing(int* pred_int, int l) {
+	for (int i = 0; i < l; i++) {
 
+	}
 }
 
+int factorial(int n) {
+	if (n == 0)
+		return 1;
+	else
+		return n * factorial(n-1);
+}
 
 
 int cost(stat_holder* sh) {
