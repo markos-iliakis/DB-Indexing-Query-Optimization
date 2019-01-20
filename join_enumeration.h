@@ -2,25 +2,25 @@
 #define JOIN_ENUMERATION_H
 
 struct BestTree;
-struct node;
-
-typedef struct node {
-    pred_list* q;
-} node;
+struct Cost;
 
 typedef struct BestTree {
-    
+    struct data* rel;
 } BestTree;
 
-BestTree join_enumeration(Queue* , stat_holder* );
-BestTree createJoinTree(int );
+typedef struct Cost {
+    int
+} Cost;
+
+BestTree join_enumeration();
+BestTree createJoinTree();
 BestTree createBestTree();
 Cost createHashCost();
 
-void insert(int, char *);
-int hashing(char *);
-int cost(stat_holder *);
+void insert();
+int hashing();
+int cost();
 int factorial(int );
-void addToBestTree(BestTree , pred_list);
+void addToBestTree();
 
 #endif
