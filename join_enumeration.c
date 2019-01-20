@@ -1,86 +1,72 @@
-//dedomena eisodou:
-// - ta join tis priorityQueue
-// - stat_holder sh
-
-BestTree join_enumeration(Queue *q, stat_holder* sh) {
+BestTree join_enumeration(Queue *q, new_stats* new_s, int* q_tables, int n_tables) {
 	BestTree* bt;
-	Cost* costs;
-	int n = q->size;
-	int t_n = factorial(n+1);
-
+	int t_n = factorial(n_tables+1);
 	bt = malloc(t_n*sizeof(BestTree));
-	costs = malloc(t_n*sizeof(Cost));
 
 	//initialize bt to single relation
-	for (int i = q->front; i < n; i++)
-		if (q->array[i]->op == 0)
-			addToBestTree(bt, q->array[i]->t1, q->array[i]->t2);
-
-	//initialize costs
-	for (int i = 0; i < n; i++) {
-
+	for (int i = 0; i < n_tables; i++) {
+		bt[hashing(q_tables[i])].jeT = malloc(sizeof(int));
+		bt[hashing(q_tables[i])].jeT[0] = q_tables[i];
 	}
 
+	//initialize costs
+	for (int i = 0; i < t_n; i++)
+		bt[i].cost = 0;
+
+	for (int i = 0; i < n_tables; i++) {
+		new_stats* tmp = new_s;
+		int c;
+
+		while (tmp != NULL) {
+			if (tmp->t->table == q_tables[i]) {
+				c = tmp->f;
+				break;
+			}
+			else
+				tmp = tmp->next;
+		}
+
+		bt[hashing(q_tables[i])].cost = c;
+	}
+
+
 	//increasing length of relations to check
-	for (int i = 0; i < n; i++) {
+	for (int i = 1; i < n_tables; i++) {
 		//take i rel(s) from pred_list
-			//for that i rel(s) take another i rel(s) without taking the same
-				//if !connected
-					//continue
-				//create currTree
-				//create union of the two sets of i rel(s)
-				//if BestTree(union) == null or cost(BestTree(union)) > cost(currTree)
-					//BestTree(union) = currTree
+		int* s_rels = malloc(i*sizeof(int));
+		int r_rels;
+
+		for (int j = 0; j < n_tables; j++) {
+			for (int k = 0; k < i; k++) {
+				s_rels[k] = ;
+			}
+
+			for (int m = 0; m < n_tables; m++) {
+				r_rels = q_tables[m];
+				if (!connected(q, s_rels, i, r_rels) || (r_in_s(s_rels, i, r_rels)))
+					continue;
+				else {
+					int *new_s_rels = malloc((i+1)*sizeof(int));
+
+					//create union S'
+					for (int l = 0; l < i; l++)
+						new_s_rels[l] = s_rels[l];
+					new_s_rels[i+1] = r_rels;
+
+					int nh = hashing(new_s_rels, i+1);
+
+					//if BestTree(union) == null or cost(BestTree(union)) > cost(currTree)
+						//BestTree(union) = currTree
+
+					if () {
+						bt[nh] ;
+					}
+				}
+			}
+		}
 	}
 
 	return bt;
-}
-
-
-BestTree createJoinTree(int relNum) {
-	node* root[relNum+1] = {NULL};
-
-
-}
-
-BestTree createBestTree(int relNum) {
-	node* root[relNum+1] = {NULL};
-}
-
-void insert(int key, const char* buffer) {
-    // try to instantiate node to insert word
-    node* newptr = malloc(sizeof(node));
-    if (newptr == NULL)
-    {
-        return;
-    }
-
-    // make a new pointer
-    strcpy(newptr->word, buffer);
-    newptr->next = NULL;
-
-    // check for empty list
-    if (first[key] == NULL)
-    {
-       first[key] = newptr;
-    }
-    // check for insertion at tail
-    else
-    {
-        node* predptr = first[key];
-        while (true)
-        {
-            // insert at tail
-            if (predptr->next == NULL)
-            {
-                predptr->next = newptr;
-                break;
-            }
-
-            // update pointer
-            predptr = predptr->next;
-        }
-    }
 }
 
 int hashing(int* pred_int, int l) {
@@ -142,12 +128,42 @@ int cost(int op, data* t1, data* t2, new_stats* st1, new_stats* st2) {
 		st1->d = nd;
 	}
 	else if (op == 1 || op == 2) {
+		int k1 = st1->l;
+		int k2 = st2->table;
+
+		// lA < A < k
 		if (op == 1) {
-			//
+			if (k2 > st1->u)
+				k2 = st1->u;
+
+			nl = k1;
+			nu = k2;
+			nf = ((k2-k1)/(st1->u-st1-l)) * st1->f;
+			nd = ((k2-k1)/(st1->u-st1-l)) * st1->d;
 		}
+		// k < A < uA
 		else if (op == 2) {
-			//
+			if (k1 < st1->l)
+				k1 = st1->l;
+
+			nl = k1;
+			nu = k2;
+			nf = ((k2-k1)/(st1->u-st1-l)) * st1->f;
+			nd = ((k2-k1)/(st1->u-st1-l)) * st1->d;
 		}
+
+		//change stats of other columns
+		for(int i= 0; i < t_a->tb[t1->table]->colNum; i++) {
+			if (i != t1->column) {
+				sh->stats[t1->table]->d[i] = sh->stats[t1->table]->d[i] * (1 - pow(1-(nf/st1->f), sh->stats[t1->table]->f[i]/sh->stats[t1->table]->d[i]));
+				sh->stats[t1->table]->f[i] = nf;
+			}
+		}
+
+		st1->l = nl;
+		st1->u = nu;
+		st1->f = nf;
+		st1->d = nd;
 	}
     else if (op == 0) {
 		if (same table) {
@@ -164,14 +180,31 @@ int cost(int op, data* t1, data* t2, new_stats* st1, new_stats* st2) {
     return c;
 }
 
-void addToBestTree(BestTree *bt, data t1, data t2) {
-	//check if t1 already in bt
-		//if not add t1
+int connected(Queue* q, int* s, int l, int r) {
+	for (int i = 0; i < l; ++i) {
+		for (int j = 0; j < q->size; j++) {
+			if (q->array[j]->table->t1 == s[i] || q->array[j]->table->t2 == s[i])
+				if (q->array[j]->table->t1 == r || q->array[j]->table->t2 == r)
+					return 1; 
+		}
+	}
 
-	//check if t2 already in bt
-		//if not add t2
+	return 0;
 }
 
-Cost createHashCost() {
+int r_in_s(int* s, int l, int r) {
+	for (int i = 0; i < l; ++i) {
+		if (s[i] == r)
+			return 1;
+	}
 
+	return 0;
+}
+
+int* get_subsets(){
+
+}
+
+int* permutations() {
+	
 }

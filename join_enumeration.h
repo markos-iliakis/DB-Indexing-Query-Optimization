@@ -4,25 +4,18 @@
 #include <math.h>
 
 struct BestTree;
-struct Cost;
 
 typedef struct BestTree {
-    struct data* rel;
+    int* jeT;
+    int cost;
 } BestTree;
 
-typedef struct Cost {
-    int
-} Cost;
 
 BestTree join_enumeration();
-BestTree createJoinTree();
-BestTree createBestTree();
-Cost createHashCost();
-
-void insert();
-int hashing();
-int cost();
+int hashing(int* , int );
 int factorial(int );
-void addToBestTree();
+int cost(int , data* , data* , new_stats* , new_stats* );
+int connected(Queue* , int* , int , int );
+int r_in_s(int* , int , int );
 
 #endif
