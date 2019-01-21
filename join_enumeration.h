@@ -1,21 +1,26 @@
 #ifndef JOIN_ENUMERATION_H
 #define JOIN_ENUMERATION_H
 
-#include <math.h>
-
 struct BestTree;
+struct Cost;
 
 typedef struct BestTree {
-    int* jeT;
-    int cost;
+    struct data* rel;
 } BestTree;
 
+typedef struct Cost {
+    int
+} Cost;
 
 BestTree join_enumeration();
-int hashing(int* , int );
+BestTree createJoinTree();
+BestTree createBestTree();
+Cost createHashCost();
+
+void insert();
+int hashing();
+int cost();
 int factorial(int );
-int cost(int , data* , data* , new_stats* , new_stats* );
-int connected(Queue* , int* , int , int );
-int r_in_s(int* , int , int );
+void addToBestTree();
 
 #endif
