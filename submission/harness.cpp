@@ -156,6 +156,7 @@ int main(int argc, char *argv[]) {
     }
     if (bytes == 0) break;
     ssize_t written = write_bytes(stdin_pipe[1], buffer, bytes);
+    // cout << "sending :" << endl << buffer << endl;
     if (written < 0) {
       perror("write");
       exit(EXIT_FAILURE);
@@ -212,18 +213,19 @@ int main(int argc, char *argv[]) {
 
   // Loop over all batches
   for (unsigned long batch = 0; batch != input_batches.size() && failure_cnt < MAX_FAILED_QUERIES; ++batch) {
+    // cout << "Starting Batch" << endl;
     string output;  // raw output is collected here
     output.reserve(1000000);
 
     size_t input_ofs = 0;    // byte position in the input batch
     size_t output_read = 0;  // number of lines read from the child output
-
-    while (input_ofs != input_batches[batch].length() || output_read < result_batches[batch].size()) {
+    // input_ofs != input_batches[batch].length() ||
+    while (output_read < result_batches[batch].size()) {
       fd_set read_fd, write_fd;
       FD_ZERO(&read_fd);
       FD_ZERO(&write_fd);
 
-      if (input_ofs != input_batches[batch].length()) FD_SET(stdin_pipe[1], &write_fd);
+      // if (input_ofs != input_batches[batch].length()) FD_SET(stdin_pipe[1], &write_fd);
 
       if (output_read != result_batches[batch].size()) FD_SET(stdout_pipe[0], &read_fd);
 
@@ -245,27 +247,31 @@ int main(int argc, char *argv[]) {
         // Count how many lines were returned
         for (size_t j = 0; j != size_t(bytes); ++j) {
           if (buffer[j] == '\n') ++output_read;
+          // cout << buffer[j] << endl;
         }
         output.append(buffer, bytes);
       }
 
+      // cout << "Read output " << input_ofs << " " << input_batches[batch].length() << " " << output_read << " " << result_batches[batch].size() << endl;
+      sleep(1);
       // Feed another chunk of data from this batch to the test program
-      if (FD_ISSET(stdin_pipe[1], &write_fd)) {
-        int bytes =
-            write(stdin_pipe[1], input_batches[batch].data() + input_ofs, input_batches[batch].length() - input_ofs);
-        if (bytes < 0) {
-          if (errno == EINTR) continue;
-          perror("write");
-          exit(EXIT_FAILURE);
-        }
-        input_ofs += bytes;
-      }
+      // if (FD_ISSET(stdin_pipe[1], &write_fd)) {
+      //   int bytes =
+      //       write(stdin_pipe[1], input_batches[batch].data() + input_ofs, input_batches[batch].length() - input_ofs);
+      //   if (bytes < 0) {
+      //     if (errno == EINTR) continue;
+      //     perror("write");
+      //     exit(EXIT_FAILURE);
+      //   }
+      //   input_ofs += bytes;
+      // }
     }
 
     // Parse and compare the batch result
     stringstream result(output);
-
-    for (unsigned i = 0; i != result_batches[batch].size() && failure_cnt < MAX_FAILED_QUERIES; ++i) {
+    int j=0;
+    for (unsigned i = 0; i != output_read ; ++i) {
+      
       string val;
 
       // result >> val;
@@ -275,29 +281,36 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
       }
 
-      bool matched = val == result_batches[batch][i];
+      bool matched = val == result_batches[batch][j];
       if (!matched) {
-        cerr << "Result mismatch for query " << query_no << ", expected: " << result_batches[batch][i]
+        cerr << "Result mismatch for query " << query_no << ", expected: " << result_batches[batch][j]
                   << ", actual: " << val << endl;
         ++failure_cnt;
       }
-      /*if (matched)
-      {
-          cout << endl << val << endl <<  endl << result_batches[batch][i];
-      }*/
+      // if (matched){
+      //     cout << endl << "Result MATCH for query " << query_no << endl <<  endl;
+      // }
       ++query_no;
+      j++;
+      if(j == result_batches[batch].size()) {
+        batch++;
+        j=0;
+        // cout << "Batch ended" << endl;
+      }
+      if(batch == input_batches.size()) break;
     }
+    break;
   }
 
   struct timeval end;
   gettimeofday(&end, NULL);
 
-  if (failure_cnt == 0) {
+  // if (failure_cnt == 0) {
     // Output the elapsed time in milliseconds
     double elapsed_sec = (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec) / 1000000.0;
     cout << (long)(elapsed_sec * 1000) << endl;
     return EXIT_SUCCESS;
-  }
+  // }
 
   return EXIT_FAILURE;
 }

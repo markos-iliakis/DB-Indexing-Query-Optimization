@@ -27,17 +27,17 @@ int main(int argc, char** argv){
     loadTables(&tb, &sh);
     // loadTables(&tb);
     // loadTestTables(&tb, 8, 8, 8);
-    // fprintf(stderr, "\nTables Loaded\n");
+    fprintf(stderr, "\nTables Loaded\n");
 
     // create indexes for every table and column
-    // fprintf(stderr, "\nCreating Indexes\n");
+    fprintf(stderr, "\nCreating Indexes\n");
     indexes_array* indexes = createIndexes(tb);
-    // fprintf(stderr, "\nIndexes Created\n");
+    fprintf(stderr, "\nIndexes Created\n");
 
     // get and serve the queries
-    // fprintf(stderr, "\nExecuting Queries\n");
+    fprintf(stderr, "\nExecuting Queries\n");
     parseInstuctions(indexes);
-    // fprintf(stderr, "\nQueries Run\n");
+    fprintf(stderr, "\nQueries Run\n");
     //parseInstuctions(indexes, sh);
 
     destroyTables(tb);
